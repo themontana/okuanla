@@ -10,17 +10,18 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
 
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
-    const apiKey = "AIzaSyCFwMNF-VkH0vUgIuTAvYEGm0IN1qjYFRo";  // Buraya kendi API anahtarını yapıştır
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const apiKey = "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";  // Hugging Face API anahtarınızı buraya ekledik
+    const apiUrl = `https://api-inference.huggingface.co/models/gpt2`;  // Kullanmak istediğiniz modelin API URL'si
 
     try {
         const response = await fetch(apiUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: prompt }]
-                }]
+                inputs: prompt
             })
         });
 
@@ -31,8 +32,8 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
         const data = await response.json();
         console.log(data); // Yanıtı kontrol et
 
-        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts) {
-            document.getElementById("output").innerHTML = `<p>${data.candidates[0].content.parts[0].text}</p>`;
+        if (data && data[0].generated_text) {
+            document.getElementById("output").innerHTML = `<p>${data[0].generated_text}</p>`;
         } else {
             document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı.</p>";
         }
