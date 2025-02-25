@@ -11,22 +11,33 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     const apiKey = "AIzaSyCFwMNF-VkH0vUgIuTAvYEGm0IN1qjYFRo";  // Buraya kendi API anahtarını yapıştır
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-    const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            contents: [{
-                parts: [{ text: prompt }]
-            }]
-        })
-    });
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
+            })
+        });
 
-    const data = await response.json();
-    if (data.candidates) {
-        document.getElementById("output").innerHTML = `<p>${data.candidates[0].content.parts[0].text}</p>`;
-    } else {
-        document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı.</p>";
+        if (!response.ok) {
+            throw new Error(`API hatası: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log(data); // Yanıtı kontrol et
+
+        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts) {
+            document.getElementById("output").innerHTML = `<p>${data.candidates[0].content.parts[0].text}</p>`;
+        } else {
+            document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı.</p>";
+        }
+    } catch (error) {
+        document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
+        console.error("API hatası:", error);
     }
 });
