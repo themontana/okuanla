@@ -10,7 +10,6 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
 
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
-    // API endpoint ve anahtarını güncelle
     const apiKey = "AIzaSyCFwMNF-VkH0vUgIuTAvYEGm0IN1qjYFRo";  // Buraya kendi API anahtarını yapıştır
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
