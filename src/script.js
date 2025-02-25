@@ -10,11 +10,17 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
 
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAuEjJ-mFZ_bbdAZM1p8lbFaNFXbR1K6RQ", {
+    // API endpoint ve anahtarını güncelle
+    const apiKey = "AIzaSyAuEjJ-mFZ_bbdAZM1p8lbFaNFXbR1K6RQ";  // Buraya kendi API anahtarını yapıştır
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+    const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }]
+            contents: [{
+                parts: [{ text: prompt }]
+            }]
         })
     });
 
