@@ -11,11 +11,11 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        const response = await fetch("/api/generate-text", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt })
-        });
+        const response = await fetch("/generate-text", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
+});
 
         const data = await response.json();
 
