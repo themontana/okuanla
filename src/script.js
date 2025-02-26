@@ -11,9 +11,8 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        // Try with the updated path
         const apiUrl = "/generate-text";
-        console.log("Sending request to:", apiUrl);
+        console.log("Gönderilen istek:", { prompt });
         
         const response = await fetch(apiUrl, {
             method: "POST",
@@ -21,23 +20,26 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
             body: JSON.stringify({ prompt })
         });
 
-        console.log("Response status:", response.status);
+        console.log("Yanıt durumu:", response.status);
         
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP hatası! Durum: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log("Response data:", data);
+        console.log("Ham API yanıtı:", data);
 
-        if (data.length > 0 && data[0].generated_text) {
+        // API yanıtını daha açık görelim
+        document.getElementById("output").innerHTML = `
+            <p><strong>API Yanıtı:</strong></p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+        
+        // Eğer doğru format gelirse metni göster
+        if (data && Array.isArray(data) && data.length > 0 && data[0].generated_text) {
             document.getElementById("output").innerHTML = `<p>${data[0].generated_text}</p>`;
-        } else if (data.generated_text) {
-            // Handle different response format
+        } else if (data && data.generated_text) {
             document.getElementById("output").innerHTML = `<p>${data.generated_text}</p>`;
-        } else {
-            document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı. API yanıtı beklenen formatta değil.</p>";
-            console.error("Unexpected API response format:", data);
         }
     } catch (error) {
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
