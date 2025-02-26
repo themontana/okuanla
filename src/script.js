@@ -12,15 +12,15 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
 
     try {
         const apiUrl = "/api/generate-text";
-        
-        console.log("İstek gönderiliyor:", apiUrl);
-        const startTime = new Date();
-        
-        const response = await fetch(apiUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt })
-        });
+const fullUrl = window.location.origin + apiUrl; // Tam URL’yi hesapla
+console.log("Tam URL:", fullUrl); // Tam URL’yi yazdır
+console.log("İstek gönderiliyor:", apiUrl);
+const startTime = new Date();
+const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
+});
         
         const endTime = new Date();
         console.log(`Yanıt alındı (${endTime - startTime}ms): Status ${response.status}`);
