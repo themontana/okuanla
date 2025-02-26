@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/generate-text.js",
+      "src": "api/**/*.js",
       "use": "@vercel/node"
     },
     {
@@ -20,12 +20,8 @@
   ],
   "routes": [
     {
-      "src": "/generate-text",
-      "dest": "/api/generate-text.js"
-    },
-    {
-      "src": "/api/generate-text",
-      "dest": "/api/generate-text.js"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "handle": "filesystem"
@@ -34,5 +30,8 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
