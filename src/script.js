@@ -13,43 +13,57 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     try {
         const apiUrl = "/generate-text";
         
+        console.log("İstek gönderiliyor:", apiUrl);
+        const startTime = new Date();
+        
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt })
         });
         
+        const endTime = new Date();
+        console.log(`Yanıt alındı (${endTime - startTime}ms): Status ${response.status}`);
+        
+        // HTTP hatası varsa, yanıtın içeriğini de göster
         if (!response.ok) {
-            throw new Error(`HTTP hatası! Durum: ${response.status}`);
+            const errorText = await response.text();
+            console.error("API hata yanıtı:", errorText);
+            
+            document.getElementById("output").innerHTML = `
+                <p>Metin oluşturulamadı: HTTP hatası! Durum: ${response.status}</p>
+                <details>
+                    <summary>Hata Detayları (Geliştirici için)</summary>
+                    <pre>${errorText}</pre>
+                </details>
+            `;
+            return;
         }
 
         const data = await response.json();
         console.log("API yanıtı:", data);
 
-        // Farklı API yanıt formatlarını ele al
-        let generatedText = "";
-        
-        if (Array.isArray(data) && data.length > 0 && data[0].generated_text) {
-            generatedText = data[0].generated_text;
-        } else if (data && data.generated_text) {
-            generatedText = data.generated_text;
-        } else if (typeof data === 'string') {
-            generatedText = data;
-        } else {
-            throw new Error("API yanıtı beklenen formatta değil.");
+        if (data.error) {
+            throw new Error(data.error + (data.details ? ": " + data.details : ""));
         }
         
-        // Metni paragraflar halinde formatla
-        const formattedText = generatedText
-            .split('\n')
-            .map(para => para.trim())
-            .filter(para => para.length > 0)
-            .map(para => `<p>${para}</p>`)
-            .join('');
-            
-        document.getElementById("output").innerHTML = formattedText;
+        // API yanıtını işle
+        if (Array.isArray(data) && data.length > 0 && data[0].generated_text) {
+            document.getElementById("output").innerHTML = `<p>${data[0].generated_text}</p>`;
+        } else if (data && data.generated_text) {
+            document.getElementById("output").innerHTML = `<p>${data.generated_text}</p>`;
+        } else {
+            document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı. API yanıtı beklenmeyen formatta.</p>";
+            console.error("Beklenmeyen API yanıtı:", data);
+        }
     } catch (error) {
-        document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
+        document.getElementById("output").innerHTML = `
+            <p>Metin oluşturulamadı: ${error.message}</p>
+            <details>
+                <summary>Hata Detayları</summary>
+                <pre>${error.stack || "Stack bilgisi yok"}</pre>
+            </details>
+        `;
         console.error("API hatası:", error);
     }
 });
