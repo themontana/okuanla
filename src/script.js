@@ -11,19 +11,21 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        const response = await fetch("/api/generate-text", { // Backend API'yi çağır
+        const response = await fetch("https://okuanla.vercel.app/api/generate-text", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt }) // Prompt'u backend'e gönder
+            body: JSON.stringify({ prompt })
         });
 
         const data = await response.json();
-        if (data.result) {
-            document.getElementById("output").innerHTML = `<p>${data.result}</p>`;
+
+        if (data.length > 0) {
+            document.getElementById("output").innerHTML = `<p>${data[0].generated_text}</p>`;
         } else {
             document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı.</p>";
         }
     } catch (error) {
-        document.getElementById("output").innerHTML = `<p>Hata oluştu: ${error.message}</p>`;
+        document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
+        console.error("API hatası:", error);
     }
 });
