@@ -1,31 +1,32 @@
-export default async function handler(req, res) {
-    if (req.method !== "POST") {
-        return res.status(405).json({ error: "Only POST requests allowed" });
-    }
+import express from "express";
+import cors from "cors";
+import fetch from "node-fetch";
 
-    const apiKey = "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"; // Hugging Face API anahtarın
-    const apiUrl = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"; // Hugging Face model URL'si
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-    const { prompt } = req.body; // Kullanıcıdan gelen prompt
+const API_KEY = "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"; // Hugging Face API Anahtarın
 
+app.post("/api/generate-text", async (req, res) => {
     try {
-        const response = await fetch(apiUrl, {
+        const { prompt } = req.body;
+        
+        const response = await fetch("https://api-inference.huggingface.co/models/facebook/bart-large-cnn", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${apiKey}`,
+                "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ inputs: prompt })
         });
 
         const data = await response.json();
-
-        if (data.error) {
-            return res.status(500).json({ error: data.error });
-        }
-
-        return res.status(200).json({ result: data[0].summary_text || "Metin oluşturulamadı." });
+        res.json(data);
     } catch (error) {
-        return res.status(500).json({ error: "API çağrısı başarısız oldu." });
+        console.error("API Hatası:", error);
+        res.status(500).json({ error: "Bir hata oluştu" });
     }
-}
+});
+
+export default app;
