@@ -33,6 +33,6 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "HF_API_KEY": "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"
   }
 }
