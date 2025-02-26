@@ -1,5 +1,5 @@
 document.getElementById("textForm").addEventListener("submit", async function(event) {
-    event.preventDefault(); // Sayfanın yenilenmesini önler
+    event.preventDefault();
 
     const grade = document.getElementById("grade").value;
     const theme = document.getElementById("theme").value;
@@ -10,35 +10,20 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
 
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
-    const apiKey = "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";  // Hugging Face API anahtarınızı buraya ekledik
-    const apiUrl = `https://api-inference.huggingface.co/models/gpt2`;  // Kullanmak istediğiniz modelin API URL'si
-
     try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch("/api/generate-text", { // Backend API'yi çağır
             method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                inputs: prompt
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt }) // Prompt'u backend'e gönder
         });
 
-        if (!response.ok) {
-            throw new Error(`API hatası: ${response.statusText}`);
-        }
-
         const data = await response.json();
-        console.log(data); // Yanıtı kontrol et
-
-        if (data && data[0].generated_text) {
-            document.getElementById("output").innerHTML = `<p>${data[0].generated_text}</p>`;
+        if (data.result) {
+            document.getElementById("output").innerHTML = `<p>${data.result}</p>`;
         } else {
             document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı.</p>";
         }
     } catch (error) {
-        document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
-        console.error("API hatası:", error);
+        document.getElementById("output").innerHTML = `<p>Hata oluştu: ${error.message}</p>`;
     }
 });
