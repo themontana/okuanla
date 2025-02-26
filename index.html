@@ -20,10 +20,10 @@
         </select>
 
         <label for="theme">Tema:</label>
-        <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay">
+        <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay" required>
 
         <label for="keywords">Kullanılacak Kelimeler:</label>
-        <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş">
+        <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş" required>
 
         <label for="questionCount">Soru Sayısı:</label>
         <select id="questionCount">
@@ -36,7 +36,20 @@
     </form>
 
     <div id="output"></div>
+    <div id="debug" style="margin-top: 20px; display: none;">
+        <details>
+            <summary>Geliştirici Bilgileri</summary>
+            <div id="debugInfo" style="text-align: left; padding: 10px; background-color: #f0f0f0; border: 1px solid #ccc;"></div>
+        </details>
+    </div>
 
     <script src="src/script.js"></script>
+    <script>
+        // Debug modunu geliştirme ortamında açabilirsiniz
+        const queryParams = new URLSearchParams(window.location.search);
+        if (queryParams.get('debug') === 'true') {
+            document.getElementById('debug').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
