@@ -11,7 +11,7 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor... (Bu işlem 20-30 saniye sürebilir)</p>";
 
     try {
-        const apiUrl = "/generate-text";
+        const apiUrl = "/api/generate-text";
         
         console.log("İstek gönderiliyor:", apiUrl);
         const startTime = new Date();
@@ -49,9 +49,12 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
         
         // API yanıtını işle
         if (Array.isArray(data) && data.length > 0 && data[0].generated_text) {
-            document.getElementById("output").innerHTML = `<p>${data[0].generated_text}</p>`;
+            // Oluşturulan metni paragraflar halinde formatlama
+            const formattedText = data[0].generated_text.replace(/\n/g, '<br>');
+            document.getElementById("output").innerHTML = `<div>${formattedText}</div>`;
         } else if (data && data.generated_text) {
-            document.getElementById("output").innerHTML = `<p>${data.generated_text}</p>`;
+            const formattedText = data.generated_text.replace(/\n/g, '<br>');
+            document.getElementById("output").innerHTML = `<div>${formattedText}</div>`;
         } else {
             document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı. API yanıtı beklenmeyen formatta.</p>";
             console.error("Beklenmeyen API yanıtı:", data);
