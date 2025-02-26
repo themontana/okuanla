@@ -4,12 +4,35 @@
     {
       "src": "api/generate-text.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "src/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/generate-text",
       "dest": "/api/generate-text.js"
+    },
+    {
+      "src": "/api/generate-text",
+      "dest": "/api/generate-text.js"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
