@@ -1,23 +1,31 @@
 export default async function handler(req, res) {
-    console.log("Fonksiyon çalışıyor, gelen metod:", req.method); // Daha detaylı log 
-    if (req.method !== "POST") {
-        return res.status(405).json({ error: "Sadece POST istekleri destekleniyor" });
-    }
-
-    // ... geri kalan kod
-}
-    const API_KEY = process.env.HF_API_KEY || "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";
-    
-    const { prompt } = req.body;
-    
-    if (!prompt) {
-        return res.status(400).json({ error: "prompt parametresi gereklidir" });
-    }
-
     try {
+        console.log("Fonksiyon çalışıyor, gelen metod:", req.method);
+        console.log("Gelen headers:", req.headers);
+        console.log("Gelen body:", req.body);
+
+        if (req.method === "OPTIONS") {
+            res.setHeader("Allow", "POST");
+            return res.status(200).end();
+        }
+        if (req.method !== "POST") {
+            return res.status(405).json({ 
+                error: "Sadece POST istekleri destekleniyor", 
+                details: { method: req.method, headers: req.headers } 
+            });
+        }
+
+        const API_KEY = process.env.HF_API_KEY || "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";
+        
+        const { prompt } = req.body;
+        
+        if (!prompt) {
+            return res.status(400).json({ error: "prompt parametresi gereklidir" });
+        }
+
         console.log("Hugging Face API'ye istek gönderiliyor...");
         console.log("Prompt:", prompt);
-        
+
         const response = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1", {
             method: "POST",
             headers: {
@@ -67,7 +75,11 @@ export default async function handler(req, res) {
             return res.status(200).json([{ generated_text: "Metin oluşturulamadı. Lütfen farklı bir tema veya anahtar kelimeler deneyin." }]);
         }
     } catch (error) {
-        console.error("API Hatası:", error);
-        return res.status(500).json({ error: "Bir hata oluştu: " + error.message });
+        console.error("Genel hata:", error);
+        return res.status(500).json({ 
+            error: "Bir hata oluştu", 
+            details: error.message, 
+            stack: error.stack 
+        });
     }
 }
