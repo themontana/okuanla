@@ -4,7 +4,7 @@
     {
       "src": "api/**/*.js",
       "use": "@vercel/node",
-      "config": { "runtime": "nodejs22.x" } // Node.js sürümünü açıkça belirt
+      "config": { "runtime": "nodejs22.x" }
     },
     {
       "src": "*.html",
