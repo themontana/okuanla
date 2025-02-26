@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+    console.log("Gelen metod:", req.method); // Bu satırı buraya ekle
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Sadece POST istekleri destekleniyor" });
     }
@@ -49,17 +50,12 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: data.error });
         }
         
-        // Mistral modeli yanıtını formatla
         if (Array.isArray(data) && data.length > 0 && data[0].generated_text) {
-            // Direkt olarak api yanıtını döndür
             return res.status(200).json(data);
         } else if (typeof data === 'string') {
-            // String yanıtı formatlı yanıta dönüştür
             return res.status(200).json([{ generated_text: data }]);
         } else if (data.generated_text) {
-            // Instruction kısmını yanıttan temizle
             let cleanedText = data.generated_text;
-            // "[/INST]" sonrasını al
             const instEndIndex = cleanedText.indexOf("[/INST]");
             if (instEndIndex !== -1) {
                 cleanedText = cleanedText.substring(instEndIndex + 7).trim();
