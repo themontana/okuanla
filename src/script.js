@@ -11,7 +11,7 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        const response = await fetch("https://okuanla.vercel.app/api/generate-text", {
+        const response = await fetch("/api/generate-text", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt })
