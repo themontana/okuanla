@@ -1,17 +1,13 @@
-import express from "express";
-import cors from "cors";
-import fetch from "node-fetch";
+export default async function handler(req, res) {
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: "Sadece POST istekleri destekleniyor" });
+    }
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+    const API_KEY = "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";
+    
+    const { prompt } = req.body;
 
-const API_KEY = "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"; // Hugging Face API Anahtarın
-
-app.post("/api/generate-text", async (req, res) => {
     try {
-        const { prompt } = req.body;
-        
         const response = await fetch("https://api-inference.huggingface.co/models/facebook/bart-large-cnn", {
             method: "POST",
             headers: {
@@ -22,11 +18,9 @@ app.post("/api/generate-text", async (req, res) => {
         });
 
         const data = await response.json();
-        res.json(data);
+        return res.status(200).json(data);
     } catch (error) {
         console.error("API Hatası:", error);
-        res.status(500).json({ error: "Bir hata oluştu" });
+        return res.status(500).json({ error: "Bir hata oluştu" });
     }
-});
-
-export default app;
+}
