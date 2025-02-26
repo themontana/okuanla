@@ -1,9 +1,11 @@
 export default async function handler(req, res) {
-    console.log("Gelen metod:", req.method); // Bu satırı buraya ekle
+    console.log("Fonksiyon çalışıyor, gelen metod:", req.method); // Daha detaylı log
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Sadece POST istekleri destekleniyor" });
     }
 
+    // ... geri kalan kod
+}
     const API_KEY = "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";
     
     const { prompt } = req.body;
