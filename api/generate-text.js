@@ -6,7 +6,7 @@ export default async function handler(req, res) {
 
     // ... geri kalan kod
 }
-    const API_KEY = "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";
+    const API_KEY = process.env.HF_API_KEY || "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";
     
     const { prompt } = req.body;
     
