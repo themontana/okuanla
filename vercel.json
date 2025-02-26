@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/generate-text.js", "use": "@vercel/node" }
-  ],
+  "functions": {
+    "api/generate-text.js": { "runtime": "nodejs18.x" }
+  },
   "routes": [
     { "src": "/api/generate-text", "dest": "/api/generate-text.js" }
   ]
