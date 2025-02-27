@@ -1,3 +1,43 @@
+const apiKey = "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"; // Hugging Face API anahtarı
+const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Model adı
+const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // API URL'si
+
+async function generateText(prompt) {
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                inputs: prompt,
+                parameters: {
+                    max_new_tokens: 200, // Çıktı uzunluğu
+                    temperature: 0.7, // Yaratıcılık
+                    return_full_text: false // Yalnızca metni döndür
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP hatası! Durum: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("API Yanıtı:", data);
+
+        if (data && data.length > 0 && data[0].generated_text) {
+            return data[0].generated_text;
+        } else {
+            return "Metin oluşturulamadı.";
+        }
+    } catch (error) {
+        console.error("Hata:", error);
+        return `Metin oluşturulamadı: ${error.message}`;
+    }
+}
+
 document.getElementById("textForm").addEventListener("submit", async function (event) {
     event.preventDefault(); // Sayfanın yenilenmesini önler
 
@@ -13,33 +53,12 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        // Hugging Face API'ye istek gönder
-        const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer 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',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                inputs: prompt,
-                parameters: {
-                    max_tokens: 500
-                }
-            })
-        });
-
-        const data = await response.json();
-        console.log(data); // API yanıtını kontrol et
+        // Metin oluşturma isteği gönder
+        const result = await generateText(prompt);
 
         // Yanıtı ekrana yazdır
-        if (data && data.choices && data.choices.length > 0) {
-            document.getElementById("output").innerHTML = `<p>${data.choices[0].text}</p>`;
-        } else {
-            document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı.</p>";
-        }
-
+        document.getElementById("output").innerHTML = `<p>${result}</p>`;
     } catch (error) {
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
-        console.error("API hatası:", error);
     }
 });
