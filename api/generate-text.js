@@ -13,7 +13,7 @@ async function generateText(prompt) {
             body: JSON.stringify({
                 inputs: prompt,
                 parameters: {
-                    max_new_tokens: 200, // Çıktı uzunluğu
+                    max_new_tokens: 500, // Çıktı uzunluğu
                     temperature: 0.7, // Yaratıcılığı ayarlar
                     return_full_text: false // Sadece oluşturulan metni al
                 }
@@ -25,13 +25,12 @@ async function generateText(prompt) {
         }
 
         const data = await response.json();
-        console.log("API Yanıtı:", data);
+        console.log("API Yanıtı:", data); // Yanıtı detaylı şekilde kontrol et
 
-        // Yanıtı kontrol et ve metni döndür
         if (data && Array.isArray(data) && data.length > 0 && data[0].generated_text) {
             return data[0].generated_text;
         } else {
-            return "Metin oluşturulamadı.";
+            return "Metin oluşturulamadı: Yanıt boş veya hatalı.";
         }
     } catch (error) {
         console.error("Hata:", error);
