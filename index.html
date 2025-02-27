@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OkuAnla - Okuduğunu Anlama Metni Oluştur</title>
     <link rel="stylesheet" href="public/style.css">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
 </head>
 <body>
     <h1>OkuAnla</h1>
@@ -37,20 +36,7 @@
     </form>
 
     <div id="output"></div>
-    <div id="debug" style="margin-top: 20px; display: none;">
-        <details>
-            <summary>Geliştirici Bilgileri</summary>
-            <div id="debugInfo" style="text-align: left; padding: 10px; background-color: #f0f0f0; border: 1px solid #ccc;"></div>
-        </details>
-    </div>
 
     <script src="src/script.js"></script>
-    <script>
-        // Debug modunu geliştirme ortamında açabilirsiniz
-        const queryParams = new URLSearchParams(window.location.search);
-        if (queryParams.get('debug') === 'true') {
-            document.getElementById('debug').style.display = 'block';
-        }
-    </script>
 </body>
 </html>
