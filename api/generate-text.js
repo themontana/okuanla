@@ -1,3 +1,4 @@
+// api/generate-text.js - Vercel Serverless Function olarak kullanın
 export default async function handler(req, res) {
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Yalnızca POST istekleri kabul edilir" });
@@ -9,8 +10,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Tüm alanlar gereklidir" });
     }
 
-    const apiKey = "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"; // Hugging Face API anahtarın
-    const model = "mistralai/Mistral-7B-Instruct-v0.1"; // Hugging Face modeli
+    const apiKey = process.env.HF_API_KEY || "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"; // Güvenlik için env'den almaya çalışın
+    const model = "mistralai/Mistral-7B-Instruct-v0.1";
 
     const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle.`;
 
@@ -31,6 +32,7 @@ export default async function handler(req, res) {
         const data = await response.json();
         res.status(200).json({ text: data[0]?.generated_text || "Yanıt alınamadı." });
     } catch (error) {
+        console.error("Hugging Face API hatası:", error);
         res.status(500).json({ error: error.message });
     }
 }
