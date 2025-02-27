@@ -1,8 +1,8 @@
 const apiKey = "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"; // Hugging Face API anahtarı
 const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Model adı (İngilizce metin için)
-const translationModel = "Helsinki-NLP/opus-mt-en-tr"; // Çeviri modeli (İngilizce -> Türkçe)
+const translationModel = "Helsinki-NLP/opus-mt-en-trk"; // Çeviri modeli (İngilizce -> Türkçe)
 const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // API URL'si
-const translationApiUrl = `https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-en-tr`; // Güncellenmiş çeviri API URL'si
+const translationApiUrl = `https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-en-trk`; // Çeviri API URL'si
 
 async function generateText(prompt) {
     try {
