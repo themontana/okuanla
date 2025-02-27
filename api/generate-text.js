@@ -28,29 +28,48 @@ export default async function handler(req, res) {
             });
         }
 
-        const apiKey = process.env.HF_API_KEY || "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";
-        const model = "mistralai/Mistral-7B-Instruct-v0.1";
-
+        // Gemini API için gerekli değişkenler
+        const apiKey = process.env.GEMINI_API_KEY;
+        const geminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+        
+        // Gemini API formatında prompt hazırla
         const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle.`;
 
-        console.log("Hugging Face'e gönderilecek prompt:", prompt);
+        // Gemini API isteği için gövde 
+        const requestBody = {
+            contents: [
+                {
+                    parts: [
+                        {
+                            text: prompt
+                        }
+                    ]
+                }
+            ],
+            generationConfig: {
+                temperature: 0.7,
+                topK: 40,
+                topP: 0.95,
+                maxOutputTokens: 2048
+            }
+        };
+
+        console.log("Gemini API'ye gönderilecek prompt:", prompt);
         
-        // fetch API'si farklı platformlarda farklı davranabilir
-        // node-fetch kullanmayı düşünün (package.json'a ekleyin)
-        const response = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
+        // Gemini API'ye istek at
+        const response = await fetch(`${geminiApiUrl}?key=${apiKey}`, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${apiKey}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ inputs: prompt })
+            body: JSON.stringify(requestBody)
         });
 
-        console.log("Hugging Face yanıt durum kodu:", response.status);
+        console.log("Gemini API yanıt durum kodu:", response.status);
 
         // Yanıt gövdesini al
         const responseText = await response.text();
-        console.log("Hugging Face ham yanıt:", responseText);
+        console.log("Gemini API ham yanıt:", responseText);
 
         // JSON parse et
         let data;
@@ -59,30 +78,33 @@ export default async function handler(req, res) {
         } catch (err) {
             console.error("JSON parse hatası:", err);
             return res.status(500).json({
-                error: "Hugging Face API yanıtı geçersiz JSON formatında",
+                error: "Gemini API yanıtı geçersiz JSON formatında",
                 rawResponse: responseText
             });
         }
 
         if (!response.ok) {
-            console.error("Hugging Face API hatası:", data);
+            console.error("Gemini API hatası:", data);
             return res.status(500).json({
-                error: `Hugging Face API hatası: ${response.statusText}`,
+                error: `Gemini API hatası: ${response.statusText}`,
                 details: data
             });
         }
 
-        // Yanıtı kontrol et
-        if (!data || !Array.isArray(data) || !data[0]?.generated_text) {
+        // Gemini API yanıt formatı kontrolü ve metin çıkarma
+        if (!data || !data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
             console.error("Geçersiz API yanıtı:", data);
             return res.status(500).json({
-                error: "Hugging Face API'den beklenmeyen yanıt formatı",
+                error: "Gemini API'den beklenmeyen yanıt formatı",
                 received: data
             });
         }
 
+        // Gemini API yanıtından metni çıkar
+        const generatedText = data.candidates[0].content.parts[0].text;
+
         console.log("İşlem başarılı");
-        return res.status(200).json({ text: data[0].generated_text });
+        return res.status(200).json({ text: generatedText });
     } catch (error) {
         console.error("Genel hata:", error);
         return res.status(500).json({
