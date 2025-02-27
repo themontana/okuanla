@@ -48,8 +48,8 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     const questionCount = document.getElementById("questionCount").value;
 
     // Prompt oluştur
-    const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle. Metnin dilbilgisi düzgün ve anlamlı olmalı.`;
-
+    const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen anlamlı bir okuma metni oluştur. Metnin sonunda okuduğunu anlama soruları ve her soruya bir doğru cevap ekle. Lütfen metnin Türkçe olmasına ve dilbilgisel olarak doğru olmasına özen göster. Soruların içinde ve cevaplarda İngilizce kullanma. Ayrıca metin, açıklayıcı ve basit olmalıdır.`;
+    
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
