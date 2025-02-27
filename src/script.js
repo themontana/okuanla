@@ -1,9 +1,10 @@
 const apiKey = "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"; // Hugging Face API anahtarı
-const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Model adı (İngilizce metin için)
+const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Metin oluşturma model adı
 const translationModel = "Helsinki-NLP/opus-mt-en-trk"; // Çeviri modeli (İngilizce -> Türkçe)
-const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // API URL'si
-const translationApiUrl = `https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-en-trk`; // Çeviri API URL'si
+const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // Metin oluşturma API URL'si
+const translationApiUrl = `https://api-inference.huggingface.co/models/${translationModel}`; // Çeviri API URL'si
 
+// Metin oluşturma fonksiyonu
 async function generateText(prompt) {
     try {
         // Metni oluşturma isteği gönder
@@ -16,9 +17,9 @@ async function generateText(prompt) {
             body: JSON.stringify({
                 inputs: prompt,
                 parameters: {
-                    max_new_tokens: 400,
-                    temperature: 0.5,
-                    return_full_text: false
+                    max_new_tokens: 400, // Çıktı uzunluğu
+                    temperature: 0.5, // Yaratıcılığı ayarlamak için
+                    return_full_text: false // Sadece oluşturulan metni almak
                 }
             })
         });
@@ -28,7 +29,7 @@ async function generateText(prompt) {
         }
 
         const data = await response.json();
-        console.log("API Yanıtı:", data);
+        console.log("Metin Oluşturma Yanıtı:", data);
 
         if (data && data.length > 0 && data[0].generated_text) {
             return data[0].generated_text;
@@ -41,6 +42,7 @@ async function generateText(prompt) {
     }
 }
 
+// Çeviri fonksiyonu
 async function translateText(text) {
     try {
         // İngilizce metni Türkçeye çevirme isteği gönder
@@ -73,6 +75,7 @@ async function translateText(text) {
     }
 }
 
+// Formu dinlemek ve işlem yapmak için
 document.getElementById("textForm").addEventListener("submit", async function (event) {
     event.preventDefault(); // Sayfanın yenilenmesini önler
 
@@ -85,6 +88,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     // İngilizce Prompt oluştur (cevapları dahil etme)
     const prompt = `Create a meaningful reading comprehension text in English for a ${grade} grade student, with the theme "${theme}" and using the words "${keywords}". Include ${questionCount} questions related to the text, but do not provide answers to the questions. Make sure the text is appropriate for children and the questions are simple and clear.`;
 
+    // Sayfada metin oluşturuluyor olduğunu göster
     document.getElementById("output").innerHTML = "<p>Generating text...</p>";
 
     try {
@@ -94,9 +98,10 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         // Türkçeye çevir
         const translatedText = await translateText(generatedText);
 
-        // Yanıtı ekrana yazdır
+        // Çevrilen metni sayfada göster
         document.getElementById("output").innerHTML = `<p>${translatedText}</p>`;
     } catch (error) {
+        // Hata oluşursa kullanıcıya göster
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
     }
 });
