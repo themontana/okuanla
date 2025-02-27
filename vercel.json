@@ -2,9 +2,9 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/**/*.js",
+      "src": "api/generate-text.js",
       "use": "@vercel/node",
-      "config": { "runtime": "nodejs22.x" }
+      "config": { "runtime": "nodejs18.x" }
     },
     {
       "src": "index.html",
@@ -21,8 +21,9 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1.js"
+      "src": "/api/generate-text",
+      "dest": "/api/generate-text.js",
+      "methods": ["POST", "OPTIONS"]
     },
     {
       "handle": "filesystem"
