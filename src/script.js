@@ -1,7 +1,3 @@
-import { HfInference } from "@huggingface/inference";
-
-const client = new HfInference("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");
-
 document.getElementById("textForm").addEventListener("submit", async function (event) {
     event.preventDefault(); // Sayfanın yenilenmesini önler
 
@@ -18,23 +14,26 @@ document.getElementById("textForm").addEventListener("submit", async function (e
 
     try {
         // Hugging Face API'ye istek gönder
-        const chatCompletion = await client.chatCompletion({
-            model: "mistralai/Mistral-7B-Instruct-v0.3",
-            messages: [
-                {
-                    role: "user",
-                    content: prompt
+        const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer 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',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                inputs: prompt,
+                parameters: {
+                    max_tokens: 500
                 }
-            ],
-            provider: "hf-inference",
-            max_tokens: 500,
+            })
         });
 
-        console.log(chatCompletion); // API yanıtını kontrol et
+        const data = await response.json();
+        console.log(data); // API yanıtını kontrol et
 
         // Yanıtı ekrana yazdır
-        if (chatCompletion.choices && chatCompletion.choices.length > 0) {
-            document.getElementById("output").innerHTML = `<p>${chatCompletion.choices[0].message.content}</p>`;
+        if (data && data.choices && data.choices.length > 0) {
+            document.getElementById("output").innerHTML = `<p>${data.choices[0].text}</p>`;
         } else {
             document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı.</p>";
         }
