@@ -27,7 +27,8 @@ async function generateText(prompt) {
         const data = await response.json();
         console.log("API Yanıtı:", data);
 
-        if (data && data.length > 0 && data[0].generated_text) {
+        // Yanıtı kontrol et ve metni döndür
+        if (data && Array.isArray(data) && data.length > 0 && data[0].generated_text) {
             return data[0].generated_text;
         } else {
             return "Metin oluşturulamadı.";
