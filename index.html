@@ -10,44 +10,46 @@
     <h1>OkuAnla</h1>
     <p>İlkokul seviyesinde okuma metni ve sorular oluştur.</p>
 
-    <!-- Formun düzenlenmiş hali -->
     <form id="textForm">
-        <div class="form-group">
-            <label for="grade">Sınıf Seviyesi:</label>
-            <select id="grade" required>
-                <option value="1">1. Sınıf</option>
-                <option value="2">2. Sınıf</option>
-                <option value="3">3. Sınıf</option>
-                <option value="4">4. Sınıf</option>
-            </select>
-        </div>
+        <label for="grade">Sınıf Seviyesi:</label>
+        <select id="grade">
+            <option value="1">1. Sınıf</option>
+            <option value="2">2. Sınıf</option>
+            <option value="3">3. Sınıf</option>
+            <option value="4">4. Sınıf</option>
+        </select>
 
-        <div class="form-group">
-            <label for="theme">Tema:</label>
-            <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay" required>
-        </div>
+        <label for="theme">Tema:</label>
+        <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay" required>
 
-        <div class="form-group">
-            <label for="keywords">Kullanılacak Kelimeler:</label>
-            <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş" required>
-        </div>
+        <label for="keywords">Kullanılacak Kelimeler:</label>
+        <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş" required>
 
-        <div class="form-group">
-            <label for="questionCount">Soru Sayısı:</label>
-            <select id="questionCount" required>
-                <option value="3">3</option>
-                <option value="5">5</option>
-                <option value="7">7</option>
-            </select>
-        </div>
+        <label for="questionCount">Soru Sayısı:</label>
+        <select id="questionCount">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="7">7</option>
+        </select>
 
         <button type="submit">Metni Oluştur</button>
     </form>
 
     <div id="output"></div>
-
-    <!-- Debug kısmı, geliştirici için -->
     <div id="debug" style="margin-top: 20px; display: none;">
         <details>
             <summary>Geliştirici Bilgileri</summary>
-            <div id="debugInfo" style="text-align: left; padding: 10px;
+            <div id="debugInfo" style="text-align: left; padding: 10px; background-color: #f0f0f0; border: 1px solid #ccc;"></div>
+        </details>
+    </div>
+
+    <script src="src/script.js"></script>
+    <script>
+        // Debug modunu geliştirme ortamında açabilirsiniz
+        const queryParams = new URLSearchParams(window.location.search);
+        if (queryParams.get('debug') === 'true') {
+            document.getElementById('debug').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
