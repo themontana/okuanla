@@ -34,6 +34,6 @@
     }
   ],
   "env": {
-    "HF_API_KEY": "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"
+    "GEMINI_API_KEY": "AIzaSyCFwMNF-VkH0vUgIuTAvYEGm0IN1qjYFRo"
   }
 }
