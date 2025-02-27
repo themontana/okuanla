@@ -1,78 +1,46 @@
-document.getElementById("textForm").addEventListener("submit", async function(event) {
-    event.preventDefault();
+import { HfInference } from "@huggingface/inference";
 
+const client = new HfInference("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");
+
+document.getElementById("textForm").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Sayfanın yenilenmesini önler
+
+    // Formdan değerleri al
     const grade = document.getElementById("grade").value;
     const theme = document.getElementById("theme").value;
     const keywords = document.getElementById("keywords").value;
     const questionCount = document.getElementById("questionCount").value;
 
-    // Debug bilgisi
-    if (document.getElementById("debugInfo")) {
-        document.getElementById("debugInfo").innerHTML = `
-            <p>Gönderilen veriler:</p>
-            <pre>${JSON.stringify({ grade, theme, keywords, questionCount }, null, 2)}</pre>
-        `;
-    }
+    // Prompt oluştur
+    const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle.`;
 
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        const baseUrl = window.location.origin;
-        const response = await fetch(`${baseUrl}/api/generate-text`, {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({ grade, theme, keywords, questionCount })
+        // Hugging Face API'ye istek gönder
+        const chatCompletion = await client.chatCompletion({
+            model: "mistralai/Mistral-7B-Instruct-v0.3",
+            messages: [
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ],
+            provider: "hf-inference",
+            max_tokens: 500,
         });
 
-        // Yanıt durum bilgisi
-        if (document.getElementById("debugInfo")) {
-            document.getElementById("debugInfo").innerHTML += `
-                <p>Yanıt durum kodu: ${response.status}</p>
-                <p>Yanıt durum mesajı: ${response.statusText}</p>
-            `;
+        console.log(chatCompletion); // API yanıtını kontrol et
+
+        // Yanıtı ekrana yazdır
+        if (chatCompletion.choices && chatCompletion.choices.length > 0) {
+            document.getElementById("output").innerHTML = `<p>${chatCompletion.choices[0].message.content}</p>`;
+        } else {
+            document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı.</p>";
         }
 
-        // Hata durumunda bile yanıt gövdesini almaya çalışalım
-        const responseText = await response.text();
-        
-        if (document.getElementById("debugInfo")) {
-            document.getElementById("debugInfo").innerHTML += `
-                <p>Yanıt içeriği:</p>
-                <pre>${responseText}</pre>
-            `;
-        }
-
-        if (!response.ok) {
-            // Yanıt içeriğini JSON olarak parse etmeyi deneyelim
-            try {
-                const errorData = JSON.parse(responseText);
-                throw new Error(`HTTP hatası! Durum: ${response.status}, Mesaj: ${errorData.error || 'Bilinmeyen hata'}`);
-            } catch (e) {
-                // JSON parse hatası durumunda ham metni kullan
-                throw new Error(`HTTP hatası! Durum: ${response.status}, Yanıt: ${responseText}`);
-            }
-        }
-
-        // Başarılı yanıt
-        const data = JSON.parse(responseText);
-        document.getElementById("output").innerHTML = `<p>${data.text}</p>`;
     } catch (error) {
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
         console.error("API hatası:", error);
-        
-        if (document.getElementById("debugInfo")) {
-            document.getElementById("debugInfo").innerHTML += `
-                <p>Hata:</p>
-                <pre>${error.toString()}</pre>
-                <p>Stack:</p>
-                <pre>${error.stack || 'Stack bilgisi yok'}</pre>
-            `;
-        }
     }
 });
-
-// Debug modunu aç
-document.getElementById('debug').style.display = 'block';
