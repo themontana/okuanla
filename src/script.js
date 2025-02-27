@@ -6,7 +6,7 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     const keywords = document.getElementById("keywords").value;
     const questionCount = document.getElementById("questionCount").value;
 
-    // Debug bilgisi ekleyin (debug modunda görünecek)
+    // Debug bilgisi
     if (document.getElementById("debugInfo")) {
         document.getElementById("debugInfo").innerHTML = `
             <p>Gönderilen veriler:</p>
@@ -17,19 +17,17 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        // Tam URL ile istek yapın
         const baseUrl = window.location.origin;
         const response = await fetch(`${baseUrl}/api/generate-text`, {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
-                // CORS sorunlarını önlemek için ekstra güvenlik önlemleri
                 "Accept": "application/json"
             },
             body: JSON.stringify({ grade, theme, keywords, questionCount })
         });
 
-        // Yanıt içeriğini ve durum kodunu debug ekranına ekleyin
+        // Yanıt durum bilgisi
         if (document.getElementById("debugInfo")) {
             document.getElementById("debugInfo").innerHTML += `
                 <p>Yanıt durum kodu: ${response.status}</p>
@@ -37,33 +35,44 @@ document.getElementById("textForm").addEventListener("submit", async function(ev
             `;
         }
 
-        if (!response.ok) {
-            throw new Error(`HTTP hatası! Durum: ${response.status}`);
-        }
-
-        const data = await response.json();
-        document.getElementById("output").innerHTML = `<p>${data.text}</p>`;
+        // Hata durumunda bile yanıt gövdesini almaya çalışalım
+        const responseText = await response.text();
         
-        // Yanıtı debug ekranına ekleyin
         if (document.getElementById("debugInfo")) {
             document.getElementById("debugInfo").innerHTML += `
-                <p>Yanıt verisi:</p>
-                <pre>${JSON.stringify(data, null, 2)}</pre>
+                <p>Yanıt içeriği:</p>
+                <pre>${responseText}</pre>
             `;
         }
+
+        if (!response.ok) {
+            // Yanıt içeriğini JSON olarak parse etmeyi deneyelim
+            try {
+                const errorData = JSON.parse(responseText);
+                throw new Error(`HTTP hatası! Durum: ${response.status}, Mesaj: ${errorData.error || 'Bilinmeyen hata'}`);
+            } catch (e) {
+                // JSON parse hatası durumunda ham metni kullan
+                throw new Error(`HTTP hatası! Durum: ${response.status}, Yanıt: ${responseText}`);
+            }
+        }
+
+        // Başarılı yanıt
+        const data = JSON.parse(responseText);
+        document.getElementById("output").innerHTML = `<p>${data.text}</p>`;
     } catch (error) {
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
         console.error("API hatası:", error);
         
-        // Hatayı debug ekranına ekleyin
         if (document.getElementById("debugInfo")) {
             document.getElementById("debugInfo").innerHTML += `
                 <p>Hata:</p>
                 <pre>${error.toString()}</pre>
+                <p>Stack:</p>
+                <pre>${error.stack || 'Stack bilgisi yok'}</pre>
             `;
         }
     }
 });
 
-// Debug modunu her zaman açın (geliştirme sırasında)
+// Debug modunu aç
 document.getElementById('debug').style.display = 'block';
