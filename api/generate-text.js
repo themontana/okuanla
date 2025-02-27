@@ -30,7 +30,8 @@ export default async function handler(req, res) {
 
         // Gemini API için gerekli değişkenler
         const apiKey = process.env.GEMINI_API_KEY;
-        const geminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+        // Güncellenmiş model adı ve API endpoint'i
+        const geminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
         
         // Gemini API formatında prompt hazırla
         const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle.`;
@@ -55,6 +56,7 @@ export default async function handler(req, res) {
         };
 
         console.log("Gemini API'ye gönderilecek prompt:", prompt);
+        console.log("Gemini API URL:", `${geminiApiUrl}?key=${apiKey}`);
         
         // Gemini API'ye istek at
         const response = await fetch(`${geminiApiUrl}?key=${apiKey}`, {
