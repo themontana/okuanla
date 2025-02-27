@@ -28,50 +28,42 @@ export default async function handler(req, res) {
             });
         }
 
-        // Gemini API için gerekli değişkenler
-        const apiKey = process.env.GEMINI_API_KEY;
-        // Güncellenmiş model adı ve API endpoint'i
-        const geminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-        
-        // Gemini API formatında prompt hazırla
-        const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle.`;
+        const apiKey = process.env.HF_API_KEY || "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";
+        const model = "deepseek-ai/DeepSeek-R1";
 
-        // Gemini API isteği için gövde 
-        const requestBody = {
-            contents: [
-                {
-                    parts: [
-                        {
-                            text: prompt
-                        }
-                    ]
-                }
-            ],
-            generationConfig: {
-                temperature: 0.7,
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 2048
+        // DeepSeek-R1 modeli için mesaj formatı hazırla (chat completion formatında)
+        const messages = [
+            {
+                "role": "user", 
+                "content": `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle.`
             }
-        };
+        ];
 
-        console.log("Gemini API'ye gönderilecek prompt:", prompt);
-        console.log("Gemini API URL:", `${geminiApiUrl}?key=${apiKey}`);
+        console.log("HuggingFace'e gönderilecek mesajlar:", JSON.stringify(messages));
         
-        // Gemini API'ye istek at
-        const response = await fetch(`${geminiApiUrl}?key=${apiKey}`, {
+        // HuggingFace API'ye istek gönder
+        const response = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
             method: "POST",
             headers: {
+                "Authorization": `Bearer ${apiKey}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify({ 
+                inputs: messages,
+                parameters: {
+                    max_new_tokens: 1024,
+                    temperature: 0.7,
+                    top_p: 0.95,
+                    trust_remote_code: true
+                }
+            })
         });
 
-        console.log("Gemini API yanıt durum kodu:", response.status);
+        console.log("HuggingFace yanıt durum kodu:", response.status);
 
         // Yanıt gövdesini al
         const responseText = await response.text();
-        console.log("Gemini API ham yanıt:", responseText);
+        console.log("HuggingFace ham yanıt:", responseText);
 
         // JSON parse et
         let data;
@@ -80,30 +72,48 @@ export default async function handler(req, res) {
         } catch (err) {
             console.error("JSON parse hatası:", err);
             return res.status(500).json({
-                error: "Gemini API yanıtı geçersiz JSON formatında",
+                error: "HuggingFace API yanıtı geçersiz JSON formatında",
                 rawResponse: responseText
             });
         }
 
         if (!response.ok) {
-            console.error("Gemini API hatası:", data);
+            console.error("HuggingFace API hatası:", data);
             return res.status(500).json({
-                error: `Gemini API hatası: ${response.statusText}`,
+                error: `HuggingFace API hatası: ${response.statusText}`,
                 details: data
             });
         }
 
-        // Gemini API yanıt formatı kontrolü ve metin çıkarma
-        if (!data || !data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
+        // DeepSeek-R1 modelinin çıktı formatını kontrol et ve metni çıkar
+        if (!data || !Array.isArray(data) || data.length === 0) {
             console.error("Geçersiz API yanıtı:", data);
             return res.status(500).json({
-                error: "Gemini API'den beklenmeyen yanıt formatı",
+                error: "HuggingFace API'den beklenmeyen yanıt formatı",
                 received: data
             });
         }
 
-        // Gemini API yanıtından metni çıkar
-        const generatedText = data.candidates[0].content.parts[0].text;
+        // DeepSeek-R1 yanıtından metni çıkar
+        // Yanıt formatı, modelin yapılandırmasına göre değişebilir
+        let generatedText = "";
+        
+        if (typeof data[0] === 'object' && data[0].generated_text) {
+            // Standard text generation output format
+            generatedText = data[0].generated_text;
+        } else if (typeof data[0] === 'object' && data[0].content) {
+            // Chat model output format
+            generatedText = data[0].content;
+        } else if (typeof data[0] === 'string') {
+            // Simple string output format
+            generatedText = data[0];
+        } else {
+            console.error("Bilinmeyen API yanıt formatı:", data);
+            return res.status(500).json({
+                error: "HuggingFace API'den beklenmeyen yanıt formatı",
+                received: data
+            });
+        }
 
         console.log("İşlem başarılı");
         return res.status(200).json({ text: generatedText });
