@@ -7,7 +7,7 @@
       "config": { "runtime": "nodejs22.x" }
     },
     {
-      "src": "*.html",
+      "src": "index.html",
       "use": "@vercel/static"
     },
     {
@@ -22,7 +22,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "/api/$1.js"
     },
     {
       "handle": "filesystem"
