@@ -82,8 +82,8 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     const keywords = document.getElementById("keywords").value;
     const questionCount = document.getElementById("questionCount").value;
 
-    // İngilizce Prompt oluştur
-    const prompt = `Create a meaningful reading comprehension text in English for a ${grade} grade student, with the theme "${theme}" and using the words "${keywords}". At the end of the text, include ${questionCount} questions and answers about the text. Ensure the text is grammatically correct and the questions are easy to understand.`;
+    // İngilizce Prompt oluştur (cevapları dahil etme)
+    const prompt = `Create a meaningful reading comprehension text in English for a ${grade} grade student, with the theme "${theme}" and using the words "${keywords}". Include ${questionCount} questions related to the text, but do not provide answers to the questions. Make sure the text is appropriate for children and the questions are simple and clear.`;
 
     document.getElementById("output").innerHTML = "<p>Generating text...</p>";
 
