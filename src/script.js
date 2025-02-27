@@ -1,6 +1,6 @@
 const apiKey = "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"; // Hugging Face API anahtarı
 const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Metin oluşturma model adı
-const translationModel = "Helsinki-NLP/opus-mt-en-trk"; // Çeviri modeli (İngilizce -> Türkçe)
+const translationModel = "facebook/mbart-large-50-many-to-many-mmt"; // Çeviri modeli (İngilizce -> Türkçe)
 const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // Metin oluşturma API URL'si
 const translationApiUrl = `https://api-inference.huggingface.co/models/${translationModel}`; // Çeviri API URL'si
 
@@ -45,7 +45,7 @@ async function generateText(prompt) {
 // Çeviri fonksiyonu
 async function translateText(text) {
     try {
-        // İngilizce metni Türkçeye çevirme isteği gönder
+        // Çeviri isteği gönder
         const response = await fetch(translationApiUrl, {
             method: "POST",
             headers: {
