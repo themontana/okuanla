@@ -1,8 +1,49 @@
+const apiKey = "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"; // Hugging Face API anahtarı
+const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Metin oluşturma modeli
+const translationModel = "facebook/mbart-large-50-many-to-many-mmt"; // Çeviri modeli (çok dilli)
+const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // Metin oluşturma API URL'si
+const translationApiUrl = `https://api-inference.huggingface.co/models/${translationModel}`; // Çeviri API URL'si
+
+// Çeviri fonksiyonu
+async function translateText(text, srcLang, targetLang) {
+    try {
+        // Modeli seçmek için doğru dil parametrelerini ayarlama
+        const response = await fetch(translationApiUrl, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                inputs: text,
+                parameters: {
+                    src_lang: srcLang, // Kaynak dil
+                    tgt_lang: targetLang // Hedef dil
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Çeviri hatası! Durum: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Çeviri Yanıtı:", data);
+
+        // Yanıtı kontrol et
+        if (data && data.length > 0 && data[0].translation_text) {
+            return data[0].translation_text;
+        } else {
+            return "Çeviri yapılamadı.";
+        }
+    } catch (error) {
+        console.error("Hata:", error);
+        return `Çeviri yapılamadı: ${error.message}`;
+    }
+}
+
 // Metin oluşturma fonksiyonu (Çeviri kısmı dışında, text generation)
 async function generateText(prompt) {
-    const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Metin oluşturma modeli
-    const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // Metin oluşturma API URL'si
-
     try {
         const response = await fetch(apiUrl, {
             method: "POST",
