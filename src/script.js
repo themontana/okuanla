@@ -13,8 +13,8 @@ async function generateText(prompt) {
             body: JSON.stringify({
                 inputs: prompt,
                 parameters: {
-                    max_new_tokens: 200, // Çıktı uzunluğu
-                    temperature: 0.7, // Yaratıcılık
+                    max_new_tokens: 400, // Daha uzun metinler için artırdık
+                    temperature: 0.5, // Daha tutarlı metinler için düşürdük
                     return_full_text: false // Yalnızca metni döndür
                 }
             })
@@ -48,7 +48,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     const questionCount = document.getElementById("questionCount").value;
 
     // Prompt oluştur
-    const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle.`;
+    const prompt = `İlkokul ${grade}. sınıf seviyesinde, "${theme}" temalı, içinde "${keywords}" kelimeleri geçen bir okuma metni oluştur. Ayrıca ${questionCount} tane okuduğunu anlama sorusu ekle. Metnin dilbilgisi düzgün ve anlamlı olmalı.`;
 
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
