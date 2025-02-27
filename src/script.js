@@ -1,13 +1,11 @@
 const apiKey = "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"; // Hugging Face API anahtarı
-const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Metin oluşturma model adı
-const translationModel = "facebook/mbart-large-50-many-to-many-mmt"; // Çeviri modeli (İngilizce -> Türkçe)
-const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // Metin oluşturma API URL'si
-const translationApiUrl = `https://api-inference.huggingface.co/models/${translationModel}`; // Çeviri API URL'si
+const modelName = "facebook/mbart-large-50-many-to-many-mmt"; // Çeviri modeli (çok dilli)
+const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // Çeviri API URL'si
 
-// Metin oluşturma fonksiyonu
-async function generateText(prompt) {
+// Çeviri fonksiyonu
+async function translateText(text, srcLang, targetLang) {
     try {
-        // Metni oluşturma isteği gönder
+        // Modeli seçmek için doğru dil parametrelerini ayarlama
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
@@ -15,45 +13,11 @@ async function generateText(prompt) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                inputs: prompt,
+                inputs: text,
                 parameters: {
-                    max_new_tokens: 400, // Çıktı uzunluğu
-                    temperature: 0.5, // Yaratıcılığı ayarlamak için
-                    return_full_text: false // Sadece oluşturulan metni almak
+                    src_lang: srcLang, // Kaynak dil
+                    tgt_lang: targetLang // Hedef dil
                 }
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP hatası! Durum: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("Metin Oluşturma Yanıtı:", data);
-
-        if (data && data.length > 0 && data[0].generated_text) {
-            return data[0].generated_text;
-        } else {
-            return "Metin oluşturulamadı.";
-        }
-    } catch (error) {
-        console.error("Hata:", error);
-        return `Metin oluşturulamadı: ${error.message}`;
-    }
-}
-
-// Çeviri fonksiyonu
-async function translateText(text) {
-    try {
-        // Çeviri isteği gönder
-        const response = await fetch(translationApiUrl, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                inputs: text
             })
         });
 
@@ -64,6 +28,7 @@ async function translateText(text) {
         const data = await response.json();
         console.log("Çeviri Yanıtı:", data);
 
+        // Yanıtı kontrol et
         if (data && data.length > 0 && data[0].translation_text) {
             return data[0].translation_text;
         } else {
@@ -92,11 +57,11 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     document.getElementById("output").innerHTML = "<p>Generating text...</p>";
 
     try {
-        // İngilizce metni oluştur
+        // Metni oluştur
         const generatedText = await generateText(prompt);
 
-        // Türkçeye çevir
-        const translatedText = await translateText(generatedText);
+        // İngilizce metni Türkçeye çevir
+        const translatedText = await translateText(generatedText, "en_XX", "tr_TR");
 
         // Çevrilen metni sayfada göster
         document.getElementById("output").innerHTML = `<p>${translatedText}</p>`;
@@ -105,3 +70,44 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
     }
 });
+
+// Metin oluşturma fonksiyonu (Çeviri kısmı dışında, text generation)
+async function generateText(prompt) {
+    const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Metin oluşturma modeli
+    const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // Metin oluşturma API URL'si
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                inputs: prompt,
+                parameters: {
+                    max_new_tokens: 400, // Çıktı uzunluğu
+                    temperature: 0.5, // Yaratıcılığı ayarlamak için
+                    return_full_text: false // Sadece oluşturulan metni almak
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP hatası! Durum: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Metin Oluşturma Yanıtı:", data);
+
+        // Yanıtı kontrol et
+        if (data && data.length > 0 && data[0].generated_text) {
+            return data[0].generated_text;
+        } else {
+            return "Metin oluşturulamadı.";
+        }
+    } catch (error) {
+        console.error("Hata:", error);
+        return `Metin oluşturulamadı: ${error.message}`;
+    }
+}
