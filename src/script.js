@@ -54,4 +54,50 @@ document.getElementById("textForm").addEventListener("submit", async function (e
 
     } catch (error) {
         // Hata durumunda kullanıcıya mesaj göster
-        do
+        document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
+    }
+});
+
+// Google Gemini API'yi kullanarak metin oluşturma fonksiyonu
+async function generateText(prompt) {
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: prompt
+                    }]
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP hatası! Durum: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("API Yanıtı:", data);
+
+        // API yanıtını kontrol et ve metni çıkart
+        if (data && data.candidates && data.candidates.length > 0 && 
+            data.candidates[0].content && data.candidates[0].content.parts && 
+            data.candidates[0].content.parts.length > 0) {
+            
+            // Doğru yol: content.parts[0].text
+            const generatedText = data.candidates[0].content.parts[0].text;
+            
+            if (generatedText) {
+                return generatedText;
+            }
+        }
+
+        return "Metin oluşturulamadı: API yanıt formatı beklendiği gibi değil.";
+    } catch (error) {
+        console.error("Hata:", error);
+        return `Metin oluşturulamadı: ${error.message}`;
+    }
+}
