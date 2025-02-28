@@ -1,5 +1,5 @@
 const apiKey = "Bearer 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"; // Hugging Face API anahtarınızı buraya girin
-const apiUrl = "https://router.huggingface.co/hf-inference/models/mistralai/Pixtral-12B-2409"; // Modelin API URL'si
+const apiUrl = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"; // Modelin API URL'si
 
 // Formu dinleyerek işlem yapmak
 document.getElementById("textForm").addEventListener("submit", async function (event) {
