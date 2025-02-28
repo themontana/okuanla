@@ -67,7 +67,7 @@ async function generateText(prompt) {
 
         // API yanıtını kontrol et ve metni çıkart
         if (data && data.candidates && data.candidates.length > 0) {
-            const generatedText = data.candidates[0].text;
+            const generatedText = data.candidates[0].content.text;  // content.text kısmını alıyoruz
             if (generatedText) {
                 return generatedText;
             }
