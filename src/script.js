@@ -65,9 +65,13 @@ async function generateText(prompt) {
         const data = await response.json();
         console.log("API Yanıtı:", data);
 
-        // API yanıtını işleme
-        if (data && data.contents && data.contents.length > 0) {
-            return data.contents[0].parts[0].text;
+        // API yanıtını kontrol et ve metni çıkart
+        if (data && data.candidates && data.candidates.length > 0) {
+            // candidates içindeki metin verisini döndür
+            const generatedText = data.candidates[0].text;
+            if (generatedText) {
+                return generatedText;
+            }
         }
 
         return "Metin oluşturulamadı.";
@@ -76,3 +80,4 @@ async function generateText(prompt) {
         return `Metin oluşturulamadı: ${error.message}`;
     }
 }
+
