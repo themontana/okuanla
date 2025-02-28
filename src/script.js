@@ -37,61 +37,21 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         document.getElementById("output").innerHTML = `
             <div style="position: relative;">
                 <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Yazdır</button>
-                <p>${generatedText}</p>
+                <p id="generatedText">${generatedText}</p>
             </div>
         `;
 
         // Yazdır butonunu işlevsel hale getir
         document.getElementById("printButton").addEventListener("click", function () {
-            window.print(); // Yazdırma işlemini başlat
+            const printContent = document.getElementById("generatedText").innerHTML;
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Yazdır</title></head><body>');
+            printWindow.document.write('<p>' + printContent + '</p>');
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print(); // Yazdırma işlemi
         });
 
     } catch (error) {
         // Hata durumunda kullanıcıya mesaj göster
-        document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
-    }
-});
-
-// Google Gemini API'yi kullanarak metin oluşturma fonksiyonu
-async function generateText(prompt) {
-    try {
-        const response = await fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: prompt
-                    }]
-                }]
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP hatası! Durum: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("API Yanıtı:", data);
-
-        // API yanıtını kontrol et ve metni çıkart
-        if (data && data.candidates && data.candidates.length > 0 && 
-            data.candidates[0].content && data.candidates[0].content.parts && 
-            data.candidates[0].content.parts.length > 0) {
-            
-            // Doğru yol: content.parts[0].text
-            const generatedText = data.candidates[0].content.parts[0].text;
-            
-            if (generatedText) {
-                return generatedText;
-            }
-        }
-
-        return "Metin oluşturulamadı: API yanıt formatı beklendiği gibi değil.";
-    } catch (error) {
-        console.error("Hata:", error);
-        return `Metin oluşturulamadı: ${error.message}`;
-    }
-}
+        do
