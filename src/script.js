@@ -67,7 +67,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             const printWindow = window.open('', '', 'height=600,width=800');
             printWindow.document.write('<html><head><title>Yazdır</title><style>body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }</style></head><body>');
             printWindow.document.write('<div>' + printContent + '</div>');
-            printWindow.document.write('<div style="position: fixed; top: 10px; right: 10px; font-size: 20px; color: #d3d3d3;">OkuAnla.net</div>'); // Soluk "OkuAnla.net"
+            printWindow.document.write('<div style="position: fixed; top: 10px; right: 10px; font-size: 20px; color: #d3d3d3; font-weight: bold;">OkuAnla.net</div>'); // Soluk "OkuAnla.net"
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             printWindow.print(); // Yazdırma işlemi
