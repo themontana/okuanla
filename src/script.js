@@ -1,4 +1,4 @@
-const apiKey = "Bearer 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"; // Hugging Face API anahtarınızı buraya girin
+const apiKey = "Bearer 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"; // Hugging Face API anahtarınız
 const apiUrl = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"; // Modelin API URL'si
 
 // Formu dinleyerek işlem yapmak
@@ -6,10 +6,16 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     event.preventDefault(); // Sayfanın yenilenmesini önler
 
     // Kullanıcıdan alınan girdiler
-    const grade = document.getElementById("grade").value;
-    const theme = document.getElementById("theme").value;
-    const keywords = document.getElementById("keywords").value;
-    const questionCount = document.getElementById("questionCount").value;
+    const grade = document.getElementById("grade").value.trim();
+    const theme = document.getElementById("theme").value.trim();
+    const keywords = document.getElementById("keywords").value.trim();
+    const questionCount = document.getElementById("questionCount").value.trim();
+
+    // Eğer kullanıcı herhangi bir alanı boş bırakırsa hata mesajı göster
+    if (!grade || !theme || !keywords || !questionCount) {
+        document.getElementById("output").innerHTML = "<p>Lütfen tüm alanları doldurun.</p>";
+        return;
+    }
 
     // Kullanıcı girdilerine göre prompt oluştur
     const prompt = `Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren anlamlı bir okuma metni oluştur. 
@@ -55,12 +61,16 @@ async function generateText(prompt) {
         const data = await response.json();
         console.log("API Yanıtı:", data);
 
-        // Yanıttan metni al ve döndür
-        if (data && data.generated_text) {
-            return data.generated_text;
-        } else {
-            return "Metin oluşturulamadı.";
+        // API yanıtı "generated_text" yerine farklı bir formatta olabilir, bu yüzden kontrol ekledim.
+        if (data && typeof data === "object") {
+            if (data.generated_text) {
+                return data.generated_text;
+            } else if (Array.isArray(data) && data.length > 0 && data[0].generated_text) {
+                return data[0].generated_text;
+            }
         }
+        
+        return "Metin oluşturulamadı.";
     } catch (error) {
         console.error("Hata:", error);
         return `Metin oluşturulamadı: ${error.message}`;
