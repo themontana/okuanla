@@ -18,15 +18,34 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     }
 
     // Kullanıcı girdilerine göre geliştirilmiş prompt
-    const prompt = `
-    Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren anlamlı bir okuma metni oluştur.
-    - Metnin uzunluğu yaklaşık 150-250 kelime olmalı.
-    - Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve anlaşılır olmalı.
-    - Metin eğitici, öğretici olmalı ve çocukların gelişimine katkı sağlamak için uygun dil kullanılmalıdır.
-    - Metnin sonunda ${questionCount} adet, öğrencilerin anlamalarını test edecek şekilde, açık uçlu ve basit okuma sorusu oluştur.
-    Sorular, metne dayalı olarak sorulmalı ve soruların cevapları metinde yer almalıdır.
-    Ayrıca, metnin içerisinde geçen ${keywords} kelimelerinin anlamını öğreten sorulara yer verilebilir.
-    Metnin ve soruların her ikisi de çocuklar için anlaşılır ve motive edici olmalıdır.`;
+// Grade seçeneğine göre kelime sayısı aralığını ayarlayan fonksiyon
+function getWordCountRange(grade) {
+    switch(grade) {
+        case '1':
+            return '150-200'; // 1. sınıf için kelime sayısı 150-200 arası
+        case '2':
+            return '200-250'; // 2. sınıf için kelime sayısı 200-250 arası
+        case '3':
+            return '250-300'; // 3. sınıf için kelime sayısı 250-300 arası
+        case '4':
+            return '300-350'; // 4. sınıf için kelime sayısı 300-350 arası
+        default:
+            return '150-200'; // Varsayılan olarak 1. sınıf aralığı
+    }
+}
+
+const prompt = `
+    Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren, öğretici ve eğlenceli bir okuma metni oluştur.
+    - Metnin uzunluğu yaklaşık ${getWordCountRange(grade)} kelime olmalı.
+    - Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve kolayca anlaşılır olmalı.
+    - Metnin amacı çocukların dil gelişimini ve genel okuma becerilerini desteklemek olmalıdır.
+    - Metin, dikkat çekici ve motive edici bir dil kullanarak çocukların ilgisini çekecek şekilde yazılmalıdır.
+    - Metnin sonunda ${questionCount} adet okuma sorusu oluşturulmalı. Sorular:
+        - Öğrencilerin metni anlama düzeyini ölçmeli.
+        - Sorular, metnin ana fikrine dayalı olmalı.
+        - Her soru, çocukların metni doğru bir şekilde anlamalarını sağlamak için net olmalı.
+    Metnin ve soruların tonu, çocuklar için anlaşılır ve motive edici olmalıdır.`;
+
 
     // Kullanıcıya metin oluşturuluyor bilgisini göster
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
