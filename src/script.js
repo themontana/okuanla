@@ -35,9 +35,9 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         // Metni oluştur ve kullanıcıya göster
         const generatedText = await generateText(prompt);
         document.getElementById("output").innerHTML = `
-            <div style="position: relative;">
+            <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
                 <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Yazdır</button>
-                <p id="generatedText">${generatedText}</p>
+                <p id="generatedText" style="white-space: pre-wrap; word-wrap: break-word;">${generatedText}</p>
             </div>
         `;
 
@@ -45,7 +45,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         document.getElementById("printButton").addEventListener("click", function () {
             const printContent = document.getElementById("generatedText").innerHTML;
             const printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>Yazdır</title></head><body>');
+            printWindow.document.write('<html><head><title>Yazdır</title><style>body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }</style></head><body>');
             printWindow.document.write('<p>' + printContent + '</p>');
             printWindow.document.write('</body></html>');
             printWindow.document.close();
