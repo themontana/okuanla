@@ -34,7 +34,18 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     try {
         // Metni oluştur ve kullanıcıya göster
         const generatedText = await generateText(prompt);
-        document.getElementById("output").innerHTML = generatedText.replace(/\n/g, '<br>');
+        document.getElementById("output").innerHTML = `
+            <div style="position: relative;">
+                <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Yazdır</button>
+                <p>${generatedText}</p>
+            </div>
+        `;
+
+        // Yazdır butonunu işlevsel hale getir
+        document.getElementById("printButton").addEventListener("click", function () {
+            window.print(); // Yazdırma işlemini başlat
+        });
+
     } catch (error) {
         // Hata durumunda kullanıcıya mesaj göster
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
