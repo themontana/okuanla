@@ -35,26 +35,26 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         // Metni oluştur ve kullanıcıya göster
         const generatedText = await generateText(prompt);
 
-        // Metni her paragrafı <p> tagi ile ayırarak düzenle
-        const paragraphs = generatedText.split('\n').map(paragraph => 
-            `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${paragraph}</p>`
-        ).join('');
+        // Gelen metindeki başlıkları (örneğin "Okuma Soruları" ve benzeri) büyütüp kalın yapacağız
+        let formattedText = generatedText.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
+            // Başlık olan kısmı bulup stil ekleyelim (Başlıklar ne kadar kalın ve büyük olacaksa burada belirleyebiliriz)
+            if (p1.trim().endsWith(':')) {
+                return `<h2 style="font-size: 24px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
+            } else {
+                // Diğer metinler normal kalacak
+                return `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
+            }
+        });
 
-        // Metin başlıklarını ekle
-        const title = `<h2 style="text-align: center; font-size: 24px; font-weight: bold;">Okuma Metni</h2>`;
-        const questionsTitle = `<h3 style="text-align: center; font-size: 22px; font-weight: bold; margin-top: 30px;">Okuma Anlama Soruları</h3>`;
-
-        // Metni ve yazdırma butonunu ekle
+        // Yazdırma butonunu ekle
         document.getElementById("output").innerHTML = `
             <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
                 <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Yazdır</button>
-                ${title}
-                ${paragraphs}
-                ${questionsTitle}
+                ${formattedText}
             </div>
         `;
 
-        // Yazdır butonunu işlevsel hale getir
+        // Yazdırma butonunu işlevsel hale getir
         document.getElementById("printButton").addEventListener("click", function () {
             const printContent = document.getElementById("output").innerHTML;
             const printWindow = window.open('', '', 'height=600,width=800');
