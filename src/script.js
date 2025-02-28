@@ -16,10 +16,17 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         return;
     }
 
-    // Kullanıcı girdilerine göre prompt oluştur
-    const prompt = `Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren anlamlı bir okuma metni oluştur. 
-    Metnin sonunda ${questionCount} adet basit ve net okuduğunu anlama sorusu ekleyin. Soruların cevaplarını vermeyin. 
-    Metnin çocuklara uygun ve eğitici olmasını sağlayın.`;
+   // Kullanıcı girdilerine göre geliştirilmiş prompt
+const prompt = `
+Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren anlamlı bir okuma metni oluştur.
+- Metnin uzunluğu yaklaşık 150-250 kelime olmalı.
+- Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve anlaşılır olmalı.
+- Metin eğitici, öğretici olmalı ve çocukların gelişimine katkı sağlamak için uygun dil kullanılmalıdır.
+- Metnin sonunda ${questionCount} adet, öğrencilerin anlamalarını test edecek şekilde, açık uçlu ve basit okuma sorusu oluştur.
+  Sorular, metne dayalı olarak sorulmalı ve soruların cevapları metinde yer almalıdır.
+  Ayrıca, metnin içerisinde geçen ${keywords} kelimelerinin anlamını öğreten sorulara yer verilebilir.
+Metnin ve soruların her ikisi de çocuklar için anlaşılır ve motive edici olmalıdır.`;
+
 
     // Kullanıcıya metin oluşturuluyor bilgisini göster
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
