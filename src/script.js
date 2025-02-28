@@ -34,19 +34,24 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     try {
         // Metni oluştur ve kullanıcıya göster
         const generatedText = await generateText(prompt);
+
+        // Metni her paragrafı <p> tagi ile ayırarak düzenle
+        const paragraphs = generatedText.split('\n').map(paragraph => `<p style="margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${paragraph}</p>`).join('');
+        
+        // Metni ve yazdırma butonunu ekle
         document.getElementById("output").innerHTML = `
             <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
                 <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Yazdır</button>
-                <p id="generatedText" style="white-space: pre-wrap; word-wrap: break-word;">${generatedText}</p>
+                ${paragraphs}
             </div>
         `;
 
         // Yazdır butonunu işlevsel hale getir
         document.getElementById("printButton").addEventListener("click", function () {
-            const printContent = document.getElementById("generatedText").innerHTML;
+            const printContent = document.getElementById("output").innerHTML;
             const printWindow = window.open('', '', 'height=600,width=800');
             printWindow.document.write('<html><head><title>Yazdır</title><style>body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }</style></head><body>');
-            printWindow.document.write('<p>' + printContent + '</p>');
+            printWindow.document.write('<div>' + printContent + '</div>');
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             printWindow.print(); // Yazdırma işlemi
