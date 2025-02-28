@@ -1,44 +1,41 @@
-const apiKey = "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"; // Hugging Face API anahtarı
-const modelName = "mistralai/Pixtral-12B-2409"; // Güncellenmiş model
-const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`; // API URL
+const apiKey = "Bearer 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"; // Hugging Face API anahtarınızı buraya girin
+const apiUrl = "https://router.huggingface.co/hf-inference/models/mistralai/Pixtral-12B-2409"; // Modelin API URL'si
 
-// Formu dinlemek ve işlem yapmak için
+// Formu dinleyerek işlem yapmak
 document.getElementById("textForm").addEventListener("submit", async function (event) {
     event.preventDefault(); // Sayfanın yenilenmesini önler
 
-    // Formdan değerleri al
+    // Kullanıcıdan alınan girdiler
     const grade = document.getElementById("grade").value;
     const theme = document.getElementById("theme").value;
     const keywords = document.getElementById("keywords").value;
     const questionCount = document.getElementById("questionCount").value;
 
-    // Türkçe Prompt oluştur
+    // Kullanıcı girdilerine göre prompt oluştur
     const prompt = `Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren anlamlı bir okuma metni oluştur. 
-Metnin sonunda ${questionCount} adet basit ve net okuduğunu anlama sorusu ekleyin. Soruların cevaplarını vermeyin. 
-Metnin çocuklara uygun ve eğitici olmasını sağlayın.`;
+    Metnin sonunda ${questionCount} adet basit ve net okuduğunu anlama sorusu ekleyin. Soruların cevaplarını vermeyin. 
+    Metnin çocuklara uygun ve eğitici olmasını sağlayın.`;
 
-    // Sayfada metin oluşturuluyor olduğunu göster
+    // Kullanıcıya metin oluşturuluyor bilgisini göster
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        // Metni oluştur
+        // Metni oluştur ve kullanıcıya göster
         const generatedText = await generateText(prompt);
-
-        // Çıktıyı sayfada göster
         document.getElementById("output").innerHTML = `<p>${generatedText}</p>`;
     } catch (error) {
-        // Hata oluşursa kullanıcıya göster
+        // Hata durumunda kullanıcıya mesaj göster
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
     }
 });
 
-// Metin oluşturma fonksiyonu
+// Hugging Face API'yi kullanarak metin oluşturma fonksiyonu
 async function generateText(prompt) {
     try {
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${apiKey}`,
+                "Authorization": apiKey,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -56,11 +53,11 @@ async function generateText(prompt) {
         }
 
         const data = await response.json();
-        console.log("Metin Oluşturma Yanıtı:", data);
+        console.log("API Yanıtı:", data);
 
-        // Yanıtı kontrol et
-        if (data && data.length > 0 && data[0].generated_text) {
-            return data[0].generated_text;
+        // Yanıttan metni al ve döndür
+        if (data && data.generated_text) {
+            return data.generated_text;
         } else {
             return "Metin oluşturulamadı.";
         }
