@@ -67,7 +67,6 @@ async function generateText(prompt) {
 
         // API yanıtını kontrol et ve metni çıkart
         if (data && data.candidates && data.candidates.length > 0) {
-            // candidates içindeki metin verisini döndür
             const generatedText = data.candidates[0].text;
             if (generatedText) {
                 return generatedText;
@@ -80,4 +79,3 @@ async function generateText(prompt) {
         return `Metin oluşturulamadı: ${error.message}`;
     }
 }
-
