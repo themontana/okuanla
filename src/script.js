@@ -34,7 +34,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     try {
         // Metni oluştur ve kullanıcıya göster
         const generatedText = await generateText(prompt);
-        document.getElementById("output").innerHTML = `<p>${generatedText}</p>`;
+        document.getElementById("output").innerHTML = generatedText.replace(/\n/g, '<br>');
     } catch (error) {
         // Hata durumunda kullanıcıya mesaj göster
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
@@ -66,14 +66,19 @@ async function generateText(prompt) {
         console.log("API Yanıtı:", data);
 
         // API yanıtını kontrol et ve metni çıkart
-        if (data && data.candidates && data.candidates.length > 0) {
-            const generatedText = data.candidates[0].content.text;  // content.text kısmını alıyoruz
+        if (data && data.candidates && data.candidates.length > 0 && 
+            data.candidates[0].content && data.candidates[0].content.parts && 
+            data.candidates[0].content.parts.length > 0) {
+            
+            // Doğru yol: content.parts[0].text
+            const generatedText = data.candidates[0].content.parts[0].text;
+            
             if (generatedText) {
                 return generatedText;
             }
         }
 
-        return "Metin oluşturulamadı.";
+        return "Metin oluşturulamadı: API yanıt formatı beklendiği gibi değil.";
     } catch (error) {
         console.error("Hata:", error);
         return `Metin oluşturulamadı: ${error.message}`;
