@@ -35,11 +35,16 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         // Metni oluştur ve kullanıcıya göster
         const generatedText = await generateText(prompt);
 
-        // Gelen metindeki başlıkları (örneğin "Okuma Soruları" ve benzeri) büyütüp kalın yapacağız
+        // Başlıkları büyütme ve ortalama işlemi
         let formattedText = generatedText.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
             // Başlık olan kısmı bulup stil ekleyelim (Başlıklar ne kadar kalın ve büyük olacaksa burada belirleyebiliriz)
             if (p1.trim().endsWith(':')) {
+                // Başlıkları büyütüp ortalayalım
                 return `<h2 style="font-size: 24px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
+            } else if (p1.trim().startsWith("**") && p1.trim().endsWith("**")) {
+                // Metinde başlık olarak tespit ettiğimiz yerler
+                const title = p1.replace(/\*\*/g, '').trim();  // ** işaretlerini kaldırıp başlık metnini alıyoruz
+                return `<h1 style="font-size: 32px; font-weight: bold; text-align: center;">${title}</h1>`;
             } else {
                 // Diğer metinler normal kalacak
                 return `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
