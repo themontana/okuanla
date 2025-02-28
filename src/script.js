@@ -1,5 +1,6 @@
-const apiKey = "Bearer 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"; // Hugging Face API anahtarınız
-const apiUrl = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta";
+const apiKey = "AIzaSyB_x9426cjJle2hNCtcl-fs9hbR8eTRiwM"; // Google Gemini API anahtarınız
+const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
+
 // Formu dinleyerek işlem yapmak
 document.getElementById("textForm").addEventListener("submit", async function (event) {
     event.preventDefault(); // Sayfanın yenilenmesini önler
@@ -16,17 +17,16 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         return;
     }
 
-   // Kullanıcı girdilerine göre geliştirilmiş prompt
-const prompt = `
-Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren anlamlı bir okuma metni oluştur.
-- Metnin uzunluğu yaklaşık 150-250 kelime olmalı.
-- Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve anlaşılır olmalı.
-- Metin eğitici, öğretici olmalı ve çocukların gelişimine katkı sağlamak için uygun dil kullanılmalıdır.
-- Metnin sonunda ${questionCount} adet, öğrencilerin anlamalarını test edecek şekilde, açık uçlu ve basit okuma sorusu oluştur.
-  Sorular, metne dayalı olarak sorulmalı ve soruların cevapları metinde yer almalıdır.
-  Ayrıca, metnin içerisinde geçen ${keywords} kelimelerinin anlamını öğreten sorulara yer verilebilir.
-Metnin ve soruların her ikisi de çocuklar için anlaşılır ve motive edici olmalıdır.`;
-
+    // Kullanıcı girdilerine göre geliştirilmiş prompt
+    const prompt = `
+    Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren anlamlı bir okuma metni oluştur.
+    - Metnin uzunluğu yaklaşık 150-250 kelime olmalı.
+    - Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve anlaşılır olmalı.
+    - Metin eğitici, öğretici olmalı ve çocukların gelişimine katkı sağlamak için uygun dil kullanılmalıdır.
+    - Metnin sonunda ${questionCount} adet, öğrencilerin anlamalarını test edecek şekilde, açık uçlu ve basit okuma sorusu oluştur.
+    Sorular, metne dayalı olarak sorulmalı ve soruların cevapları metinde yer almalıdır.
+    Ayrıca, metnin içerisinde geçen ${keywords} kelimelerinin anlamını öğreten sorulara yer verilebilir.
+    Metnin ve soruların her ikisi de çocuklar için anlaşılır ve motive edici olmalıdır.`;
 
     // Kullanıcıya metin oluşturuluyor bilgisini göster
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
@@ -41,22 +41,20 @@ Metnin ve soruların her ikisi de çocuklar için anlaşılır ve motive edici o
     }
 });
 
-// Hugging Face API'yi kullanarak metin oluşturma fonksiyonu
+// Google Gemini API'yi kullanarak metin oluşturma fonksiyonu
 async function generateText(prompt) {
     try {
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
-                "Authorization": apiKey,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                inputs: prompt,
-                parameters: {
-                    max_new_tokens: 400, // Çıktı uzunluğu
-                    temperature: 0.5, // Yaratıcılığı ayarlamak için
-                    return_full_text: false // Sadece oluşturulan metni almak
-                }
+                contents: [{
+                    parts: [{
+                        text: prompt
+                    }]
+                }]
             })
         });
 
@@ -67,15 +65,11 @@ async function generateText(prompt) {
         const data = await response.json();
         console.log("API Yanıtı:", data);
 
-        // API yanıtı "generated_text" yerine farklı bir formatta olabilir, bu yüzden kontrol ekledim.
-        if (data && typeof data === "object") {
-            if (data.generated_text) {
-                return data.generated_text;
-            } else if (Array.isArray(data) && data.length > 0 && data[0].generated_text) {
-                return data[0].generated_text;
-            }
+        // API yanıtını işleme
+        if (data && data.contents && data.contents.length > 0) {
+            return data.contents[0].parts[0].text;
         }
-        
+
         return "Metin oluşturulamadı.";
     } catch (error) {
         console.error("Hata:", error);
