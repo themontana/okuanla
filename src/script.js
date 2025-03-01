@@ -77,98 +77,12 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 </div>
             `;
             
-            // Yazdırma butonunu ekle
+            // İçeriği kullanıcıya göster
             document.getElementById("output").innerHTML = `
                 <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-                    <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     ${contentHTML}
                 </div>
             `;
-            
-            // Yazdırma butonunu işlevsel hale getir
-            document.getElementById("printButton").addEventListener("click", function () {
-                // Yazdırma sayfası oluştur
-                const printWindow = window.open('', '', 'height=600,width=800');
-                
-                // Yazdırma sayfasının içeriğini ayarla
-                printWindow.document.write(`
-                    <html>
-                    <head>
-                        <title>OkuAnla - Metin Yazdır</title>
-                        <style>
-                            @media print {
-                                @page {
-                                    margin: 1.5cm;
-                                }
-                            }
-                            
-                            body {
-                                font-family: Arial, sans-serif;
-                                font-size: 12pt;
-                                line-height: 1.5;
-                                margin: 0;
-                                padding: 0;
-                            }
-                            
-                            .container {
-                                max-width: 19cm;
-                                margin: 0 auto;
-                            }
-                            
-                            h1 {
-                                font-size: 16pt;
-                                font-weight: bold;
-                                text-align: left;
-                                margin-top: 0;
-                                margin-bottom: 12pt;
-                            }
-                            
-                            .text-content {
-                                text-align: left;
-                                margin-bottom: 12pt;
-                            }
-                            
-                            .text-content p {
-                                margin: 0 0 10pt 0;
-                                text-indent: 1.5em;
-                            }
-                            
-                            .questions p {
-                                margin: 4pt 0;
-                            }
-                            
-                            .footer {
-                                text-align: right;
-                                margin-top: 20pt;
-                                font-size: 10pt;
-                                color: #666;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="container">
-                            <h1>${sections.title}</h1>
-                            <div class="text-content">
-                                ${sections.mainText.replace(/<p>/g, '<p>').replace(/<\/p>/g, '</p>')}
-                            </div>
-                            <div class="questions">
-                                ${sections.questions}
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-                `);
-                
-                printWindow.document.close();
-                
-                // Sayfanın yüklenmesini bekleyip yazdır
-                printWindow.onload = function() {
-                    setTimeout(function() {
-                        printWindow.print();
-                        printWindow.close(); // Yazdırma işleminden sonra pencereyi kapat
-                    }, 500);
-                };
-            });
         } else {
             document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı: API yanıtı geçersiz.</p>";
         }
