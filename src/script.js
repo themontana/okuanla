@@ -63,18 +63,28 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         if (data.generatedText) {
             const generatedText = data.generatedText;
 
-            // Başlıkları büyütme ve ortalama işlemi
+            // Metin biçimlendirme
+            // 1. Başlıkları ve soruları tespit et
             let formattedText = generatedText.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
-                // Başlık olan kısmı bulup stil ekleyelim (Başlıklar ne kadar kalın ve büyük olacaksa burada belirleyebiliriz)
-                if (p1.trim().endsWith(':')) {
-                    // Başlıkları büyütüp ortalayalım
+                // Sorular bölümü başlığını tespit et ve ortala
+                if (p1.trim().includes("Sorular") || p1.trim().includes("Okuma Soruları") || p1.trim().includes("Sorular:")) {
                     return `<h2 style="font-size: 24px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
-                } else if (p1.trim().startsWith("**") && p1.trim().endsWith("**")) {
-                    // Metinde başlık olarak tespit ettiğimiz yerler
-                    const title = p1.replace(/\*\*/g, '').trim();  // ** işaretlerini kaldırıp başlık metnini alıyoruz
+                }
+                // Soru numaralarını tespit et ve ortala
+                else if (/^\d+[\.\)]/.test(p1.trim())) { // Soru numarası ile başlıyorsa (1., 2., vs. veya 1), 2) vs.)
+                    return `<p style="text-align: center; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
+                }
+                // Metin başlığını tespit et ve ortala
+                else if (p1.trim().startsWith("**") && p1.trim().endsWith("**")) {
+                    const title = p1.replace(/\*\*/g, '').trim();
                     return `<h1 style="font-size: 32px; font-weight: bold; text-align: center;">${title}</h1>`;
-                } else {
-                    // Diğer metinler normal kalacak
+                }
+                // Başlık olarak tespit edilen diğer satırları ortala
+                else if (p1.trim().endsWith(':')) {
+                    return `<h2 style="font-size: 24px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
+                }
+                // Normal paragraflar
+                else {
                     return `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
                 }
             });
@@ -93,7 +103,6 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 const originalContent = document.getElementById("output").innerHTML;
                 
                 // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
-                // "Yazdır" butonunu içeren div'i kaldır
                 const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
                 
                 // Yazdırma sayfası oluştur
@@ -128,11 +137,16 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 text-indent: 20px;
                                 margin-bottom: 15px;
                             }
+                            /* Soru paragrafları için özel stil */
+                            p:has(~ h2:contains("Sorular")) {
+                                text-align: center;
+                                text-indent: 0;
+                            }
                             .watermark {
                                 position: fixed;
                                 bottom: 20px;
                                 right: 20px;
-                                font-size: 20px;
+                                font-size: 14px;
                                 color: #d3d3d3;
                                 font-weight: bold;
                                 z-index: -1; /* Su damgasını içeriğin arkasına yerleştir */
