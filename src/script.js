@@ -68,7 +68,6 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             
             // HTML içeriğini oluştur
             let contentHTML = `
-                <h1 style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px;">${sections.title}</h1>
                 <div style="text-align: left; margin-bottom: 20px;">
                     ${sections.mainText}
                 </div>
@@ -78,7 +77,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             `;
             
             // Yazdırma butonunu ekle
-            document.getElementById("output").innerHTML = `
+            document.getElementById("output").innerHTML = `   
                 <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     ${contentHTML}
@@ -216,7 +215,7 @@ function processGeneratedText(text) {
     }
     
     return {
-        title: title,
+        title: title,  // Başlık, API'dan gelen haliyle aynı kalacak
         mainText: mainTextLines.join('\n'),
         questions: questionsLines.join('\n')
     };
