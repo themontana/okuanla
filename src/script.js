@@ -98,6 +98,11 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 printWindow.document.write('<div style="position: fixed; top: 10px; right: 10px; font-size: 20px; color: #d3d3d3; font-weight: bold;">OkuAnla.net</div>'); // Soluk "OkuAnla.net"
                 printWindow.document.write('</body></html>');
                 printWindow.document.close();
+
+                // Yazdırma penceresinde butonu gizleyelim
+                const printButton = printWindow.document.getElementById('printButton');
+                if (printButton) printButton.style.display = 'none';
+
                 printWindow.print(); // Yazdırma işlemi
             });
         } else {
