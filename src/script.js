@@ -73,7 +73,6 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     ${sections.mainText}
                 </div>
                 <div style="text-align: left;">
-                    <strong>${sections.questionsTitle}</strong>
                     ${sections.questions}
                 </div>
             `;
@@ -134,11 +133,6 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 text-indent: 1.5em;
                             }
                             
-                            .questions-title {
-                                font-weight: bold;
-                                margin-bottom: 8pt;
-                            }
-                            
                             .questions p {
                                 margin: 4pt 0;
                             }
@@ -165,14 +159,8 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                             <div class="text-content">
                                 ${sections.mainText.replace(/<p>/g, '<p>').replace(/<\/p>/g, '</p>')}
                             </div>
-                            <div class="questions-title">
-                                ${sections.questionsTitle}
-                            </div>
                             <div class="questions">
                                 ${sections.questions}
-                            </div>
-                            <div class="yazdır-footer">
-                                Yazdır<br>OkuAnla.net
                             </div>
                         </div>
                     </body>
@@ -205,7 +193,6 @@ function processGeneratedText(text) {
 
     let title = "";
     let mainTextLines = [];
-    let questionsTitle = "Okuma Soruları:";
     let questionsLines = [];
     let inQuestionsSection = false;
     
@@ -215,14 +202,13 @@ function processGeneratedText(text) {
         
         // Başlık tespiti (genellikle ilk satırda veya ** işaretleri arasında olur)
         if (i === 0 || line.startsWith('**') && line.endsWith('**')) {
-            title = line.replace(/\*\*/g, '').trim();
+            title = line.replace(/\*\*/g, '').trim(); // Başlık değiştirilmeden olduğu gibi alınacak
             continue;
         }
         
         // Soru bölümü başlığını tespit et
         if (line.includes("Okuma Soruları") || line.includes("Sorular:") || /^Sorular\s*:?$/.test(line)) {
             inQuestionsSection = true;
-            questionsTitle = line;
             continue;
         }
         
@@ -231,35 +217,15 @@ function processGeneratedText(text) {
             // Eğer satır numara ile başlıyorsa veya numara+nokta ile başlıyorsa (1. , 2. gibi)
             if (/^\d+[\.\)]/.test(line)) {
                 questionsLines.push(`<p>${line}</p>`);
-            } else {
-                // Eğer soru başlığından sonra numara olmayan bir şey varsa ana metne ekle
-                mainTextLines.push(`<p>${line}</p>`);
             }
         } else {
             mainTextLines.push(`<p>${line}</p>`);
         }
     }
     
-    // Eğer soru bölümü tespit edilemezse, son 3-7 satırı soru olarak kabul et
-    if (questionsLines.length === 0 && mainTextLines.length > 7) {
-        const questionCount = parseInt(document.getElementById("questionCount").value.trim()) || 5;
-        questionsTitle = "Okuma Soruları:";
-        inQuestionsSection = true;
-        
-        // Son birkaç satırı soruları olarak işaretle
-        const potentialQuestions = mainTextLines.slice(-questionCount);
-        mainTextLines = mainTextLines.slice(0, -questionCount);
-        
-        // Soruları numaralandır ve ekle
-        potentialQuestions.forEach((line, index) => {
-            questionsLines.push(`<p>${index + 1}. ${line.replace(/<\/?p>/g, '')}</p>`);
-        });
-    }
-    
     return {
         title: title,
         mainText: mainTextLines.join('\n'),
-        questionsTitle: questionsTitle,
         questions: questionsLines.join('\n')
     };
 }
