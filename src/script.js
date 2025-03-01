@@ -1,5 +1,5 @@
-const apiKey = "AIzaSyB_x9426cjJle2hNCtcl-fs9hbR8eTRiwM"; // Google Gemini API anahtarınız
-const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
+const apiKey = process.env.GEMINI_API_KEY; // API anahtarı gizli değişkenden alınıyor
+const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
 // Formu dinleyerek işlem yapmak
 document.getElementById("textForm").addEventListener("submit", async function (event) {
