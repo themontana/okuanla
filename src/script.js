@@ -1,5 +1,4 @@
-// Remove the direct reference to process.env
-// Instead, we'll make API calls through our backend
+// Yazdırma butonunu işlevsel hale getir
 document.getElementById("textForm").addEventListener("submit", async function (event) {
     event.preventDefault(); // Prevents page refresh
 
@@ -86,18 +85,71 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 </div>
             `;
 
-            // Add print functionality
+            // Yazdırma butonunu işlevsel hale getir
             document.getElementById("printButton").addEventListener("click", function () {
-                const printContent = document.getElementById("output").innerHTML;
-
-                // Create print window with watermark
+                const originalContent = document.getElementById("output").innerHTML;
+                
+                // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
+                const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
+                
+                // Yazdırma sayfası oluştur
                 const printWindow = window.open('', '', 'height=600,width=800');
-                printWindow.document.write('<html><head><title>Yazdır</title><style>body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }</style></head><body>');
-                printWindow.document.write('<div>' + printContent + '</div>');
-                printWindow.document.write('<div style="position: fixed; top: 10px; right: 10px; font-size: 20px; color: #d3d3d3; font-weight: bold;">OkuAnla.net</div>');
-                printWindow.document.write('</body></html>');
+                
+                // Yazdırma sayfasının içeriğini ayarla
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>OkuAnla - Metin Yazdır</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                font-size: 16px;
+                                line-height: 1.6;
+                                margin: 20px;
+                                position: relative;
+                            }
+                            h1 {
+                                font-size: 32px;
+                                font-weight: bold;
+                                text-align: center;
+                                margin-bottom: 20px;
+                            }
+                            h2 {
+                                font-size: 24px;
+                                font-weight: bold;
+                                text-align: center;
+                                margin-bottom: 15px;
+                            }
+                            p {
+                                text-indent: 20px;
+                                margin-bottom: 15px;
+                            }
+                            .watermark {
+                                position: fixed;
+                                bottom: 20px;
+                                right: 20px;
+                                font-size: 20px;
+                                color: #d3d3d3;
+                                font-weight: bold;
+                                z-index: -1; /* Su damgasını içeriğin arkasına yerleştir */
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div>${contentWithoutButton}</div>
+                        <div class="watermark">OkuAnla.net</div>
+                    </body>
+                    </html>
+                `);
+                
                 printWindow.document.close();
-                printWindow.print();
+                
+                // Sayfanın yüklenmesini bekleyip yazdır
+                printWindow.onload = function() {
+                    setTimeout(function() {
+                        printWindow.print();
+                    }, 500);
+                };
             });
         } else {
             document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı: API yanıtı geçersiz.</p>";
