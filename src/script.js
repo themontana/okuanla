@@ -29,7 +29,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         }
     }
 
-    const prompt = `
+    const prompt = ` 
         Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren, öğretici ve eğlenceli bir okuma metni oluştur.
         - Metnin uzunluğu yaklaşık ${getWordCountRange(grade)} kelime olmalı.
         - Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve kolayca anlaşılır olmalı.
@@ -185,6 +185,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 printWindow.onload = function() {
                     setTimeout(function() {
                         printWindow.print();
+                        printWindow.close(); // Yazdırma işleminden sonra pencereyi kapat
                     }, 500);
                 };
             });
@@ -201,7 +202,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
 function processGeneratedText(text) {
     // Satırlara ayır
     const lines = text.split('\n').filter(line => line.trim() !== '');
-    
+
     let title = "";
     let mainTextLines = [];
     let questionsTitle = "Okuma Soruları:";
