@@ -1,45 +1,59 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 20px;
-    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px; /* margin yerine padding kullandım */
+    background-color: #f8f9fa;
 }
 
 h1 {
-    color: #007bff;
+    color: #007bff;
+    margin-bottom: 15px; /* Başlık ile paragraf arasındaki boşluğu ayarla */
+}
+
+p {
+    margin-bottom: 10px; /* Paragraflar arasındaki boşluğu ayarla */
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-    max-width: 400px;
-    margin: auto;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: 20px auto; /* Üst ve alt marj ekledim */
 }
 
 label {
-    margin-top: 10px;
+    margin-top: 10px;
+    margin-bottom: 5px; /* Etiket ile input arasındaki boşluğu ayarla */
 }
 
 input, select, button {
-    padding: 10px;
-    margin-top: 5px;
+    padding: 10px;
+    margin-bottom: 10px; /* Inputlar arasındaki boşluğu ayarla */
 }
 
 button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3;
 }
 
 #output {
-    margin-top: 20px;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    min-height: 100px; /* Minimum yükseklik ekledim */
 }
