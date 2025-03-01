@@ -68,12 +68,12 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             
             // HTML içeriğini oluştur
             let contentHTML = `
-                <h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 20px;">${sections.title}</h1>
-                <div style="text-align: justify;">
+                <h1 style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px;">${sections.title}</h1>
+                <div style="text-align: left; margin-bottom: 20px;">
                     ${sections.mainText}
                 </div>
-                <h2 style="font-size: 24px; font-weight: bold; text-align: center; margin-top: 30px; margin-bottom: 15px;">${sections.questionsTitle}</h2>
-                <div style="text-align: center;">
+                <div style="text-align: left;">
+                    <strong>${sections.questionsTitle}</strong>
                     ${sections.questions}
                 </div>
             `;
@@ -97,60 +97,84 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     <head>
                         <title>OkuAnla - Metin Yazdır</title>
                         <style>
+                            @media print {
+                                @page {
+                                    margin: 1.5cm;
+                                }
+                            }
+                            
                             body {
                                 font-family: Arial, sans-serif;
-                                font-size: 16px;
-                                line-height: 1.6;
-                                margin: 20px;
-                                position: relative;
+                                font-size: 12pt;
+                                line-height: 1.5;
+                                margin: 0;
+                                padding: 0;
                             }
+                            
+                            .container {
+                                max-width: 19cm;
+                                margin: 0 auto;
+                            }
+                            
                             h1 {
-                                font-size: 32px;
+                                font-size: 16pt;
                                 font-weight: bold;
-                                text-align: center;
-                                margin-bottom: 20px;
+                                text-align: left;
+                                margin-top: 0;
+                                margin-bottom: 12pt;
                             }
-                            h2 {
-                                font-size: 24px;
+                            
+                            .text-content {
+                                text-align: left;
+                                margin-bottom: 12pt;
+                            }
+                            
+                            .text-content p {
+                                margin: 0 0 10pt 0;
+                                text-indent: 1.5em;
+                            }
+                            
+                            .questions-title {
                                 font-weight: bold;
-                                text-align: center;
-                                margin-top: 30px;
-                                margin-bottom: 15px;
+                                margin-bottom: 8pt;
                             }
-                            .main-text {
-                                text-align: justify;
-                            }
-                            .main-text p {
-                                text-indent: 20px;
-                                margin-bottom: 15px;
-                            }
-                            .questions {
-                                text-align: center;
-                            }
+                            
                             .questions p {
-                                margin-bottom: 10px;
+                                margin: 4pt 0;
                             }
-                            .watermark {
+                            
+                            .footer {
+                                text-align: right;
+                                margin-top: 20pt;
+                                font-size: 10pt;
+                                color: #666;
+                            }
+                            
+                            .yazdır-footer {
                                 position: fixed;
                                 bottom: 20px;
                                 right: 20px;
-                                font-size: 14px;
-                                color: #d3d3d3;
-                                font-weight: bold;
-                                z-index: -1;
+                                font-size: 10pt;
+                                color: #666;
                             }
                         </style>
                     </head>
                     <body>
-                        <h1>${sections.title}</h1>
-                        <div class="main-text">
-                            ${sections.mainText}
+                        <div class="container">
+                            <h1>${sections.title}</h1>
+                            <div class="text-content">
+                                ${sections.mainText.replace(/<p>/g, '<p>').replace(/<\/p>/g, '</p>')}
+                            </div>
+                            <div class="questions-title">
+                                ${sections.questionsTitle}
+                            </div>
+                            <div class="questions">
+                                ${sections.questions}
+                            </div>
+                            <div class="yazdır-footer">
+                                Yazdır<br>OkuAnla.net
+                            </div>
                         </div>
-                        <h2>${sections.questionsTitle}</h2>
-                        <div class="questions">
-                            ${sections.questions}
-                        </div>
-                        <div class="watermark">OkuAnla.net</div>
                     </body>
                     </html>
                 `);
