@@ -143,14 +143,6 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 font-size: 10pt;
                                 color: #666;
                             }
-                            
-                            .yazdır-footer {
-                                position: fixed;
-                                bottom: 20px;
-                                right: 20px;
-                                font-size: 10pt;
-                                color: #666;
-                            }
                         </style>
                     </head>
                     <body>
@@ -207,7 +199,7 @@ function processGeneratedText(text) {
         }
         
         // Soru bölümü başlığını tespit et
-        if (line.includes("Okuma Soruları") || line.includes("Sorular:") || /^Sorular\s*:?$/.test(line)) {
+        if (line.includes("Sorular:") || /^Sorular\s*:?$/.test(line)) {
             inQuestionsSection = true;
             continue;
         }
