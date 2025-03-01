@@ -7,9 +7,8 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    padding: 20px;
+    padding: 20px; /* margin yerine padding kullandım */
     background-color: #f8f9fa;
-    line-height: 1.2; /* Genel satır yüksekliği */
 }
 
 h1 {
@@ -18,26 +17,24 @@ h1 {
 }
 
 p {
-    margin: 0; /* Tarayıcı varsayılan boşluklarını sıfırla */
-    margin-bottom: 8px; /* Paragraflar arasındaki boşluğu azalt */
-    line-height: 1.2; /* Satır yüksekliğini küçült */
+    margin-bottom: 10px; /* Paragraflar arasındaki boşluğu ayarla */
 }
 
 form {
     display: flex;
     flex-direction: column;
     max-width: 400px;
-    margin: 20px auto;
+    margin: 20px auto; /* Üst ve alt marj ekledim */
 }
 
 label {
     margin-top: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 5px; /* Etiket ile input arasındaki boşluğu ayarla */
 }
 
 input, select, button {
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* Inputlar arasındaki boşluğu ayarla */
 }
 
 button {
@@ -58,5 +55,5 @@ button:hover {
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     position: relative;
-    min-height: 100px;
+    min-height: 100px; /* Minimum yükseklik ekledim */
 }
