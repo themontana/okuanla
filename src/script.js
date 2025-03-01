@@ -1,4 +1,3 @@
-// Formu dinleyerek işlem yapmak
 document.getElementById("textForm").addEventListener("submit", async function (event) {
     event.preventDefault(); // Sayfanın yenilenmesini önler
 
@@ -14,7 +13,6 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         return;
     }
 
-    // Kullanıcı girdilerine göre geliştirilmiş prompt
     // Grade seçeneğine göre kelime sayısı aralığını ayarlayan fonksiyon
     function getWordCountRange(grade) {
         switch(grade) {
