@@ -1,42 +1,62 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OkuAnla - Okuduğunu Anlama Metni Oluştur</title>
-    <link rel="stylesheet" href="public/style.css">
-</head>
-<body>
-    <h1>OkuAnla</h1>
-    <p>İlkokul seviyesinde okuma metni ve sorular oluştur.</p>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    <form id="textForm">
-        <label for="grade">Sınıf Seviyesi:</label>
-        <select id="grade">
-            <option value="1">1. Sınıf</option>
-            <option value="2">2. Sınıf</option>
-            <option value="3">3. Sınıf</option>
-            <option value="4">4. Sınıf</option>
-        </select>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    line-height: 1.2; /* Genel satır yüksekliği */
+}
 
-        <label for="theme">Tema:</label>
-        <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay" required>
+h1 {
+    color: #007bff;
+    margin-bottom: 15px; /* Başlık ile paragraf arasındaki boşluğu ayarla */
+}
 
-        <label for="keywords">Kullanılacak Kelimeler:</label>
-        <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş" required>
+p {
+    margin: 0; /* Tarayıcı varsayılan boşluklarını sıfırla */
+    margin-bottom: 8px; /* Paragraflar arasındaki boşluğu azalt */
+    line-height: 1.2; /* Satır yüksekliğini küçült */
+}
 
-        <label for="questionCount">Soru Sayısı:</label>
-        <select id="questionCount">
-            <option value="3">3</option>
-            <option value="5">5</option>
-            <option value="7">7</option>
-        </select>
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: 20px auto;
+}
 
-        <button type="submit">Metni Oluştur</button>
-    </form>
+label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
 
-    <div id="output"></div>
+input, select, button {
+    padding: 10px;
+    margin-bottom: 10px;
+}
 
-    <script src="src/script.js"></script>
-</body>
-</html>
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#output {
+    margin-top: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    min-height: 100px;
+}
