@@ -1,4 +1,4 @@
-const apiKey = process.env.GEMINI_API_KEY; // API anahtarı gizli değişkenden alınıyor
+const apiKey = process.env.GEMINI_API_KEY; // API anahtarını gizli değişkenden alıyoruz
 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
 // Formu dinleyerek işlem yapmak
