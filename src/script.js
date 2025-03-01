@@ -69,7 +69,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 }
             });
 
-            // Yazdırma butonunu sağ üste yerleştir
+            // "output" div'inin stilini "position: relative" olarak ayarla
             document.getElementById("output").innerHTML = `
                 <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
                     <button id="printButton" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
