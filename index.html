@@ -1,41 +1,43 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <title>OkuAnla - Okuduğunu Anlama Metni Oluştur</title>
-    <link rel="stylesheet" href="public/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OkuAnla - Okuduğunu Anlama Metni Oluştur</title>
+    <link rel="stylesheet" href="public/style.css">
 </head>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' https://generativelanguage.googleapis.com;">
+
 <body>
-    <h1>OkuAnla</h1>
-    <p>İlkokul seviyesinde okuma metni ve sorular oluştur.</p>
+    <h1>OkuAnla</h1>
+    <p>İlkokul seviyesinde okuma metni ve sorular oluştur.</p>
 
-    <form id="textForm">
-        <label for="grade">Sınıf Seviyesi:</label>
-        <select id="grade">
-            <option value="1">1. Sınıf</option>
-            <option value="2">2. Sınıf</option>
-            <option value="3">3. Sınıf</option>
-            <option value="4">4. Sınıf</option>
-        </select>
+    <form id="textForm">
+        <label for="grade">Sınıf Seviyesi:</label>
+        <select id="grade">
+            <option value="1">1. Sınıf</option>
+            <option value="2">2. Sınıf</option>
+            <option value="3">3. Sınıf</option>
+            <option value="4">4. Sınıf</option>
+        </select>
 
-        <label for="theme">Tema:</label>
-        <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay" required>
+        <label for="theme">Tema:</label>
+        <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay" required>
 
-        <label for="keywords">Kullanılacak Kelimeler:</label>
-        <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş" required>
+        <label for="keywords">Kullanılacak Kelimeler:</label>
+        <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş" required>
 
-        <label for="questionCount">Soru Sayısı:</label>
-        <select id="questionCount">
-            <option value="3">3</option>
-            <option value="5">5</option>
-            <option value="7">7</option>
-        </select>
+        <label for="questionCount">Soru Sayısı:</label>
+        <select id="questionCount">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="7">7</option>
+        </select>
 
-        <button type="submit">Metni Oluştur</button>
-    </form>
+        <button type="submit">Metni Oluştur</button>
+    </form>
 
-    <div id="output"></div>
+    <div id="output"></div>
 
-    <script src="src/script.js"></script>
+    <script src="src/script.js"></script>
 </body>
 </html>
