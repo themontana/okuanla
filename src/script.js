@@ -41,12 +41,11 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             - Her soru, çocukların metni doğru bir şekilde anlamalarını sağlamak için net olmalı.
         Metnin ve soruların tonu, çocuklar için anlaşılır ve motive edici olmalıdır.`;
 
-
     // Kullanıcıya metin oluşturuluyor bilgisini göster
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        // Metni oluştur ve kullanıcıya göster
+        // API'dan gelen metni al
         const response = await fetch('/api/generate-text', {
             method: 'POST',
             headers: {
@@ -60,10 +59,10 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         }
 
         const data = await response.json();
-        
+
         if (data.generatedText) {
             const generatedText = data.generatedText;
-            
+
             // Başlıkları büyütme ve ortalama işlemi
             let formattedText = generatedText.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
                 // Başlık olan kısmı bulup stil ekleyelim (Başlıklar ne kadar kalın ve büyük olacaksa burada belirleyebiliriz)
@@ -83,13 +82,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             // Yazdırma butonunu ekle
             document.getElementById("output").innerHTML = `
                 <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-                    <button id="printButton" 
-                            style="position: absolute; top: 10px; right: 10px; 
-                                   padding: 10px 20px; background-color: #4CAF50; 
-                                   color: white; border: none; font-size: 16px; 
-                                   cursor: pointer; font-weight: bold; border-radius: 5px;">
-                        Yazdır
-                    </button>
+                    <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     ${formattedText}
                 </div>
             `;
@@ -105,6 +98,11 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 printWindow.document.write('<div style="position: fixed; top: 10px; right: 10px; font-size: 20px; color: #d3d3d3; font-weight: bold;">OkuAnla.net</div>'); // Soluk "OkuAnla.net"
                 printWindow.document.write('</body></html>');
                 printWindow.document.close();
+
+                // Yazdırma penceresinde butonu gizleyelim
+                const printButton = printWindow.document.getElementById('printButton');
+                if (printButton) printButton.style.display = 'none';
+
                 printWindow.print(); // Yazdırma işlemi
             });
         } else {
