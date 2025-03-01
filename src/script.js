@@ -62,49 +62,32 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         
         if (data.generatedText) {
             const generatedText = data.generatedText;
-
-            // Metin biçimlendirme
-            // 1. Başlıkları ve soruları tespit et
-            let formattedText = generatedText.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
-                // Sorular bölümü başlığını tespit et ve ortala
-                if (p1.trim().includes("Sorular") || p1.trim().includes("Okuma Soruları") || p1.trim().includes("Sorular:")) {
-                    return `<h2 style="font-size: 24px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
-                }
-                // Soru numaralarını tespit et ve ortala
-                else if (/^\d+[\.\)]/.test(p1.trim())) { // Soru numarası ile başlıyorsa (1., 2., vs. veya 1), 2) vs.)
-                    return `<p style="text-align: center; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
-                }
-                // Metin başlığını tespit et ve ortala
-                else if (p1.trim().startsWith("**") && p1.trim().endsWith("**")) {
-                    const title = p1.replace(/\*\*/g, '').trim();
-                    return `<h1 style="font-size: 32px; font-weight: bold; text-align: center;">${title}</h1>`;
-                }
-                // Başlık olarak tespit edilen diğer satırları ortala
-                else if (p1.trim().endsWith(':')) {
-                    return `<h2 style="font-size: 24px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
-                }
-                // Normal paragraflar
-                else {
-                    return `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
-                }
-            });
-
+            
+            // Metni bölümlere ayır: başlık, ana metin ve sorular
+            let sections = processGeneratedText(generatedText);
+            
+            // HTML içeriğini oluştur
+            let contentHTML = `
+                <h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 20px;">${sections.title}</h1>
+                <div style="text-align: justify;">
+                    ${sections.mainText}
+                </div>
+                <h2 style="font-size: 24px; font-weight: bold; text-align: center; margin-top: 30px; margin-bottom: 15px;">${sections.questionsTitle}</h2>
+                <div style="text-align: center;">
+                    ${sections.questions}
+                </div>
+            `;
+            
             // Yazdırma butonunu ekle
             document.getElementById("output").innerHTML = `
                 <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
-                    ${formattedText}
+                    ${contentHTML}
                 </div>
             `;
-
+            
             // Yazdırma butonunu işlevsel hale getir
             document.getElementById("printButton").addEventListener("click", function () {
-                // Mevcut içeriği al (Yazdır butonu dahil)
-                const originalContent = document.getElementById("output").innerHTML;
-                
-                // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
-                const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
-                
                 // Yazdırma sayfası oluştur
                 const printWindow = window.open('', '', 'height=600,width=800');
                 
@@ -131,16 +114,21 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 font-size: 24px;
                                 font-weight: bold;
                                 text-align: center;
+                                margin-top: 30px;
                                 margin-bottom: 15px;
                             }
-                            p {
+                            .main-text {
+                                text-align: justify;
+                            }
+                            .main-text p {
                                 text-indent: 20px;
                                 margin-bottom: 15px;
                             }
-                            /* Soru paragrafları için özel stil */
-                            p:has(~ h2:contains("Sorular")) {
+                            .questions {
                                 text-align: center;
-                                text-indent: 0;
+                            }
+                            .questions p {
+                                margin-bottom: 10px;
                             }
                             .watermark {
                                 position: fixed;
@@ -149,12 +137,19 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 font-size: 14px;
                                 color: #d3d3d3;
                                 font-weight: bold;
-                                z-index: -1; /* Su damgasını içeriğin arkasına yerleştir */
+                                z-index: -1;
                             }
                         </style>
                     </head>
                     <body>
-                        <div>${contentWithoutButton}</div>
+                        <h1>${sections.title}</h1>
+                        <div class="main-text">
+                            ${sections.mainText}
+                        </div>
+                        <h2>${sections.questionsTitle}</h2>
+                        <div class="questions">
+                            ${sections.questions}
+                        </div>
                         <div class="watermark">OkuAnla.net</div>
                     </body>
                     </html>
@@ -166,11 +161,9 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 printWindow.onload = function() {
                     setTimeout(function() {
                         printWindow.print();
-                        // printWindow.close(); // Yazdırma işlemi tamamlandıktan sonra pencereyi kapatmak isterseniz bunu etkinleştirebilirsiniz
                     }, 500);
                 };
             });
-
         } else {
             document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı: API yanıtı geçersiz.</p>";
         }
@@ -179,3 +172,69 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
     }
 });
+
+// Oluşturulan metni bölümlere ayıran fonksiyon
+function processGeneratedText(text) {
+    // Satırlara ayır
+    const lines = text.split('\n').filter(line => line.trim() !== '');
+    
+    let title = "";
+    let mainTextLines = [];
+    let questionsTitle = "Okuma Soruları:";
+    let questionsLines = [];
+    let inQuestionsSection = false;
+    
+    // Başlığı ve metni işle
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        // Başlık tespiti (genellikle ilk satırda veya ** işaretleri arasında olur)
+        if (i === 0 || line.startsWith('**') && line.endsWith('**')) {
+            title = line.replace(/\*\*/g, '').trim();
+            continue;
+        }
+        
+        // Soru bölümü başlığını tespit et
+        if (line.includes("Okuma Soruları") || line.includes("Sorular:") || /^Sorular\s*:?$/.test(line)) {
+            inQuestionsSection = true;
+            questionsTitle = line;
+            continue;
+        }
+        
+        // Soru bölümü içinde miyiz?
+        if (inQuestionsSection) {
+            // Eğer satır numara ile başlıyorsa veya numara+nokta ile başlıyorsa (1. , 2. gibi)
+            if (/^\d+[\.\)]/.test(line)) {
+                questionsLines.push(`<p>${line}</p>`);
+            } else {
+                // Eğer soru başlığından sonra numara olmayan bir şey varsa ana metne ekle
+                mainTextLines.push(`<p>${line}</p>`);
+            }
+        } else {
+            mainTextLines.push(`<p>${line}</p>`);
+        }
+    }
+    
+    // Eğer soru bölümü tespit edilemezse, son 3-7 satırı soru olarak kabul et
+    if (questionsLines.length === 0 && mainTextLines.length > 7) {
+        const questionCount = parseInt(document.getElementById("questionCount").value.trim()) || 5;
+        questionsTitle = "Okuma Soruları:";
+        inQuestionsSection = true;
+        
+        // Son birkaç satırı soruları olarak işaretle
+        const potentialQuestions = mainTextLines.slice(-questionCount);
+        mainTextLines = mainTextLines.slice(0, -questionCount);
+        
+        // Soruları numaralandır ve ekle
+        potentialQuestions.forEach((line, index) => {
+            questionsLines.push(`<p>${index + 1}. ${line.replace(/<\/?p>/g, '')}</p>`);
+        });
+    }
+    
+    return {
+        title: title,
+        mainText: mainTextLines.join('\n'),
+        questionsTitle: questionsTitle,
+        questions: questionsLines.join('\n')
+    };
+}
