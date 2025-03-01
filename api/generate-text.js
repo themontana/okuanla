@@ -1,42 +1,39 @@
-const apiKey = "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"; // Hugging Face API anahtarını ekle
-const modelName = "mistralai/Mistral-7B-Instruct-v0.3"; // Güncellenmiş model ismi
-const apiUrl = `https://api-inference.huggingface.co/models/${modelName}`;
+// api/generateText.js
 
-async function generateText(prompt) {
+export default async function handler(req, res) {
+    const apiKey = process.env.GEMINI_API_KEY; // Gizli anahtar Vercel environment variables'dan alınıyor
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
     try {
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                inputs: prompt,
+                inputs: req.body.prompt,  // Kullanıcıdan gelen prompt
                 parameters: {
-                    max_new_tokens: 500, // Çıktı uzunluğu
-                    temperature: 0.7, // Yaratıcılığı ayarlar
-                    return_full_text: false // Sadece oluşturulan metni al
+                    max_new_tokens: 500,  // Çıktı uzunluğu
+                    temperature: 0.7,     // Yaratıcılık seviyesi
+                    return_full_text: false  // Sadece metin kısmını döndür
                 }
             })
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP hatası! Durum: ${response.status}`);
+            throw new Error(`API hatası: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log("API Yanıtı:", data); // Yanıtı detaylı şekilde kontrol et
+        console.log("API Yanıtı:", data); // Yanıtı kontrol et
 
         if (data && Array.isArray(data) && data.length > 0 && data[0].generated_text) {
-            return data[0].generated_text;
+            res.status(200).json({ generatedText: data[0].generated_text }); // Kullanıcıya döndürülecek metin
         } else {
-            return "Metin oluşturulamadı: Yanıt boş veya hatalı.";
+            res.status(500).json({ error: "Metin oluşturulamadı: Yanıt boş veya hatalı." });
         }
     } catch (error) {
         console.error("Hata:", error);
-        return `Metin oluşturulamadı: ${error.message}`;
+        res.status(500).json({ error: `Metin oluşturulamadı: ${error.message}` });
     }
 }
-
-// Test et
-generateText("Merhaba dünya, bugün hava nasıl?").then(result => console.log(result));
