@@ -123,7 +123,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     
-                                        <div class="header-divider" style="margin-bottom: 15px; margin-top: 0;"></div>
+                                        <div class="header-divider" style="margin-bottom: 15px;"></div>
                     
                                         <div>
                         ${formattedText}
@@ -182,7 +182,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 
                                 .watermark {
                                     position: fixed;
-      锢5px;
+                                    top: 5px;
                                     left: 5px;
                                     font-size: 14px;
                                     color: #d3d3d3;
@@ -192,7 +192,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 .header-divider {
                                     border-bottom: 2px solid #333;
                                     margin-bottom: 15px;
-                                    margin-top: 0; /* Üst çizgiyi yukarı almak için margin-top: 0 olarak ayarlandı */
+                                    margin-top: 10px; /* Varsayılan margin-top değerini geri getirdim (isteğe bağlı olarak 0 veya başka bir değer de deneyebilirsiniz) */
                                 }
                                 
                                 .footer-divider {
@@ -204,15 +204,91 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 .problem-space {
                                     height: 75px;
                                 }
-                            }
-                        </style>
+                        }
+                    </style>
                     </head>
                     <body>
                         <div class="watermark">OkuAnla.net</div>
                         <div class="header-divider"></div>
                         <div>${contentWithoutButton}</div>
                     </body>
-                    </html>
+           ageContent);
+
+            // Yazdırma butonunu işlevsel hale getir
+            document.getElementById("printButton").addEventListener("click", function () {
+                // Mevcut içeriği al (Yazdır butonu dahil)
+                const originalContent = document.getElementById("output").innerHTML;
+                
+                // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
+                const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
+                
+                // Yazdırma sayfası oluştur
+                const printWindow = window.open('', '', 'height=600,width=800');
+                
+                // Yazdırma sayfasının içeriğini ayarla - script.js ile uyumlu
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>OkuAnla - Matematik Problemi Yazdır</title>
+                        <style>
+                            @media print {
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    font-size: 14px;
+                                    line-height: 1.5;
+                                    margin: 0.5cm;
+                                }
+                                
+                                h1 {
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                    margin-bottom: 15px;
+                                }
+                  ்தான்
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                    margin-top: 20px;
+                                    margin-bottom: 12px;
+                                }
+                                
+                                p {
+                                    text-indent: 20px;
+                                    margin-bottom: 10px;
+                                }
+                                
+                                .watermark {
+                                    position: fixed;
+                                    top: 5px;
+                                    left: 5px;
+                                    font-size: 14px;
+                                    color: #d3d3d3;
+                                    font-weight: bold;
+                                }
+                                
+                                .header-divider {
+                                    border-bottom: 2px solid #333;
+                                    margin-bottom: 15px;
+                                    margin-top: 10px; /* Varsayılan margin-top değerini geri getirdim */
+                                }
+                                
+                                .footer-divider {
+                                    border-top: 2px solid #333;
+                                    padding-top: 10px;
+                                    margin-top: 15px;
+                                }
+                                
+                                .problem-space {
+                                    height: 75px;
+                                }
+                        }
+                    </style>
+                    </head>
+                    <body>
+                        <div class="watermark">OkuAnla.net</div>
+                        <div class="header-divider"></div>
+                        <div>${contentWithoutButton}</div>
+                    </body>
                 `);
                 
                 printWindow.document.close();
