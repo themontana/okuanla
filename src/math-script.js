@@ -57,7 +57,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
         - Başlık: "${mathGrade}. Sınıf ${topic} Problemleri" olmalı (zorluk seviyesini başlıkta belirtme)
         - "##" veya başka format işaretleyicilerini kullanma, sadece düz metin olarak yaz
         - Her problem numaralandırılmış olmalı (1, 2, 3...)
-        - Her problem arasında öğrencilerin kalem ile işlem yapabilmesi için en az 4 satır boşluk bırak.
+        - Her problem arasında öğrencilerin kalem ile işlem yapabilmesi için en az 3 satır boşluk bırak ama başlık ve 1. soru arasında boşluk olmasın.
     `;
 
     // Kullanıcıya problem oluşturuluyor bilgisini göster
