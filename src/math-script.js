@@ -103,14 +103,17 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     // Problem numarası tespit edildi
                     if (firstProblem) {
                         // İlk problem için özel margin ayarı - başlığa yapışık olması için
-                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">Problem ${line}</h3>`;
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.replace(/\d+\./, '')}</h3>`;
                         firstProblem = false;
-                    } else {
+                    } 
+                    else {
                         // Diğer problemler arasına 75px boşluk ekle
                         formattedText += `<div style="height: 75px;"></div>`;
-                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">Problem ${line}</h3>`;
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.replace(/\d+\./, '')}</h3>`;
+
                     }
-                } else {
+                } 
+                else {
                     // Normal metin
                     formattedText += `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${line}</p>`;
                 }
