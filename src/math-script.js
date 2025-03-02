@@ -90,8 +90,10 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
             let formattedText = '';
             const lines = generatedText.split('\n');
             let isTitle = true; // İlk satırın başlık olduğunu varsayıyoruz
-            let firstProblem = true; // İlk problemi takip etmek için
             
+            let problems = [];
+            let currentProblem = '';
+
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 
@@ -103,20 +105,24 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     isTitle = false;
                 } else if (/^\d+\./.test(line)) {
                     // Problem numarası tespit edildi
-                    if (firstProblem) {
-                        // İlk problem için özel margin ayarı - başlığa yapışık olması için
-                        formattedText += `<div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px;">${line}</div>`;
-                        firstProblem = false;
-                    } else {
-                        // Diğer problemler arasına 75px boşluk ekle
-                        formattedText += `<div style="height: 75px;"></div>`;
-                        formattedText += `<div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px;">${line}</div>`;
+                    if (currentProblem) {
+                        problems.push(currentProblem);
                     }
+                    currentProblem = line;  // Yeni bir problem başlat
                 } else {
-                    // Normal metin
-                    formattedText += `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${line}</p>`;
+                    // Problem içeriği
+                    currentProblem += ` ${line}`;
                 }
             }
+            // Son problemi ekle
+            if (currentProblem) {
+                problems.push(currentProblem);
+            }
+
+            // Problemleri iki sayfaya böl
+            const problemsPerPage = Math.ceil(problems.length / 2);
+            const firstPageProblems = problems.slice(0, problemsPerPage);
+            const secondPageProblems = problems.slice(problemsPerPage);
 
             // Sayfa düzenini iki sütunlu hale getir
             const pageContent = `
@@ -126,10 +132,10 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     <!-- Üst çizgi - olabildiğince yukarıda -->
                     <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
                     
-                    <!-- Ana içerik -->
+                    <!-- İlk sayfa içerikleri -->
                     <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                        <div style="flex: 1; min-width: 45%;">${formattedText}</div>
-                        <div style="flex: 1; min-width: 45%;"></div> <!-- Boş sütun -->
+                        <div style="flex: 1; min-width: 45%;">${firstPageProblems.map((problem, index) => `<div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px;">${index + 1}. ${problem}</div>`).join('')}</div>
+                        <div style="flex: 1; min-width: 45%;">${secondPageProblems.map((problem, index) => `<div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px;">${index + 1}. ${problem}</div>`).join('')}</div>
                     </div>
                     
                     <!-- Alt bilgi çizgisi -->
