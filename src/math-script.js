@@ -49,15 +49,15 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
         Problemler şu şekilde olmalı:
         - ${mathGrade}. sınıf seviyesine uygun ve ${getDifficultyDescription(mathGrade, difficulty)} içermeli.
         - Her problem net ve anlaşılır olmalı.
-        - Her problemin çözümü adım adım gösterilmeli.
         - Problemler günlük hayattan örnekler içerebilir.
         - İçerik Türkçe olmalı ve dil yanlışları içermemeli.
+        - Çözümleri EKLEME, sadece problemleri yaz.
         
         Format şu şekilde olmalı:
-        - Başlık: "${mathGrade}. Sınıf ${topic} Problemleri (${difficulty} seviye)"
+        - Başlık: "${mathGrade}. Sınıf ${topic} Problemleri" olmalı (zorluk seviyesini başlıkta belirtme)
+        - "##" veya başka format işaretleyicilerini kullanma, sadece düz metin olarak yaz
         - Her problem numaralandırılmış olmalı (1, 2, 3...)
-        - Tüm problemler gösterildikten sonra "Çözümler" başlığı altında her problemin adım adım çözümü verilmeli
-        - Çözüm kısmında her problemin adım adım nasıl çözüleceği açıkça gösterilmeli ve son cevap belirtilmeli.
+        - Her problem arasında öğrencilerin kalem ile işlem yapabilmesi için en az 4 satır boşluk bırak.
     `;
 
     // Kullanıcıya problem oluşturuluyor bilgisini göster
@@ -80,25 +80,38 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
         const data = await response.json();
         
         if (data.generatedText) {
-            const generatedText = data.generatedText;
+            // Markdown işaretlerini (##, **, vb.) temizle
+            let generatedText = data.generatedText
+                .replace(/##\s+/g, '')   // ## işaretlerini kaldır
+                .replace(/\*\*/g, '');   // ** işaretlerini kaldır
 
-            // Başlıkları büyütme ve formatı düzenleme
-            let formattedText = generatedText.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
-                // Başlık olan kısmı bulup stil ekleyelim
-                if (p1.trim().endsWith(':') || p1.trim() === "Çözümler") {
-                    // Alt başlıkları
-                    return `<h2 style="font-size: 24px; font-weight: bold; text-align: center; margin-top: 30px;">${p1.trim()}</h2>`;
-                } else if (/^\d+\./.test(p1.trim()) || /^Problem \d+/.test(p1.trim())) {
-                    // Problem numaraları için stil
-                    return `<h3 style="font-size: 18px; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">${p1.trim()}</h3>`;
-                } else if (p1.trim().includes("Sınıf") && p1.trim().includes("Problemleri")) {
-                    // Ana başlık
-                    return `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 30px;">${p1.trim()}</h1>`;
+            // Problem arasındaki boşlukları artır ve formatı düzenle
+            let formattedText = '';
+            const lines = generatedText.split('\n');
+            let isTitle = true; // İlk satırın başlık olduğunu varsayıyoruz
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                if (line === '') continue; // Boş satırları atla
+                
+                if (isTitle) {
+                    // Başlık için özel stil
+                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 30px;">${line}</h1>`;
+                    isTitle = false;
+                } else if (/^\d+\./.test(line)) {
+                    // Problem numarası tespit edildi
+                    // Önceki problem ile arasına boşluk ekle (ikinci problemden itibaren)
+                    if (formattedText.includes('Problem')) {
+                        formattedText += `<div style="height: 150px;"></div>`;
+                    }
+                    
+                    formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">Problem ${line}</h3>`;
                 } else {
-                    // Diğer metinler normal kalacak
-                    return `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
+                    // Normal metin
+                    formattedText += `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${line}</p>`;
                 }
-            });
+            }
 
             // Yazdırma butonunu ekle
             document.getElementById("output").innerHTML = `
@@ -138,13 +151,6 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 text-align: center;
                                 margin-bottom: 30px;
                             }
-                            h2 {
-                                font-size: 24px;
-                                font-weight: bold;
-                                text-align: center;
-                                margin-top: 30px;
-                                margin-bottom: 20px;
-                            }
                             h3 {
                                 font-size: 18px;
                                 font-weight: bold;
@@ -154,6 +160,9 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                             p {
                                 text-indent: 20px;
                                 margin-bottom: 15px;
+                            }
+                            .problem-space {
+                                height: 150px;
                             }
                             .watermark {
                                 position: fixed;
