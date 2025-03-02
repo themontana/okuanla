@@ -103,13 +103,15 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     // Problem numarası tespit edildi
                     if (firstProblem) {
                         // İlk problem için özel margin ayarı - başlığa yapışık olması için
-                      formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.match(/^\d+\./)[0]}</h3>`;
+                      formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.replace(/^\d+\./, '')}</h3>`;
+
                         firstProblem = false;
                     } 
                     else {
                         // Diğer problemler arasına 75px boşluk ekle
                         formattedText += `<div style="height: 75px;"></div>`;
-                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.match(/^\d+\./)[0]}</h3>`;
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.replace(/^\d+\./, '')}</h3>`;
+
 
 
                     }
