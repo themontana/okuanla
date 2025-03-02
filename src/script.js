@@ -108,7 +108,9 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 for (const line of questionLines) {
                     if (line.trim().toLowerCase().includes("sorular")) {
                         isCollecting = true;
-                        formattedQuestions += `<h2 style="font-size: 24px; font-weight: bold; text-align: center; width: 100%;">${line.trim()}</h2>`;
+                        // ** işaretlerini kaldır
+                        const cleanTitle = line.trim().replace(/\*\*/g, '');
+                        formattedQuestions += `<h2 style="font-size: 24px; font-weight: bold; text-align: center; width: 100%;">${cleanTitle}</h2>`;
                     } else if (isCollecting && line.trim()) {
                         // Sayıyla başlıyorsa yeni soru
                         if (/^\d+[\.\)]\s/.test(line.trim())) {
@@ -127,7 +129,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     questions.push(currentQuestion);
                 }
                 
-                // Soruları iki sütunda göster
+                // Soruları iki sütunda göster - daha küçük kutucuklar
                 formattedQuestions += '<div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-top: 20px;">';
                 
                 questions.forEach((question, index) => {
@@ -135,10 +137,9 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     const questionText = question.replace(/^\d+[\.\)]\s/, '');
                     
                     formattedQuestions += `
-                        <div style="width: 48%; margin-bottom: 20px; background-color: #f8f9fa; border-radius: 10px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                            <p style="font-weight: bold; margin-bottom: 10px;">${questionNumber}${questionText}</p>
-                            <div style="border: 1px solid #ddd; border-radius: 5px; background-color: white; min-height: 80px; padding: 10px;">
-                                <p style="color: #999; font-style: italic;">Cevabınızı buraya yazınız...</p>
+                        <div style="width: 48%; margin-bottom: 15px; background-color: #f8f9fa; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <p style="font-weight: bold; margin-bottom: 8px; font-size: 15px;">${questionNumber}${questionText}</p>
+                            <div style="border: 1px solid #ddd; border-radius: 5px; background-color: white; min-height: 60px; padding: 8px;">
                             </div>
                         </div>
                     `;
@@ -147,15 +148,13 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 formattedQuestions += '</div>';
             }
             
-            // Sayfa düzenini oluştur - üst ve alt bilgi çizgileri ile
+            // Sayfa düzenini oluştur - sadece üst çizgi
             const pageContent = `
-                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 20px;">
+                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     
-                    <!-- Üst bilgi çizgisi -->
-                    <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
-                        <h1 style="margin: 0; color: #2c3e50;">Oku Anla</h1>
-                    </div>
+                    <!-- Üst çizgi - olabildiğince yukarıda -->
+                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
                     
                     <!-- Ana içerik -->
                     <div>
@@ -196,47 +195,48 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 font-family: Arial, sans-serif;
                                 font-size: 16px;
                                 line-height: 1.6;
-                                margin: 20px;
+                                margin: 15px;
                                 position: relative;
                             }
                             h1 {
-                                font-size: 32px;
-                                font-weight: bold;
-                                text-align: center;
-                                margin-bottom: 20px;
-                            }
-                            h2 {
-                                font-size: 24px;
+                                font-size: 28px;
                                 font-weight: bold;
                                 text-align: center;
                                 margin-bottom: 15px;
+                            }
+                            h2 {
+                                font-size: 22px;
+                                font-weight: bold;
+                                text-align: center;
+                                margin-bottom: 12px;
                             }
                             p {
                                 text-indent: 20px;
-                                margin-bottom: 15px;
+                                margin-bottom: 12px;
                             }
                             .watermark {
                                 position: fixed;
-                                bottom: 20px;
-                                right: 20px;
-                                font-size: 20px;
+                                bottom: 15px;
+                                right: 15px;
+                                font-size: 18px;
                                 color: #d3d3d3;
                                 font-weight: bold;
                                 z-index: -1;
                             }
                             .question-box {
                                 background-color: #f8f9fa;
-                                border-radius: 10px;
-                                padding: 15px;
+                                border-radius: 8px;
+                                padding: 10px;
                                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                                margin-bottom: 20px;
+                                margin-bottom: 12px;
+                                font-size: 14px;
                             }
                             .answer-space {
                                 border: 1px solid #ddd;
                                 border-radius: 5px;
                                 background-color: white;
-                                min-height: 80px;
-                                padding: 10px;
+                                min-height: 60px;
+                                padding: 8px;
                             }
                             .question-container {
                                 display: flex;
@@ -246,17 +246,18 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                             .question-item {
                                 width: 48%;
                             }
-                            .header-divider, .footer-divider {
+                            .header-divider {
                                 border-bottom: 2px solid #333;
-                                padding-bottom: 10px;
-                                margin-bottom: 20px;
-                                text-align: center;
+                                margin-bottom: 15px;
+                                margin-top: 0;
                             }
                             .footer-divider {
-                                border-bottom: none;
                                 border-top: 2px solid #333;
                                 padding-top: 10px;
-                                margin-top: 20px;
+                                margin-top: 15px;
+                            }
+                            @page {
+                                margin: 1cm;
                             }
                         </style>
                     </head>
