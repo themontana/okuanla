@@ -7,7 +7,7 @@
       "config": { "runtime": "nodejs18.x" }
     },
     {
-      "src": "index.html",
+      "src": "*.html",
       "use": "@vercel/static"
     },
     {
@@ -29,11 +29,12 @@
       "handle": "filesystem"
     },
     {
+      "src": "/(math)",
+      "dest": "/math.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "HF_API_KEY": "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"
-  }
+  ]
 }
