@@ -100,8 +100,8 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 if (line === '') continue; // Boş satırları atla
                 
                 if (isTitle) {
-                    // Başlık için özel stil - tüm margin'leri 0 olarak ayarla
-                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin: 0; padding: 0;">${line}</h1>`;
+                    // Başlık için özel stil - font boyutunu 20 olarak ayarla
+                    formattedText += `<h1 style="font-size: 20px; font-weight: bold; text-align: center; margin: 0; padding: 0;">${line}</h1>`;
                     isTitle = false;
                 } else if (/^\d+\./.test(line)) {
                     // Problem numarası tespit edildi
