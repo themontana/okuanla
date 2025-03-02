@@ -1,4 +1,3 @@
-// Form dinleyicisi
 document.getElementById("mathForm").addEventListener("submit", async function (event) {
     event.preventDefault(); // Sayfanın yenilenmesini önler
 
@@ -38,7 +37,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 "zor": "dört basamaklı sayılarla karmaşık problem çözümü, yaratıcı düşünme ve mantık yürütme gerektiren işlemler"
             }
         };
-
+        
         return descriptions[grade][level] || "temel matematik problemleri";
     }
 
@@ -90,74 +89,63 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
             let formattedText = '';
             const lines = generatedText.split('\n');
             let isTitle = true; // İlk satırın başlık olduğunu varsayıyoruz
+            let problems = []; // Problemleri bir diziye yerleştiriyoruz
             
-            let problems = [];
-            let currentProblem = '';
-
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 
                 if (line === '') continue; // Boş satırları atla
                 
                 if (isTitle) {
-                    // Başlık için özel stil - font boyutunu 20 olarak ayarla
-                    formattedText += `<h1 style="font-size: 20px; font-weight: bold; text-align: center; margin: 0; padding: 0;">${line}</h1>`;
+                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center;">${line}</h1>`;
                     isTitle = false;
                 } else if (/^\d+\./.test(line)) {
-                    // Problem numarası tespit edildi
-                    if (currentProblem) {
-                        problems.push(currentProblem);
-                    }
-                    currentProblem = line;  // Yeni bir problem başlat
+                    // Problem numarası
+                    problems.push(`<h3 class="problem">Problem ${line}</h3>`);
                 } else {
-                    // Problem içeriği
-                    currentProblem += ` ${line}`;
+                    // Problem metni
+                    problems.push(`<p class="problem-text">${line}</p>`);
                 }
             }
-            // Son problemi ekle
-            if (currentProblem) {
-                problems.push(currentProblem);
+
+            // Problemleri iki sütuna yerleştir
+            let columns = ['<div class="page-content">'];
+            for (let i = 0; i < problems.length; i++) {
+                if (i % 2 === 0 && i !== 0) {
+                    columns.push('</div><div class="page-content">');
+                }
+                columns.push(problems[i]);
             }
+            columns.push('</div>');
 
-            // Problemleri iki sayfaya böl
-            const problemsPerPage = Math.ceil(problems.length / 2);
-            const firstPageProblems = problems.slice(0, problemsPerPage);
-            const secondPageProblems = problems.slice(problemsPerPage);
-
-            // Sayfa düzenini iki sütunlu hale getir
+            // Sayfa içeriğini oluştur
             const pageContent = `
-                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
+                <div class="page-content">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     
-                    <!-- Üst çizgi - olabildiğince yukarıda -->
-                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
+                    <!-- Üst çizgi -->
+                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px;"></div>
                     
-                    <!-- Problemler -->
-                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                        <div style="flex: 1; min-width: 45%;">${firstPageProblems.map((problem, index) => `<div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px;">${index + 1}. ${problem}</div>`).join('')}</div>
-                        <div style="flex: 1; min-width: 45%;">${secondPageProblems.map((problem, index) => `<div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px;">${index + 1}. ${problem}</div>`).join('')}</div>
+                    <!-- Ana içerik -->
+                    <div>
+                        ${columns.join('')}
                     </div>
                     
                     <!-- Alt bilgi çizgisi -->
                     <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
                 </div>
             `;
-            
+
             // İçeriği sayfaya ekle
             document.getElementById("output").innerHTML = pageContent;
 
             // Yazdırma butonunu işlevsel hale getir
             document.getElementById("printButton").addEventListener("click", function () {
-                // Mevcut içeriği al (Yazdır butonu dahil)
                 const originalContent = document.getElementById("output").innerHTML;
-                
-                // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
                 const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
                 
-                // Yazdırma sayfası oluştur
                 const printWindow = window.open('', '', 'height=600,width=800');
                 
-                // Yazdırma sayfasının içeriğini ayarla
                 printWindow.document.write(`
                     <html>
                     <head>
@@ -178,8 +166,11 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                     margin-bottom: 15px;
                                 }
                                 
-                                div {
-                                    margin-bottom: 10px;
+                                h3 {
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                    margin-top: 20px;
+                                    margin-bottom: 12px;
                                 }
                                 
                                 p {
@@ -220,19 +211,15 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 
                 printWindow.document.close();
                 
-                // Sayfanın yüklenmesini bekleyip yazdır
                 printWindow.onload = function() {
                     setTimeout(function() {
                         printWindow.print();
                     }, 500);
                 };
             });
-
-        } else {
-            document.getElementById("output").innerHTML = "<p>Matematik problemleri oluşturulamadı: API yanıtı geçersiz.</p>";
         }
     } catch (error) {
-        console.error("Hata:", error);
-        document.getElementById("output").innerHTML = `<p>Matematik problemleri oluşturulamadı: ${error.message}</p>`;
+        console.error("Hata oluştu:", error);
+        document.getElementById("output").innerHTML = "<p>Bir hata oluştu. Lütfen tekrar deneyin.</p>";
     }
 });
