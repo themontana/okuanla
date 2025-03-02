@@ -87,7 +87,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     return `<h2 style="font-size: 20px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
                 } else if (p1.trim().startsWith("**") && p1.trim().endsWith("**")) {
                     const title = p1.replace(/\*\*/g, '').trim();
-                    return `<h1 style="font-size: 28px; font-weight: bold; text-align: center;">${title}</h1>`;
+                    return `<h1 style="font-size: 20px; font-weight: bold; text-align: center;">${title}</h1>`;
                 } else {
                     return `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
                 }
