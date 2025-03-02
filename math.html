@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OkuAnla - Matematik Problemi Oluştur</title>
+    <link rel="stylesheet" href="public/style.css">
+</head>
+<body>
+    <h1>OkuAnla - Matematik</h1>
+    <p>İlkokul seviyesinde matematik problemi oluştur.</p>
+    
+    <nav style="margin: 20px 0;">
+        <a href="index.html" style="margin-right: 15px; text-decoration: none; color: #007bff;">Okuma Metni</a>
+        <a href="math.html" style="font-weight: bold; text-decoration: none; color: #007bff;">Matematik Problemi</a>
+    </nav>
+
+    <form id="mathForm">
+        <label for="mathGrade">Sınıf Seviyesi:</label>
+        <select id="mathGrade">
+            <option value="1">1. Sınıf</option>
+            <option value="2">2. Sınıf</option>
+            <option value="3">3. Sınıf</option>
+            <option value="4">4. Sınıf</option>
+        </select>
+
+        <label for="difficulty">Zorluk Seviyesi:</label>
+        <select id="difficulty">
+            <option value="kolay">Kolay</option>
+            <option value="orta">Orta</option>
+            <option value="zor">Zor</option>
+        </select>
+
+        <label for="topic">Konu:</label>
+        <input type="text" id="topic" placeholder="Örn: Toplama, Çıkarma, Bölme..." required>
+
+        <label for="problemCount">Soru Sayısı:</label>
+        <select id="problemCount">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+        </select>
+
+        <button type="submit">Problemleri Oluştur</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script src="src/math-script.js"></script>
+</body>
+</html>
