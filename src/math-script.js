@@ -25,17 +25,17 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
             "2": {
                 "kolay": "iki basamaklı sayılarla temel işlemler",
                 "orta": "iki ve üç basamaklı sayılarla karışık işlemler",
-                "zor": "üç basamaklı sayılarla çeşitli problem türleri"
+                "zor": "üç basamaklı sayılarla çeşitli problem türleri, yaratıcı düşünme ve mantık yürütme gerektiren işlemler"
             },
             "3": {
                 "kolay": "iki ve üç basamaklı sayılarla temel işlemler",
                 "orta": "üç basamaklı sayılarla çoklu adım gerektiren işlemler",
-                "zor": "üç ve dört basamaklı sayılarla karmaşık problem çözümü"
+                "zor": "üç ve dört basamaklı sayılarla karmaşık problem çözümü, yaratıcı düşünme ve mantık yürütme gerektiren işlemler"
             },
             "4": {
                 "kolay": "üç basamaklı sayılarla temel işlemler",
                 "orta": "üç ve dört basamaklı sayılarla çoklu adım gerektiren işlemler",
-                "zor": "dört basamaklı sayılarla karmaşık problem çözümü, kesirler ve ondalık sayılar"
+                "zor": "dört basamaklı sayılarla karmaşık problem çözümü, yaratıcı düşünme ve mantık yürütme gerektiren işlemler"
             }
         };
         
