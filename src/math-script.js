@@ -132,7 +132,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     <!-- Üst çizgi - olabildiğince yukarıda -->
                     <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
                     
-                    <!-- İlk sayfa içerikleri -->
+                    <!-- Problemler -->
                     <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                         <div style="flex: 1; min-width: 45%;">${firstPageProblems.map((problem, index) => `<div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px;">${index + 1}. ${problem}</div>`).join('')}</div>
                         <div style="flex: 1; min-width: 45%;">${secondPageProblems.map((problem, index) => `<div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px;">${index + 1}. ${problem}</div>`).join('')}</div>
