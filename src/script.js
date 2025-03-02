@@ -38,6 +38,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         - Metnin amacı çocukların dil gelişimini ve genel okuma becerilerini desteklemek olmalıdır.
         - Metin, dikkat çekici ve motive edici bir dil kullanarak çocukların ilgisini çekecek şekilde yazılmalıdır.
         - Metnin sonunda ${questionCount} adet okuma sorusu oluşturulmalı. Sorular:
+            - Bu kısmın başlığı Sorular olmalı
             - Öğrencilerin metni anlama düzeyini ölçmeli.
             - Sorular, metnin ana fikrine dayalı olmalı.
             - Her soru, çocukların metni doğru bir şekilde anlamalarını sağlamak için net olmalı.
