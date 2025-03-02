@@ -58,7 +58,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
         - "##" veya başka format işaretleyicilerini kullanma, sadece düz metin olarak yaz
         - Her problem numaralandırılmış olmalı (1, 2, 3...)
         - Her problem arasında öğrencilerin kalem ile işlem yapabilmesi için en az 3 satır boşluk bırak.
-        -  Başlık ve 1. soru arasında boşluk olmasın.
+        - Başlık ve 1. soru arasında boşluk olmasın.
     `;
 
     // Kullanıcıya problem oluşturuluyor bilgisini göster
@@ -91,6 +91,9 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
             const lines = generatedText.split('\n');
             let isTitle = true; // İlk satırın başlık olduğunu varsayıyoruz
             let firstProblem = true; // İlk problemi takip etmek için
+
+            // Sütun düzeni için
+            let problemsInColumn = '';
             
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
@@ -105,129 +108,29 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     // Problem numarası tespit edildi
                     if (firstProblem) {
                         // İlk problem için özel margin ayarı - başlığa yapışık olması için
-                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">Problem ${line}</h3>`;
+                        problemsInColumn += `<div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">${line}</div>`;
                         firstProblem = false;
                     } else {
                         // Diğer problemler arasına 75px boşluk ekle
-                        formattedText += `<div style="height: 75px;"></div>`;
-                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">Problem ${line}</h3>`;
+                        problemsInColumn += `<div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">${line}</div>`;
                     }
                 } else {
                     // Normal metin
-                    formattedText += `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${line}</p>`;
+                    problemsInColumn += `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${line}</p>`;
                 }
             }
 
-            // Sayfa düzenini oluştur - script.js ile uyumlu hale getirildi
+            // Sayfa düzenini iki sütun haline getir
             const pageContent = `
-                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
-                    <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
-                    
-                    <!-- Üst çizgi - olabildiğince yukarıda -->
-                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
-                    
-                    <!-- Ana içerik -->
-                    <div>
-                        ${formattedText}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 10px;">
+                    <div style="width: 100%; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+                        ${problemsInColumn}
                     </div>
-                    
-                    <!-- Alt bilgi çizgisi -->
-                    <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
                 </div>
             `;
             
             // İçeriği sayfaya ekle
             document.getElementById("output").innerHTML = pageContent;
-
-            // Yazdırma butonunu işlevsel hale getir
-            document.getElementById("printButton").addEventListener("click", function () {
-                // Mevcut içeriği al (Yazdır butonu dahil)
-                const originalContent = document.getElementById("output").innerHTML;
-                
-                // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
-                const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
-                
-                // Yazdırma sayfası oluştur
-                const printWindow = window.open('', '', 'height=600,width=800');
-                
-                // Yazdırma sayfasının içeriğini ayarla - script.js ile uyumlu
-                printWindow.document.write(`
-                    <html>
-                    <head>
-                        <title>OkuAnla - Matematik Problemi Yazdır</title>
-                        <style>
-                            @media print {
-                                body {
-                                    font-family: Arial, sans-serif;
-                                    font-size: 14px;
-                                    line-height: 1.5;
-                                    margin: 0.5cm;
-                                }
-                                
-                                h1 {
-                                    font-size: 24px;
-                                    font-weight: bold;
-                                    text-align: center;
-                                    margin-bottom: 15px;
-                                }
-                                
-                                h3 {
-                                    font-size: 18px;
-                                    font-weight: bold;
-                                    margin-top: 20px;
-                                    margin-bottom: 12px;
-                                }
-                                
-                                p {
-                                    text-indent: 20px;
-                                    margin-bottom: 10px;
-                                }
-                                
-                                .watermark {
-                                    position: fixed;
-                                    top: 5px;
-                                    left: 5px;
-                                    font-size: 14px;
-                                    color: #d3d3d3;
-                                    font-weight: bold;
-                                }
-                                
-                                .header-divider {
-                                    border-bottom: 2px solid #333;
-                                    margin-bottom: 15px;
-                                    margin-top: 0;
-                                }
-                                
-                                .footer-divider {
-                                    border-top: 2px solid #333;
-                                    padding-top: 10px;
-                                    margin-top: 15px;
-                                }
-                                
-                                .problem-space {
-                                    height: 75px;
-                                }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="watermark">OkuAnla.net</div>
-                        <div class="header-divider"></div>
-                        <div>${contentWithoutButton}</div>
-                    </body>
-                    </html>
-                `);
-                
-                printWindow.document.close();
-                
-                // Sayfanın yüklenmesini bekleyip yazdır
-                printWindow.onload = function() {
-                    setTimeout(function() {
-                        printWindow.print();
-                        // printWindow.close(); // Yazdırma işlemi tamamlandıktan sonra pencereyi kapatmak isterseniz bunu etkinleştirebilirsiniz
-                    }, 500);
-                };
-            });
 
         } else {
             document.getElementById("output").innerHTML = "<p>Matematik problemleri oluşturulamadı: API yanıtı geçersiz.</p>";
