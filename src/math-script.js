@@ -124,7 +124,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     
                     <!-- Üst çizgi -->
-                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px;"></div>
+                    <div class="header-divider"></div>
                     
                     <!-- Ana içerik -->
                     <div>
@@ -132,7 +132,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     </div>
                     
                     <!-- Alt bilgi çizgisi -->
-                    <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
+                    <div class="footer-divider"></div>
                 </div>
             `;
 
@@ -156,70 +156,22 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                     font-family: Arial, sans-serif;
                                     font-size: 14px;
                                     line-height: 1.5;
-                                    margin: 0.5cm;
-                                }
-                                
-                                h1 {
-                                    font-size: 24px;
-                                    font-weight: bold;
-                                    text-align: center;
-                                    margin-bottom: 15px;
-                                }
-                                
-                                h3 {
-                                    font-size: 18px;
-                                    font-weight: bold;
-                                    margin-top: 20px;
-                                    margin-bottom: 12px;
-                                }
-                                
-                                p {
-                                    text-indent: 20px;
-                                    margin-bottom: 10px;
-                                }
-                                
-                                .watermark {
-                                    position: fixed;
-                                    top: 5px;
-                                    left: 5px;
-                                    font-size: 14px;
-                                    color: #d3d3d3;
-                                    font-weight: bold;
-                                }
-                                
-                                .header-divider {
-                                    border-bottom: 2px solid #333;
-                                    margin-bottom: 15px;
-                                    margin-top: 0;
-                                }
-                                
-                                .footer-divider {
-                                    border-top: 2px solid #333;
-                                    padding-top: 10px;
-                                    margin-top: 15px;
+                                    margin: 0;
+                                    padding: 0;
                                 }
                             }
                         </style>
                     </head>
                     <body>
-                        <div class="watermark">OkuAnla.net</div>
-                        <div class="header-divider"></div>
-                        <div>${contentWithoutButton}</div>
+                        ${contentWithoutButton}
                     </body>
                     </html>
                 `);
-                
                 printWindow.document.close();
-                
-                printWindow.onload = function() {
-                    setTimeout(function() {
-                        printWindow.print();
-                    }, 500);
-                };
+                printWindow.print();
             });
         }
     } catch (error) {
-        console.error("Hata oluştu:", error);
-        document.getElementById("output").innerHTML = "<p>Bir hata oluştu. Lütfen tekrar deneyin.</p>";
+        document.getElementById("output").innerHTML = `<p>Bir hata oluştu: ${error.message}</p>`;
     }
 });
