@@ -89,6 +89,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
             const lines = generatedText.split('\n');
             let isTitle = true; // İlk satırın başlık olduğunu varsayıyoruz
             let firstProblem = true; // İlk problemi takip etmek için
+            let problemCount = 1; // Problem numarasını takip etmek için
             
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
@@ -103,20 +104,15 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     // Problem numarası tespit edildi
                     if (firstProblem) {
                         // İlk problem için özel margin ayarı - başlığa yapışık olması için
-                      formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.replace(/^\d+\./, '')}</h3>`;
-
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${problemCount}. ${line.replace(/^\d+\./, '')}</h3>`;
                         firstProblem = false;
-                    } 
-                    else {
+                    } else {
                         // Diğer problemler arasına 75px boşluk ekle
                         formattedText += `<div style="height: 75px;"></div>`;
-                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.replace(/^\d+\./, '')}</h3>`;
-
-
-
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${problemCount}. ${line.replace(/^\d+\./, '')}</h3>`;
                     }
-                } 
-                else {
+                    problemCount++;
+                } else {
                     // Normal metin
                     formattedText += `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${line}</p>`;
                 }
