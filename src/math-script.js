@@ -123,13 +123,13 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     
-                                        <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
+                                        <div class="header-divider" style="margin-bottom: 15px; margin-top: 0;"></div>
                     
                                         <div>
                         ${formattedText}
                     </div>
                     
-                                        <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
+                                        <div class="footer-divider" style="padding-top: 10px; margin-top: 20px;"></div>
                 </div>
             `;
             
@@ -165,7 +165,6 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                     font-size: 24px;
                                     font-weight: bold;
                                     text-align: center;
-          irittura
                                     margin-bottom: 15px;
                                 }
                                 
@@ -183,7 +182,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 
                                 .watermark {
                                     position: fixed;
-                                    top: 5px;
+      锢5px;
                                     left: 5px;
                                     font-size: 14px;
                                     color: #d3d3d3;
@@ -193,7 +192,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 .header-divider {
                                     border-bottom: 2px solid #333;
                                     margin-bottom: 15px;
-                                    margin-top: 0;
+                                    margin-top: 0; /* Üst çizgiyi yukarı almak için margin-top: 0 olarak ayarlandı */
                                 }
                                 
                                 .footer-divider {
