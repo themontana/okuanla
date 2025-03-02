@@ -258,19 +258,22 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 }
                                 
                                 .question-grid {
-                                    display: grid;
-                                    grid-template-columns: 48% 48%;
-                                    column-gap: 4%;
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    justify-content: space-between;
+                                    gap: 10px;
                                     width: 100%;
                                 }
                                 
                                 .question-item {
+                                    width: 48%;
                                     background-color: #f8f9fa;
                                     border-radius: 8px;
                                     padding: 8px;
                                     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
                                     margin-bottom: 10px;
                                     break-inside: avoid;
+                                    box-sizing: border-box;
                                 }
                                 
                                 .question-text {
