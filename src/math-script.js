@@ -97,14 +97,14 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 if (line === '') continue; // Boş satırları atla
                 
                 if (isTitle) {
-                    // Başlık için özel stil
-                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 20px;">${line}</h1>`;
+                    // Başlık için özel stil - margin-bottom'u 0px olarak ayarla
+                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 0px;">${line}</h1>`;
                     isTitle = false;
                 } else if (/^\d+\./.test(line)) {
                     // Problem numarası tespit edildi
-                    // Önceki problem ile arasına boşluk ekle (ikinci problemden itibaren)
+                    // Önceki problem ile arasına boşluk ekle (ikinci problemden itibaren), boşluğu 75px'e azalt
                     if (formattedText.includes('Problem') && !line.includes('Problem 1')) {
-                        formattedText += `<div style="height: 150px;"></div>`;
+                        formattedText += `<div style="height: 75px;"></div>`;
                     }
                     
                     formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">Problem ${line}</h3>`;
@@ -150,7 +150,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 font-size: 32px;
                                 font-weight: bold;
                                 text-align: center;
-                                margin-bottom: 30px;
+                                margin-bottom: 0px; /* Başlık ile ilk problem arasındaki boşluğu kaldır */
                             }
                             h3 {
                                 font-size: 18px;
@@ -163,7 +163,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 margin-bottom: 15px;
                             }
                             .problem-space {
-                                height: 150px;
+                                height: 75px; /* Problemler arasındaki boşluğu 75px'e azalt */
                             }
                             .watermark {
                                 position: fixed;
