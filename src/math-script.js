@@ -43,7 +43,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
     }
 
     // Kullanıcı girdilerine göre prompt oluştur
-    const prompt = `
+    const prompt = `\
         Lütfen ${mathGrade}. sınıf öğrencileri için "${topic}" konusunda ${difficulty} seviyede ${problemCount} tane matematik problemi oluştur.
         
         Problemler şu şekilde olmalı:
@@ -89,7 +89,6 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
             const lines = generatedText.split('\n');
             let isTitle = true; // İlk satırın başlık olduğunu varsayıyoruz
             let firstProblem = true; // İlk problemi takip etmek için
-            let problemCount = 1; // Problem numarasını takip etmek için
             
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
@@ -104,15 +103,16 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     // Problem numarası tespit edildi
                     if (firstProblem) {
                         // İlk problem için özel margin ayarı - başlığa yapışık olması için
-                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${problemCount}. ${line.replace(/^\d+\./, '')}</h3>`;
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.replace(/^\d+\./, '')}</h3>`;
                         firstProblem = false;
-                    } else {
+                    } 
+                    else {
                         // Diğer problemler arasına 75px boşluk ekle
                         formattedText += `<div style="height: 75px;"></div>`;
-                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${problemCount}. ${line.replace(/^\d+\./, '')}</h3>`;
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">${line.replace(/^\d+\./, '')}</h3>`;
                     }
-                    problemCount++;
-                } else {
+                } 
+                else {
                     // Normal metin
                     formattedText += `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${line}</p>`;
                 }
@@ -124,7 +124,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
                     
                     <!-- Üst çizgi - olabildiğince yukarıda -->
-                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
+                    <div style="border-top: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
                     
                     <!-- Ana içerik -->
                     <div>
@@ -193,7 +193,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 }
                                 
                                 .header-divider {
-                                    border-bottom: 2px solid #333;
+                                    border-top: 2px solid #333; /* Tek üst çizgi */
                                     margin-bottom: 15px;
                                     margin-top: 0;
                                 }
@@ -212,7 +212,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     </head>
                     <body>
                         <div class="watermark">OkuAnla.net</div>
-                        <div class="header-divider"></div>
+                        <div class="header-divider"></div> <!-- Tek üst çizgi -->
                         <div>${contentWithoutButton}</div>
                     </body>
                     </html>
