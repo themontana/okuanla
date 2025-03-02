@@ -23,9 +23,9 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             case '2':
                 return '200-250'; // 2. sınıf için kelime sayısı 200-250 arası
             case '3':
-                return '250-300'; // 3. sınıf için kelime sayısı 250-300 arası
+                return '300-350'; // 3. sınıf için kelime sayısı 250-300 arası
             case '4':
-                return '300-350'; // 4. sınıf için kelime sayısı 300-350 arası
+                return '400-450'; // 4. sınıf için kelime sayısı 300-350 arası
             default:
                 return '150-200'; // Varsayılan olarak 1. sınıf aralığı
         }
