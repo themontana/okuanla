@@ -130,17 +130,18 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 }
                 
                 // Soruları iki sütunda göster - daha küçük kutucuklar
-                formattedQuestions += '<div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-top: 20px;">';
+                formattedQuestions += '<div class="question-grid">';
                 
                 questions.forEach((question, index) => {
-                    const questionNumber = question.match(/^\d+[\.\)]\s/)[0];
-                    const questionText = question.replace(/^\d+[\.\)]\s/, '');
+                    // RegEx ile soru numarasını al, eğer bulunamazsa boş string kullan
+                    const questionNumberMatch = question.match(/^\d+[\.\)]\s/);
+                    const questionNumber = questionNumberMatch ? questionNumberMatch[0] : '';
+                    const questionText = questionNumberMatch ? question.replace(/^\d+[\.\)]\s/, '') : question;
                     
                     formattedQuestions += `
-                        <div style="width: 48%; margin-bottom: 15px; background-color: #f8f9fa; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                            <p style="font-weight: bold; margin-bottom: 8px; font-size: 15px;">${questionNumber}${questionText}</p>
-                            <div style="border: 1px solid #ddd; border-radius: 5px; background-color: white; min-height: 60px; padding: 8px;">
-                            </div>
+                        <div class="question-item">
+                            <p class="question-text">${questionNumber}${questionText}</p>
+                            <div class="answer-box"></div>
                         </div>
                     `;
                 });
@@ -165,9 +166,38 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
                     
                     <!-- Sorular bölümü -->
-                    <div>
+                    <div style="margin-top: 15px;">
                         ${formattedQuestions}
                     </div>
+
+                    <style>
+                        .question-grid {
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: space-between;
+                            gap: 10px;
+                        }
+                        .question-item {
+                            width: 48%;
+                            margin-bottom: 12px;
+                            background-color: #f8f9fa;
+                            border-radius: 8px;
+                            padding: 10px;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        }
+                        .question-text {
+                            font-weight: bold;
+                            margin-bottom: 8px;
+                            font-size: 14px;
+                        }
+                        .answer-box {
+                            border: 1px solid #ddd;
+                            border-radius: 5px;
+                            background-color: white;
+                            min-height: 60px;
+                            padding: 8px;
+                        }
+                    </style>
                 </div>
             `;
             
@@ -191,79 +221,89 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     <head>
                         <title>OkuAnla - Metin Yazdır</title>
                         <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                font-size: 16px;
-                                line-height: 1.6;
-                                margin: 15px;
-                                position: relative;
-                            }
-                            h1 {
-                                font-size: 28px;
-                                font-weight: bold;
-                                text-align: center;
-                                margin-bottom: 15px;
-                            }
-                            h2 {
-                                font-size: 22px;
-                                font-weight: bold;
-                                text-align: center;
-                                margin-bottom: 12px;
-                            }
-                            p {
-                                text-indent: 20px;
-                                margin-bottom: 12px;
-                            }
-                            .watermark {
-                                position: fixed;
-                                bottom: 15px;
-                                right: 15px;
-                                font-size: 18px;
-                                color: #d3d3d3;
-                                font-weight: bold;
-                                z-index: -1;
-                            }
-                            .question-box {
-                                background-color: #f8f9fa;
-                                border-radius: 8px;
-                                padding: 10px;
-                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                                margin-bottom: 12px;
-                                font-size: 14px;
-                            }
-                            .answer-space {
-                                border: 1px solid #ddd;
-                                border-radius: 5px;
-                                background-color: white;
-                                min-height: 60px;
-                                padding: 8px;
-                            }
-                            .question-container {
-                                display: flex;
-                                flex-wrap: wrap;
-                                justify-content: space-between;
-                            }
-                            .question-item {
-                                width: 48%;
-                            }
-                            .header-divider {
-                                border-bottom: 2px solid #333;
-                                margin-bottom: 15px;
-                                margin-top: 0;
-                            }
-                            .footer-divider {
-                                border-top: 2px solid #333;
-                                padding-top: 10px;
-                                margin-top: 15px;
-                            }
-                            @page {
-                                margin: 1cm;
+                            @media print {
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    font-size: 14px;
+                                    line-height: 1.5;
+                                    margin: 0.5cm;
+                                }
+                                
+                                h1 {
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                    margin-bottom: 15px;
+                                }
+                                
+                                h2 {
+                                    font-size: 20px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                    margin-bottom: 12px;
+                                }
+                                
+                                p {
+                                    text-indent: 20px;
+                                    margin-bottom: 10px;
+                                }
+                                
+                                .watermark {
+                                    position: fixed;
+                                    top: 5px;
+                                    left: 5px;
+                                    font-size: 14px;
+                                    color: #d3d3d3;
+                                    font-weight: bold;
+                                }
+                                
+                                .question-grid {
+                                    display: grid;
+                                    grid-template-columns: 48% 48%;
+                                    column-gap: 4%;
+                                    width: 100%;
+                                }
+                                
+                                .question-item {
+                                    background-color: #f8f9fa;
+                                    border-radius: 8px;
+                                    padding: 8px;
+                                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                                    margin-bottom: 10px;
+                                    break-inside: avoid;
+                                }
+                                
+                                .question-text {
+                                    font-weight: bold;
+                                    margin-bottom: 6px;
+                                    font-size: 14px;
+                                }
+                                
+                                .answer-box {
+                                    border: 1px solid #ddd;
+                                    border-radius: 5px;
+                                    background-color: white;
+                                    min-height: 50px;
+                                    padding: 6px;
+                                }
+                                
+                                .header-divider {
+                                    border-bottom: 2px solid #333;
+                                    margin-bottom: 15px;
+                                    margin-top: 0;
+                                }
+                                
+                                .footer-divider {
+                                    border-top: 2px solid #333;
+                                    padding-top: 10px;
+                                    margin-top: 15px;
+                                }
                             }
                         </style>
                     </head>
                     <body>
-                        <div>${contentWithoutButton}</div>
                         <div class="watermark">OkuAnla.net</div>
+                        <div>${contentWithoutButton}</div>
                     </body>
                     </html>
                 `);
