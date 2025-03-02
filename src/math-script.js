@@ -97,12 +97,12 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 
                 if (isTitle) {
                     // Başlık için özel stil
-                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 30px;">${line}</h1>`;
+                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 20px;">${line}</h1>`;
                     isTitle = false;
                 } else if (/^\d+\./.test(line)) {
                     // Problem numarası tespit edildi
                     // Önceki problem ile arasına boşluk ekle (ikinci problemden itibaren)
-                    if (formattedText.includes('Problem')) {
+                    if (formattedText.includes('Problem') && !line.includes('Problem 1')) {
                         formattedText += `<div style="height: 150px;"></div>`;
                     }
                     
