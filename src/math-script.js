@@ -118,13 +118,26 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 }
             }
 
-            // Yazdırma butonunu ekle
-            document.getElementById("output").innerHTML = `
-                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+            // Sayfa düzenini oluştur - script.js ile uyumlu hale getirildi
+            const pageContent = `
+                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
-                    ${formattedText}
+                    
+                    <!-- Üst çizgi - olabildiğince yukarıda -->
+                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
+                    
+                    <!-- Ana içerik -->
+                    <div>
+                        ${formattedText}
+                    </div>
+                    
+                    <!-- Alt bilgi çizgisi -->
+                    <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
                 </div>
             `;
+            
+            // İçeriği sayfaya ekle
+            document.getElementById("output").innerHTML = pageContent;
 
             // Yazdırma butonunu işlevsel hale getir
             document.getElementById("printButton").addEventListener("click", function () {
@@ -137,53 +150,70 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 // Yazdırma sayfası oluştur
                 const printWindow = window.open('', '', 'height=600,width=800');
                 
-                // Yazdırma sayfasının içeriğini ayarla
+                // Yazdırma sayfasının içeriğini ayarla - script.js ile uyumlu
                 printWindow.document.write(`
                     <html>
                     <head>
                         <title>OkuAnla - Matematik Problemi Yazdır</title>
                         <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                font-size: 16px;
-                                line-height: 1.6;
-                                margin: 20px;
-                                position: relative;
-                            }
-                            h1 {
-                                font-size: 32px;
-                                font-weight: bold;
-                                text-align: center;
-                                margin: 0;
-                                padding: 0;
-                            }
-                            h3 {
-                                font-size: 18px;
-                                font-weight: bold;
-                                margin-top: 0;
-                                margin-bottom: 10px;
-                            }
-                            p {
-                                text-indent: 20px;
-                                margin-bottom: 15px;
-                            }
-                            .problem-space {
-                                height: 75px;
-                            }
-                            .watermark {
-                                position: fixed;
-                                bottom: 20px;
-                                right: 20px;
-                                font-size: 20px;
-                                color: #d3d3d3;
-                                font-weight: bold;
-                                z-index: -1; /* Su damgasını içeriğin arkasına yerleştir */
+                            @media print {
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    font-size: 14px;
+                                    line-height: 1.5;
+                                    margin: 0.5cm;
+                                }
+                                
+                                h1 {
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                    margin-bottom: 15px;
+                                }
+                                
+                                h3 {
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                    margin-top: 20px;
+                                    margin-bottom: 12px;
+                                }
+                                
+                                p {
+                                    text-indent: 20px;
+                                    margin-bottom: 10px;
+                                }
+                                
+                                .watermark {
+                                    position: fixed;
+                                    top: 5px;
+                                    left: 5px;
+                                    font-size: 14px;
+                                    color: #d3d3d3;
+                                    font-weight: bold;
+                                }
+                                
+                                .header-divider {
+                                    border-bottom: 2px solid #333;
+                                    margin-bottom: 15px;
+                                    margin-top: 0;
+                                }
+                                
+                                .footer-divider {
+                                    border-top: 2px solid #333;
+                                    padding-top: 10px;
+                                    margin-top: 15px;
+                                }
+                                
+                                .problem-space {
+                                    height: 75px;
+                                }
                             }
                         </style>
                     </head>
                     <body>
-                        <div>${contentWithoutButton}</div>
                         <div class="watermark">OkuAnla.net</div>
+                        <div class="header-divider"></div>
+                        <div>${contentWithoutButton}</div>
                     </body>
                     </html>
                 `);
