@@ -90,6 +90,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
             let formattedText = '';
             const lines = generatedText.split('\n');
             let isTitle = true; // İlk satırın başlık olduğunu varsayıyoruz
+            let firstProblem = true; // İlk problemi takip etmek için
             
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
@@ -97,17 +98,20 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                 if (line === '') continue; // Boş satırları atla
                 
                 if (isTitle) {
-                    // Başlık için özel stil - margin-bottom'u 0px olarak ayarla
-                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 0px;">${line}</h1>`;
+                    // Başlık için özel stil - tüm margin'leri 0 olarak ayarla
+                    formattedText += `<h1 style="font-size: 32px; font-weight: bold; text-align: center; margin: 0; padding: 0;">${line}</h1>`;
                     isTitle = false;
                 } else if (/^\d+\./.test(line)) {
                     // Problem numarası tespit edildi
-                    // Önceki problem ile arasına boşluk ekle (ikinci problemden itibaren), boşluğu 75px'e azalt
-                    if (formattedText.includes('Problem') && !line.includes('Problem 1')) {
+                    if (firstProblem) {
+                        // İlk problem için özel margin ayarı - başlığa yapışık olması için
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">Problem ${line}</h3>`;
+                        firstProblem = false;
+                    } else {
+                        // Diğer problemler arasına 75px boşluk ekle
                         formattedText += `<div style="height: 75px;"></div>`;
+                        formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">Problem ${line}</h3>`;
                     }
-                    
-                    formattedText += `<h3 style="font-size: 18px; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">Problem ${line}</h3>`;
                 } else {
                     // Normal metin
                     formattedText += `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${line}</p>`;
@@ -150,12 +154,13 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 font-size: 32px;
                                 font-weight: bold;
                                 text-align: center;
-                                margin-bottom: 0px; /* Başlık ile ilk problem arasındaki boşluğu kaldır */
+                                margin: 0;
+                                padding: 0;
                             }
                             h3 {
                                 font-size: 18px;
                                 font-weight: bold;
-                                margin-top: 20px;
+                                margin-top: 0;
                                 margin-bottom: 10px;
                             }
                             p {
@@ -163,7 +168,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 margin-bottom: 15px;
                             }
                             .problem-space {
-                                height: 75px; /* Problemler arasındaki boşluğu 75px'e azalt */
+                                height: 75px;
                             }
                             .watermark {
                                 position: fixed;
