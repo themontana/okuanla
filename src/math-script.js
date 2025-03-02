@@ -129,7 +129,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     <!-- Ana içerik -->
                     <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                         <div style="flex: 1; min-width: 45%;">${formattedText}</div>
-                        <div style="flex: 1; min-width: 45%;">${formattedText}</div>
+                        <div style="flex: 1; min-width: 45%;"></div> <!-- Boş sütun -->
                     </div>
                     
                     <!-- Alt bilgi çizgisi -->
