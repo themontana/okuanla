@@ -65,30 +65,115 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         
         if (data.generatedText) {
             const generatedText = data.generatedText;
-
-            // Başlıkları büyütme ve ortalama işlemi
-            let formattedText = generatedText.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
-                // Başlık olan kısmı bulup stil ekleyelim (Başlıklar ne kadar kalın ve büyük olacaksa burada belirleyebiliriz)
+            
+            // Metni ve soruları ayır
+            let textPart = "";
+            let questionsPart = "";
+            
+            // "Sorular" başlığını bul ve metni ikiye böl
+            const questionsIndex = generatedText.indexOf("Sorular");
+            
+            if (questionsIndex !== -1) {
+                textPart = generatedText.substring(0, questionsIndex);
+                questionsPart = generatedText.substring(questionsIndex);
+            } else {
+                textPart = generatedText;
+            }
+            
+            // Metin kısmını formatla
+            let formattedText = textPart.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
+                // Başlık olan kısmı bulup stil ekleyelim
                 if (p1.trim().endsWith(':')) {
-                    // Başlıkları büyütüp ortalayalım
                     return `<h2 style="font-size: 24px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
                 } else if (p1.trim().startsWith("**") && p1.trim().endsWith("**")) {
-                    // Metinde başlık olarak tespit ettiğimiz yerler
-                    const title = p1.replace(/\*\*/g, '').trim();  // ** işaretlerini kaldırıp başlık metnini alıyoruz
+                    const title = p1.replace(/\*\*/g, '').trim();
                     return `<h1 style="font-size: 32px; font-weight: bold; text-align: center;">${title}</h1>`;
                 } else {
-                    // Diğer metinler normal kalacak
                     return `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
                 }
             });
-
-            // Yazdırma butonunu ekle
-            document.getElementById("output").innerHTML = `
-                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+            
+            // Sorular kısmını formatla - iki sütunlu yapı oluştur
+            let formattedQuestions = "";
+            
+            if (questionsPart) {
+                // Soruları ayır
+                const questionLines = questionsPart.split('\n');
+                let questions = [];
+                
+                // Başlık dışındaki soruları al
+                let isCollecting = false;
+                let currentQuestion = "";
+                
+                for (const line of questionLines) {
+                    if (line.trim().toLowerCase().includes("sorular")) {
+                        isCollecting = true;
+                        formattedQuestions += `<h2 style="font-size: 24px; font-weight: bold; text-align: center; width: 100%;">${line.trim()}</h2>`;
+                    } else if (isCollecting && line.trim()) {
+                        // Sayıyla başlıyorsa yeni soru
+                        if (/^\d+[\.\)]\s/.test(line.trim())) {
+                            if (currentQuestion) {
+                                questions.push(currentQuestion);
+                            }
+                            currentQuestion = line.trim();
+                        } else if (currentQuestion) {
+                            currentQuestion += " " + line.trim();
+                        }
+                    }
+                }
+                
+                // Son soruyu ekle
+                if (currentQuestion) {
+                    questions.push(currentQuestion);
+                }
+                
+                // Soruları iki sütunda göster
+                formattedQuestions += '<div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-top: 20px;">';
+                
+                questions.forEach((question, index) => {
+                    const questionNumber = question.match(/^\d+[\.\)]\s/)[0];
+                    const questionText = question.replace(/^\d+[\.\)]\s/, '');
+                    
+                    formattedQuestions += `
+                        <div style="width: 48%; margin-bottom: 20px; background-color: #f8f9fa; border-radius: 10px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <p style="font-weight: bold; margin-bottom: 10px;">${questionNumber}${questionText}</p>
+                            <div style="border: 1px solid #ddd; border-radius: 5px; background-color: white; min-height: 80px; padding: 10px;">
+                                <p style="color: #999; font-style: italic;">Cevabınızı buraya yazınız...</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                formattedQuestions += '</div>';
+            }
+            
+            // Sayfa düzenini oluştur - üst ve alt bilgi çizgileri ile
+            const pageContent = `
+                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 20px;">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
-                    ${formattedText}
+                    
+                    <!-- Üst bilgi çizgisi -->
+                    <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+                        <h1 style="margin: 0; color: #2c3e50;">Oku Anla</h1>
+                    </div>
+                    
+                    <!-- Ana içerik -->
+                    <div>
+                        ${formattedText}
+                    </div>
+                    
+                    <!-- Alt bilgi çizgisi -->
+                    <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
+                    
+                    <!-- Sorular bölümü -->
+                    <div>
+                        ${formattedQuestions}
+                    </div>
                 </div>
             `;
+            
+            // İçeriği sayfaya ekle
+            document.getElementById("output").innerHTML = pageContent;
 
             // Yazdırma butonunu işlevsel hale getir
             document.getElementById("printButton").addEventListener("click", function () {
@@ -96,7 +181,6 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 const originalContent = document.getElementById("output").innerHTML;
                 
                 // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
-                // "Yazdır" butonunu içeren div'i kaldır
                 const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
                 
                 // Yazdırma sayfası oluştur
@@ -138,7 +222,41 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 font-size: 20px;
                                 color: #d3d3d3;
                                 font-weight: bold;
-                                z-index: -1; /* Su damgasını içeriğin arkasına yerleştir */
+                                z-index: -1;
+                            }
+                            .question-box {
+                                background-color: #f8f9fa;
+                                border-radius: 10px;
+                                padding: 15px;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                margin-bottom: 20px;
+                            }
+                            .answer-space {
+                                border: 1px solid #ddd;
+                                border-radius: 5px;
+                                background-color: white;
+                                min-height: 80px;
+                                padding: 10px;
+                            }
+                            .question-container {
+                                display: flex;
+                                flex-wrap: wrap;
+                                justify-content: space-between;
+                            }
+                            .question-item {
+                                width: 48%;
+                            }
+                            .header-divider, .footer-divider {
+                                border-bottom: 2px solid #333;
+                                padding-bottom: 10px;
+                                margin-bottom: 20px;
+                                text-align: center;
+                            }
+                            .footer-divider {
+                                border-bottom: none;
+                                border-top: 2px solid #333;
+                                padding-top: 10px;
+                                margin-top: 20px;
                             }
                         </style>
                     </head>
@@ -155,7 +273,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 printWindow.onload = function() {
                     setTimeout(function() {
                         printWindow.print();
-                        // printWindow.close(); // Yazdırma işlemi tamamlandıktan sonra pencereyi kapatmak isterseniz bunu etkinleştirebilirsiniz
+                        // printWindow.close();
                     }, 500);
                 };
             });
