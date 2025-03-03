@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OkuAnla - İngilizce Metin Oluştur</title>
+    <link rel="stylesheet" href="public/style.css">
+    
+    <!-- Google AdSense Doğrulama Kodu -->
+    <meta name="google-adsense-account" content="ca-pub-8999174255873846">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999174255873846"
+        crossorigin="anonymous"></script>
+
+    <style>
+        .nav-container {
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-link {
+            padding: 12px 25px;
+            text-decoration: none;
+            color: #007bff;
+            border-radius: 8px;
+            margin: 0 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link.active {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .nav-link:hover:not(.active) {
+            background-color: #e6f2ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>OkuAnla - İngilizce</h1>
+    <p>İngilizce okuma metni ve sorular oluştur.</p>
+    
+    <div class="nav-container">
+        <a href="index.html" class="nav-link">Okuma Metni</a>
+        <a href="math.html" class="nav-link">Matematik Problemi</a>
+        <a href="english.html" class="nav-link active">İngilizce Metin Oluştur</a>
+    </div>
+
+    <form id="englishForm">
+        <label for="englishGrade">Sınıf Seviyesi:</label>
+        <select id="englishGrade">
+            <option value="2">2. Sınıf</option>
+            <option value="3">3. Sınıf</option>
+            <option value="4">4. Sınıf</option>
+            <option value="5">5. Sınıf</option>
+            <option value="6">6. Sınıf</option>
+            <option value="7">7. Sınıf</option>
+            <option value="8">8. Sınıf</option>
+        </select>
+
+        <label for="unit">Ünite:</label>
+        <select id="unit">
+            <option value="1">1. Ünite: </option>
+            <option value="2">2. Ünite: </option>
+            <option value="3">3. Ünite: </option>
+            <option value="4">4. Ünite: </option>
+            <option value="5">5. Ünite: </option>
+            <option value="6">6. Ünite: </option>
+            <option value="7">7. Ünite: </option>
+            <option value="8">8. Ünite: </option>
+            <option value="9">9. Ünite: </option>
+            <option value="10">10. Ünite: </option>
+        </select>
+
+        <label for="difficulty">Zorluk Seviyesi:</label>
+        <select id="difficulty">
+            <option value="easy">Kolay (Easy)</option>
+            <option value="medium">Orta (Medium)</option>
+            <option value="hard">Zor (Hard)</option>
+        </select>
+
+        <label for="questionCount">Soru Sayısı:</label>
+        <select id="questionCount">
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+        </select>
+
+        <button type="submit">Metni Oluştur</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script src="src/english-script.js"></script>
+</body>
+</html>
