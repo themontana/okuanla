@@ -73,9 +73,10 @@ document.getElementById("englishForm").addEventListener("submit", async function
         - Create exactly ${questionCount} questions that test comprehension
         - Include a mix of direct and inferential questions
         - Use clear, simple instructions appropriate for Turkish students learning English
+       - Don't translate questions to Turkish
         - Format with a "Questions" title before the questions section
         
-        The content should be instructional, age-appropriate, and focused on language acquisition.
+        The content should be instructional, age-appropriate, and focused on language acquisition. Don't say anything else before or after the text, just sahte text and questions
     `;
 
     // Kullanıcıya metin oluşturuluyor bilgisini göster
