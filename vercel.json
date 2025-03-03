@@ -29,6 +29,10 @@
       "handle": "filesystem"
     },
     {
+      "src": "/sitemap.xml",
+      "dest": "/public/sitemap.xml"
+    },
+    {
       "src": "/(math)",
       "dest": "/math.html"
     },
