@@ -17,12 +17,40 @@ document.getElementById("englishForm").addEventListener("submit", async function
 
     // Sınıf seviyesi ve üniteye göre uygun kelime havuzu
     function getVocabularyByGradeAndUnit(grade, unit) {
-        // Bu fonksiyon, sınıf ve ünite kombinasyonuna göre kelime havuzunu döndürür
-        // Burayı doldurmanız gerekecek
+        // 2. sınıf kelime havuzu
+        const grade2Vocabulary = {
+            '1': ['ambulance', 'balloon', 'cake', 'café', 'camp', 'doctor', 'football', 'gorilla', 'kangaroo', 'laptop', 'lemon', 'microphone', 'note', 'picnic', 'radio', 'restaurant', 'stadium', 'television', 'train', 'university', 'wagon', 'yoghurt', 'zebra'],
+            '2': ['afternoon', 'bye', 'fine', 'great', 'hello', 'hi', 'morning', 'night', 'okay', 'thanks'],
+            '3': ['close', 'color', 'cut', 'draw', 'excuse', 'left', 'open', 'paint', 'right', 'say', 'sit', 'stand', 'turn'],
+            '4': ['board', 'book', 'crayon', 'desk', 'eraser', 'notebook', 'paper', 'pen', 'pencil', 'school bag', 'scissors', 'table'],
+            '5': ['black', 'blue', 'brown', 'color', 'green', 'like', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'],
+            '6': ['basketball', 'chess', 'dance', 'football', 'hide and seek', 'jump', 'play', 'run', 'rope', 'sing', 'skip', 'slide', 'walk'],
+            '7': ['arm', 'close', 'ear', 'eye', 'finger', 'foot', 'hand', 'head', 'knee', 'mouth', 'nose', 'open', 'point', 'raise', 'show', 'touch'],
+            '8': ['bin', 'bird', 'box', 'car', 'cat', 'dog', 'fish', 'rabbit', 'sea', 'stone', 'tree', 'turtle'],
+            '9': ['apple', 'banana', 'color', 'cut', 'eat', 'fruit', 'give', 'grapefruit', 'grape', 'lemon', 'melon', 'orange', 'peach', 'touch', 'watermelon'],
+            '10': ['chicken', 'cow', 'donkey', 'duck', 'elephant', 'fly', 'goat', 'horse', 'jump', 'lion', 'monkey', 'run', 'sheep', 'snake', 'spider', 'swim']
+        };
+
+        // Diğer sınıflar için boş kelime havuzları (daha sonra doldurulabilir)
+        const vocabularies = {
+            '2': grade2Vocabulary
+            // Daha sonra diğer sınıflar eklenebilir: '3': grade3Vocabulary, ...
+        };
+
+        // İstenen sınıf ve ünite için kelime havuzunu döndür
+        if (vocabularies[grade] && vocabularies[grade][unit]) {
+            return {
+                grade: grade,
+                unit: unit,
+                vocabulary: vocabularies[grade][unit]
+            };
+        }
+
+        // Eğer belirtilen sınıf veya ünite bulunamazsa boş bir dizi döndür
         return {
             grade: grade,
             unit: unit,
-            vocabulary: [] // Burayı siz dolduracaksınız
+            vocabulary: []
         };
     }
 
@@ -59,6 +87,11 @@ document.getElementById("englishForm").addEventListener("submit", async function
     const vocabularyInfo = getVocabularyByGradeAndUnit(englishGrade, unit);
     const wordCount = getWordCountByGrade(englishGrade);
     
+    // Prompt'a kelime havuzunu ekle
+    const vocabularyPrompt = vocabularyInfo.vocabulary.length > 0 
+        ? `- Include as many of these vocabulary words as possible: ${vocabularyInfo.vocabulary.join(', ')}`
+        : '';
+    
     const prompt = `
         Please create an English reading comprehension passage with ${questionCount} questions for ${englishGrade}th grade Turkish students.
         
@@ -68,12 +101,13 @@ document.getElementById("englishForm").addEventListener("submit", async function
         - Use ${getDifficultyDescription(difficulty)} language complexity
         - Be educational and engaging
         - Be appropriate for the age group
+        ${vocabularyPrompt}
         
         For the questions:
         - Create exactly ${questionCount} questions that test comprehension
         - Include a mix of direct and inferential questions
         - Use clear, simple instructions appropriate for Turkish students learning English
-       - Don't translate questions to Turkish
+        - Don't translate questions to Turkish
         - Format with a "Questions" title before the questions section
         
         The content should be instructional, age-appropriate, and focused on language acquisition. Don't say anything else before the title or after the text, just share title, text and questions
