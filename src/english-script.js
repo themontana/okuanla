@@ -76,7 +76,7 @@ document.getElementById("englishForm").addEventListener("submit", async function
        - Don't translate questions to Turkish
         - Format with a "Questions" title before the questions section
         
-        The content should be instructional, age-appropriate, and focused on language acquisition. Don't say anything else before or after the text, just sahte text and questions
+        The content should be instructional, age-appropriate, and focused on language acquisition. Don't say anything else before the title or after the text, just share title, text and questions
     `;
 
     // Kullanıcıya metin oluşturuluyor bilgisini göster
