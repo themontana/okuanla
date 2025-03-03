@@ -168,14 +168,11 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
 
                 <style>
                     .problems-grid {
-                        display: flex;
-                        flex-wrap: wrap;
-                        justify-content: space-between;
-                        gap: 10px;
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 15px;
                     }
                     .problem-item {
-                        width: 48%;
-                        margin-bottom: 12px;
                         background-color: #f8f9fa;
                         border-radius: 8px;
                         padding: 10px;
@@ -192,6 +189,19 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                         background-color: white;
                         min-height: 60px;
                         padding: 8px;
+                    }
+                    
+                    @media print {
+                        .problems-grid {
+                            display: grid !important;
+                            grid-template-columns: repeat(2, 1fr) !important;
+                            gap: 15px !important;
+                            width: 100% !important;
+                        }
+                        .problem-item {
+                            width: auto !important;
+                            page-break-inside: avoid !important;
+                        }
                     }
                 </style>
             `;
@@ -254,23 +264,19 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 
                                 /* Yeni grid yapısı - yazdırma için optimize edilmiş */
                                 .problems-grid {
-                                    display: table;
-                                    width: 100%;
-                                    border-collapse: separate;
-                                    border-spacing: 10px;
+                                    display: grid !important;
+                                    grid-template-columns: repeat(2, 1fr) !important;
+                                    gap: 15px !important;
+                                    width: 100% !important;
                                 }
                                 
                                 .problem-item {
-                                    display: inline-block;
-                                    width: 45%;
-                                    margin-bottom: 12px;
-                                    margin-right: 10px;
                                     background-color: #f8f9fa;
                                     border-radius: 8px;
                                     padding: 10px;
                                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                                    vertical-align: top;
                                     page-break-inside: avoid;
+                                    width: auto !important;
                                 }
                                 
                                 .problem-text {
@@ -292,7 +298,7 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     <body>
                         <div class="watermark">OkuAnla.net</div>
                         <div class="header-divider"></div>
-                        <div>${contentWithoutButton}</div>
+                        ${contentWithoutButton}
                     </body>
                     </html>
                 `);
