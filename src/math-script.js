@@ -252,21 +252,25 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                     margin-top: 15px;
                                 }
                                 
+                                /* Yeni grid yapısı - yazdırma için optimize edilmiş */
                                 .problems-grid {
-                                    display: flex;
-                                    flex-wrap: wrap;
-                                    justify-content: space-between;
-                                    gap: 10px;
+                                    display: table;
+                                    width: 100%;
+                                    border-collapse: separate;
+                                    border-spacing: 10px;
                                 }
                                 
                                 .problem-item {
-                                    width: 48%;
+                                    display: inline-block;
+                                    width: 45%;
                                     margin-bottom: 12px;
+                                    margin-right: 10px;
                                     background-color: #f8f9fa;
                                     border-radius: 8px;
                                     padding: 10px;
                                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                                    break-inside: avoid;
+                                    vertical-align: top;
+                                    page-break-inside: avoid;
                                 }
                                 
                                 .problem-text {
