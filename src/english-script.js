@@ -31,10 +31,40 @@ document.getElementById("englishForm").addEventListener("submit", async function
             '10': ['chicken', 'cow', 'donkey', 'duck', 'elephant', 'fly', 'goat', 'horse', 'jump', 'lion', 'monkey', 'run', 'sheep', 'snake', 'spider', 'swim']
         };
 
-        // Diğer sınıflar için boş kelime havuzları (daha sonra doldurulabilir)
+        // 3. sınıf kelime havuzu
+        const grade3Vocabulary = {
+            '1': ['bye!', 'day', 'good afternoon!', 'good bye!', 'good evening!', 'good morning!', 'good night!', 'hello!', 'hi', 'nice', 'weekend', 'see you (soon)', 'spell', 'take care'],
+            '2': ['aunt', 'brother', 'cousin', 'dad', 'daughter', 'family', 'father', 'grandfather', 'grandma', 'grandmother', 'grandpa', 'kinship', 'mom', 'mother', 'sister', 'son', 'uncle'],
+            '3': ['beautiful', 'big', 'fast', 'fat', 'old', 'short', 'slim', 'slow', 'small', 'strong', 'tall', 'ugly', 'weak', 'young'],
+            '4': ['angry', 'bad', 'cook', 'dance', 'drink', 'eat', 'energetic', 'good', 'go', 'happy', 'hungry', 'listen', 'okay', 'play', 'read', 'ride', 'run', 'sad', 'sleep', 'surprised', 'study', 'swim', 'thirsty', 'tired', 'unhappy', 'walk', 'write', 'watch'],
+            '5': ['ball', 'black', 'block', 'blue', 'brown', 'button', 'chess', 'computer game', 'doll', 'green', 'kite', 'lorry', 'marble', 'orange', 'plane', 'playing card', 'pink', 'purple', 'red', 'robot', 'teddy bear', 'toy box', 'toy car', 'train', 'white', 'yellow'],
+            '6': ['armchair', 'bathroom', 'bed', 'bedroom', 'bookcase', 'carpet', 'cattle', 'chair', 'cup', 'fridge', 'garage', 'garden', 'home', 'house', 'kitchen', 'livingroom', 'playroom', 'rectangle', 'round', 'shampoo', 'soap', 'sofa', 'square', 'table', 'toilet', 'triangle', 'wardrobe'],
+            '7': ['bank', 'cafe', 'cinema', 'city', 'hospital', 'library', 'market', 'mosque', 'museum', 'park', 'restaurant', 'school', 'shopping centre', 'town', 'village', 'zoo'],
+            '8': ['bike', 'boat', 'bus', 'car', 'helicopter', 'motorcycle', 'plane', 'ship'],
+            '9': ['cloudy', 'cold', 'desert', 'freezing', 'hot', 'nice', 'pole', 'rainforest', 'rainy', 'snowy', 'sunny', 'today', 'warm', 'weather', 'wet', 'windy'],
+            '10': ['bear', 'bee', 'butterfly', 'chicken', 'cow', 'dolphin', 'donkey', 'duck', 'elephant', 'fish', 'forest', 'frog', 'goat', 'horse', 'ladybird', 'like', 'lion', 'monkey', 'mountain', 'parrot', 'pigeon', 'sea', 'shark', 'snake', 'spider', 'whale']
+        };
+
+        // 4. sınıf kelime havuzu
+        const grade4Vocabulary = {
+            '1': ['activity', 'again', 'board', 'can', 'card', 'classroom', 'clean', 'close', 'color', 'come', 'congratulations', 'desk', 'door', 'eraser', 'give', 'go back', 'great', 'hand', 'Hello!', 'Here you are.', 'Hi!', 'Hurray!', 'join', 'keep', 'leave', 'let\'s', 'lights', 'listen', 'may', 'name', 'numbers (1-50)', 'of course', 'open', 'pencil case', 'pencil sharpener', 'play', 'please', 'quiet', 'raise', 'ruler', 'school bag', 'square', 'stay at', 'sure', 'teacher', 'tidy', 'turn off', 'turn on', 'what', 'window', 'winner', 'You\'re welcome.'],
+            '2': ['America', 'American', 'Britain', 'British', 'country', 'east', 'German', 'Germany', 'he', 'I', 'Iran', 'Iranian', 'Iraq', 'Iraqi', 'Japan', 'Japanese', 'nationality', 'north', 'Pakistan', 'Pakistani', 'Russia', 'Russian', 'she', 'south', 'South Africa', 'South African', 'Turkish', 'Türkiye', 'west', 'where', 'you'],
+            '3': ['are', 'can', 'cannot', 'carry', 'climb a tree', 'cycling', 'do puzzle', 'Don\'t worry.', 'drive', 'fly', 'helpful', 'her', 'his', 'is', 'jump high', 'music', 'my', 'my mother\'s car', 'Oh, my God!', 'photography', 'play the guitar', 'play the piano', 'ride a bike', 'ride a horse', 'school club', 'speak', 'superhero', 'swim', 'take picture', 'these', 'this', 'whose', 'your'],
+            '4': ['again', 'checkmate', 'chess master', 'dislike', 'do', 'don\'t', 'drawing and coloring', 'fly a kite', 'like', 'pardon', 'play chess', 'play table tennis', 'play with dolls', 'play with marbles', 'read comics', 'ride a bike', 'say', 'singing and dancing', 'slowly', 'swim', 'watch cartoon'],
+            '5': ['at night', 'at noon', 'come home', 'do homework', 'early', 'Friday', 'get dressed', 'go shopping', 'go to bed', 'go to school', 'go to the cinema', 'go to the playground', 'have a shower', 'have breakfast', 'have dinner', 'have lunch', 'Hurry up!', 'in the afternoon', 'in the evening', 'in the morning', 'karate class', 'meet with friends', 'Monday', 'o\'clock', 'play computer game', 'read a book', 'Saturday', 'school uniform', 'Sunday', 'Thursday', 'time', 'Tuesday', 'wake up', 'wash your face', 'watch TV', 'Wednesday'],
+            '6': ['Be careful!', 'Be patient!', 'Be slow!', 'bean maze', 'behind', 'blow', 'bottle', 'box', 'brush', 'button', 'cardboard', 'chair', 'change', 'coloring pen', 'cotton swab', 'cup', 'cut', 'cut the cardboard', 'daily', 'dip', 'disc', 'dish soap', 'do the experiment', 'draw', 'experiment', 'fold', 'fold the paper', 'food coloring', 'freeze', 'get', 'glass', 'glue', 'glue stick', 'go through', 'Have fun!', 'ice cube', 'impossible', 'in', 'in front of', 'interesting', 'jar', 'kite', 'light maze', 'line', 'materials', 'melt', 'mix', 'mix red and yellow', 'near', 'on', 'pin', 'pinwheel', 'place', 'plant', 'plant the seeds', 'plate', 'push', 'ruler', 'salt', 'school glue', 'science', 'science project', 'scientist', 'scissors', 'shake', 'soil', 'step', 'straw', 'string', 'surprised', 'touch', 'toy box', 'under', 'vegetable oil', 'water the plant'],
+            '7': ['actor', 'actress', 'ambulance', 'assembly point', 'businessman', 'businesswoman', 'chef', 'community', 'dance school', 'dancer', 'doctor', 'emergency exit sign', 'farm', 'farmer', 'fire alarm', 'fire station', 'fire truck', 'firefighter', 'flying a plane', 'follow', 'growing vegetables', 'help', 'home', 'hospital', 'hotel', 'instruction', 'job', 'music academy', 'nurse', 'office', 'office worker', 'pilot', 'police car', 'police station', 'policeman', 'policewoman', 'post office', 'restaurant', 'school', 'singer', 'teacher', 'teaching children', 'treating animals', 'treating people', 'vet', 'veterinary clinic', 'waiter', 'waitress', 'workplace', 'writer'],
+            '8': ['accessories', 'belt', 'boots', 'borrow', 'clothes', 'coat', 'cold', 'cool', 'dress', 'fall', 'gloves', 'has got', 'have got', 'hot', 'jacket', 'jeans', 'need', 'put on', 'rainy', 'scarf', 'season', 'shirt', 'shorts', 'skirt', 'snowman', 'snowy', 'socks', 'sorry', 'spring', 'summer', 'sunglasses', 'sunny', 'T-shirt', 'trousers', 'umbrella', 'wardrobe', 'warm', 'windy', 'winter'],
+            '9': ['age', 'bald', 'beard and mustache', 'beautiful', 'blonde hair', 'blue eyes', 'brown hair', 'curly hair', 'dark hair', 'fat', 'favorite', 'freckles', 'glasses', 'handsome', 'headscarf', 'interesting', 'middle-aged', 'movie', 'old', 'physical characteristic', 'possession', 'short', 'slim', 'straight hair', 'tall', 'thin', 'wavy hair', 'young'],
+            '10': ['a', 'an', 'apple', 'bread', 'butter', 'cheese', 'coffee', 'cupcake', 'delicious', 'Do you want...?', 'drinks', 'egg', 'Enjoy your meal!', 'feel', 'fish and chips', 'food', 'full', 'hamburger', 'honey', 'How about...?', 'hungry', 'ice cream', 'lemon', 'lemonade', 'marmalade', 'Maybe later.', 'milk', 'milkshake', 'need', 'olives', 'omelet', 'pasta', 'salad', 'sandwich', 'some', 'soup', 'sugar', 'tea', 'thirty', 'tomato', 'tomato soup', 'try', 'vegetables', 'water', 'What about...?', 'Would you like...?', 'yogurt']
+        };
+
+        // Tüm sınıflar için kelime havuzları
         const vocabularies = {
-            '2': grade2Vocabulary
-            // Daha sonra diğer sınıflar eklenebilir: '3': grade3Vocabulary, ...
+            '2': grade2Vocabulary,
+            '3': grade3Vocabulary,
+            '4': grade4Vocabulary
+            // Daha sonra diğer sınıflar eklenebilir: '5': grade5Vocabulary, ...
         };
 
         // İstenen sınıf ve ünite için kelime havuzunu döndür
@@ -54,11 +84,35 @@ document.getElementById("englishForm").addEventListener("submit", async function
         };
     }
 
+    // Ünite adlarını getirme fonksiyonu
+    function getUnitTitles(grade) {
+        const unitTitles = {
+            '2': {
+                '1': 'Unit 1', '2': 'Unit 2', '3': 'Unit 3', '4': 'Unit 4', '5': 'Unit 5',
+                '6': 'Unit 6', '7': 'Unit 7', '8': 'Unit 8', '9': 'Unit 9', '10': 'Unit 10'
+            },
+            '3': {
+                '1': 'Unit 1: Greetings', '2': 'Unit 2: My Family', '3': 'Unit 3: People I Love',
+                '4': 'Unit 4: Feelings', '5': 'Unit 5: Toys and Games', '6': 'Unit 6: My House',
+                '7': 'Unit 7: In My City', '8': 'Unit 8: Transportation', '9': 'Unit 9: Weather',
+                '10': 'Unit 10: Nature'
+            },
+            '4': {
+                '1': 'Unit 1: Classroom Rules', '2': 'Unit 2: Nationality', '3': 'Unit 3: Cartoon Characters',
+                '4': 'Unit 4: Free Time', '5': 'Unit 5: My Day', '6': 'Unit 6: Fun with Science',
+                '7': 'Unit 7: Jobs', '8': 'Unit 8: My Clothes', '9': 'Unit 9: My Friends',
+                '10': 'Unit 10: Food and Drinks'
+            }
+        };
+
+        return unitTitles[grade] || {};
+    }
+
     // Zorluk seviyesine göre dil karmaşıklığı
     function getDifficultyDescription(diffLevel) {
         switch(diffLevel) {
             case 'easy':
-                return 'simple sentences, basic vocabulary, present tense';
+                return 'simple and short sentences, basic vocabulary, present tense';
             case 'medium':
                 return 'compound sentences, varied vocabulary, present and past tenses';
             case 'hard':
@@ -87,6 +141,10 @@ document.getElementById("englishForm").addEventListener("submit", async function
     const vocabularyInfo = getVocabularyByGradeAndUnit(englishGrade, unit);
     const wordCount = getWordCountByGrade(englishGrade);
     
+    // Ünite adını al
+    const unitTitles = getUnitTitles(englishGrade);
+    const unitTopic = unitTitles[unit] ? unitTitles[unit].split(':')[1]?.trim() || unitText.split(':')[1]?.trim() : '';
+    
     // Prompt'a kelime havuzunu ekle
     const vocabularyPrompt = vocabularyInfo.vocabulary.length > 0 
         ? `- Include as many of these vocabulary words as possible: ${vocabularyInfo.vocabulary.join(', ')}`
@@ -96,7 +154,7 @@ document.getElementById("englishForm").addEventListener("submit", async function
         Please create an English reading comprehension passage with ${questionCount} questions for ${englishGrade}th grade Turkish students.
         
         The passage should:
-        - Be about ${unitText.split(':')[1] || 'appropriate topics for this grade level'}
+        - Be about ${unitTopic || 'appropriate topics for this grade level'}
         - Have ${wordCount} words
         - Use ${getDifficultyDescription(difficulty)} language complexity
         - Be educational and engaging
