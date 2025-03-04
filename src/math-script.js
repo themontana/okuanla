@@ -170,32 +170,32 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     .problems-grid {
                         display: grid;
                         grid-template-columns: repeat(2, 1fr);
-                        gap: 15px;
+                        gap: 10px;
                     }
                     .problem-item {
                         background-color: #f8f9fa;
-                        border-radius: 8px;
-                        padding: 10px;
+                        border-radius: 6px;
+                        padding: 8px;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     }
                     .problem-text {
                         font-weight: bold;
-                        margin-bottom: 8px;
-                        font-size: 14px;
+                        margin-bottom: 6px;
+                        font-size: 12px;
                     }
                     .answer-box {
                         border: 1px solid #ddd;
-                        border-radius: 5px;
+                        border-radius: 4px;
                         background-color: white;
-                        min-height: 60px;
-                        padding: 8px;
+                        min-height: 40px;
+                        padding: 6px;
                     }
                     
                     @media print {
                         .problems-grid {
                             display: grid !important;
                             grid-template-columns: repeat(2, 1fr) !important;
-                            gap: 15px !important;
+                            gap: 10px !important;
                             width: 100% !important;
                         }
                         .problem-item {
@@ -229,8 +229,8 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                             @media print {
                                 body {
                                     font-family: Arial, sans-serif;
-                                    font-size: 14px;
-                                    line-height: 1.5;
+                                    font-size: 12px;
+                                    line-height: 1.4;
                                     margin: 0.5cm;
                                 }
                                 
@@ -266,14 +266,14 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 .problems-grid {
                                     display: grid !important;
                                     grid-template-columns: repeat(2, 1fr) !important;
-                                    gap: 15px !important;
+                                    gap: 10px !important;
                                     width: 100% !important;
                                 }
                                 
                                 .problem-item {
                                     background-color: #f8f9fa;
-                                    border-radius: 8px;
-                                    padding: 10px;
+                                    border-radius: 6px;
+                                    padding: 8px;
                                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                                     page-break-inside: avoid;
                                     width: auto !important;
@@ -281,16 +281,16 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 
                                 .problem-text {
                                     font-weight: bold;
-                                    margin-bottom: 8px;
-                                    font-size: 14px;
+                                    margin-bottom: 6px;
+                                    font-size: 12px;
                                 }
                                 
                                 .answer-box {
                                     border: 1px solid #ddd;
-                                    border-radius: 5px;
+                                    border-radius: 4px;
                                     background-color: white;
-                                    min-height: 60px;
-                                    padding: 8px;
+                                    min-height: 40px;
+                                    padding: 6px;
                                 }
                             }
                         </style>
