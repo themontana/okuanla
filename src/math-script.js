@@ -170,32 +170,32 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                     .problems-grid {
                         display: grid;
                         grid-template-columns: repeat(2, 1fr);
-                        gap: 10px;
+                        gap: 12px; /* 10px'ten 12px'e büyüttüm */
                     }
                     .problem-item {
                         background-color: #f8f9fa;
-                        border-radius: 6px;
-                        padding: 8px;
+                        border-radius: 7px; /* 6px'ten 7px'e büyüttüm */
+                        padding: 9px; /* 8px'ten 9px'e büyüttüm */
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     }
                     .problem-text {
                         font-weight: bold;
-                        margin-bottom: 6px;
-                        font-size: 12px;
+                        margin-bottom: 7px; /* 6px'ten 7px'e büyüttüm */
+                        font-size: 13px; /* 12px'ten 13px'e büyüttüm */
                     }
                     .answer-box {
                         border: 1px solid #ddd;
-                        border-radius: 4px;
+                        border-radius: 5px; /* 4px'ten 5px'e büyüttüm */
                         background-color: white;
-                        min-height: 40px;
-                        padding: 6px;
+                        min-height: 50px; /* 40px'ten 50px'e büyüttüm */
+                        padding: 7px; /* 6px'ten 7px'e büyüttüm */
                     }
                     
                     @media print {
                         .problems-grid {
                             display: grid !important;
                             grid-template-columns: repeat(2, 1fr) !important;
-                            gap: 10px !important;
+                            gap: 12px !important; /* 10px'ten 12px'e büyüttüm */
                             width: 100% !important;
                         }
                         .problem-item {
@@ -229,8 +229,8 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                             @media print {
                                 body {
                                     font-family: Arial, sans-serif;
-                                    font-size: 12px;
-                                    line-height: 1.4;
+                                    font-size: 13px; /* 12px'ten 13px'e büyüttüm */
+                                    line-height: 1.5; /* 1.4'ten 1.5'e büyüttüm */
                                     margin: 0.5cm;
                                 }
                                 
@@ -266,14 +266,14 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 .problems-grid {
                                     display: grid !important;
                                     grid-template-columns: repeat(2, 1fr) !important;
-                                    gap: 10px !important;
+                                    gap: 12px !important; /* 10px'ten 12px'e büyüttüm */
                                     width: 100% !important;
                                 }
                                 
                                 .problem-item {
                                     background-color: #f8f9fa;
-                                    border-radius: 6px;
-                                    padding: 8px;
+                                    border-radius: 7px; /* 6px'ten 7px'e büyüttüm */
+                                    padding: 9px; /* 8px'ten 9px'e büyüttüm */
                                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                                     page-break-inside: avoid;
                                     width: auto !important;
@@ -281,16 +281,16 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
                                 
                                 .problem-text {
                                     font-weight: bold;
-                                    margin-bottom: 6px;
-                                    font-size: 12px;
+                                    margin-bottom: 7px; /* 6px'ten 7px'e büyüttüm */
+                                    font-size: 13px; /* 12px'ten 13px'e büyüttüm */
                                 }
                                 
                                 .answer-box {
                                     border: 1px solid #ddd;
-                                    border-radius: 4px;
+                                    border-radius: 5px; /* 4px'ten 5px'e büyüttüm */
                                     background-color: white;
-                                    min-height: 40px;
-                                    padding: 6px;
+                                    min-height: 50px; /* 40px'ten 50px'e büyüttüm */
+                                    padding: 7px; /* 6px'ten 7px'e büyüttüm */
                                 }
                             }
                         </style>
