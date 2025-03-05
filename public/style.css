@@ -26,8 +26,12 @@ p {
 form {
     display: flex;
     flex-direction: column;
-    max-width: 400px;
+    max-width: 600px;  /* Genişlik her iki sayfada da aynı */
     margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 label {
@@ -36,8 +40,11 @@ label {
 }
 
 input, select, button {
+    width: 100%;  /* Tam genişlikte olacak şekilde */
     padding: 10px;
     margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 button {
@@ -45,6 +52,7 @@ button {
     color: white;
     border: none;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
