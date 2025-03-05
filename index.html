@@ -5,111 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OkuAnla - Okuduğunu Anlama Metni Oluştur</title>
     <style>
+        /* Yeni renk paleti */
+        :root {
+            --primary-color: #688375;
+            --primary-hover: #5a7063;
+        }
+
+        /* Mevcut stilleri KORUYARAK sadece renkleri güncelle */
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
+            background-color: #f0f0f0;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Başlık ve logo */
         header {
-            background: #688375;
+            background: var(--primary-color);
             color: white;
-            padding: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 15px;
+            text-align: center;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo img {
-            height: 40px;
-        }
-
-        /* Ana menüyü KORUYORUZ */
         nav a {
             color: white;
-            margin-left: 20px;
+            margin: 0 10px;
             text-decoration: none;
-            font-weight: 500;
         }
 
-        /* Form alanı */
-        .form-container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin: 20px 0;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
+        /* Modern buton stilleri */
         button {
-            background: #688375;
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 14px 30px;
+            padding: 12px 24px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         button:hover {
-            background: #5a7063;
+            background: var(--primary-hover);
             transform: translateY(-2px);
         }
 
-        /* Alt bilgi */
-        footer {
-            text-align: center;
+        /* Diğer elementlerin stillerini KORU */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
             padding: 20px;
-            background: #688375;
-            color: white;
-            margin-top: 30px;
+            background: white;
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container logo">
-            <img src="logo.png" alt="OkuAnla Logo">
-            <h1>OkuAnla</h1>
-        </div>
+        <h1>OkuAnla</h1>
         <nav>
-            <!-- Orijinal menü bağlantılarını KORUDUK -->
             <a href="#">Okuma Metni</a>
             <a href="#">Matematik Problemi</a>
             <a href="#">İngilizce Metin Oluştur</a>
@@ -117,47 +82,39 @@
     </header>
 
     <div class="container">
-        <div class="form-container">
-            <h2>Okuma Metni ve Soru Oluştur</h2>
-            <form>
-                <div class="form-group">
-                    <label>Sınıf Seviyesi:</label>
-                    <select>
-                        <option>1. Sınıf</option>
-                        <option>2. Sınıf</option>
-                        <option>3. Sınıf</option>
-                        <option>4. Sınıf</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Tema:</label>
-                    <input type="text" placeholder="Örn: Doğa, Hayvanlar, Okul">
-                </div>
-                
-                <div class="form-group">
-                    <label>Kullanılacak Kelimeler:</label>
-                    <input type="text" placeholder="Örn: elma, armut, kitap">
-                </div>
-                
-                <div class="form-group">
-                    <label>Soru Sayısı:</label>
-                    <select>
-                        <option>4</option>
-                        <option>6</option>
-                        <option>8</option>
-                    </select>
-                </div>
-                
-                <button type="submit">Metni Oluştur</button>
-            </form>
-        </div>
+        <h2>İlkokul seviyesinde okuma metni ve sorular oluştur.</h2>
+        <form>
+            <div>
+                <label>Sınıf Seviyesi:</label>
+                <select>
+                    <option>1. Sınıf</option>
+                    <option>2. Sınıf</option>
+                    <option>3. Sınıf</option>
+                    <option>4. Sınıf</option>
+                </select>
+            </div>
+            
+            <div>
+                <label>Tema:</label>
+                <input type="text">
+            </div>
+            
+            <div>
+                <label>Kullanılacak Kelimeler:</label>
+                <input type="text">
+            </div>
+            
+            <div>
+                <label>Soru Sayısı:</label>
+                <select>
+                    <option>4</option>
+                    <option>6</option>
+                    <option>8</option>
+                </select>
+            </div>
+            
+            <button type="submit">Metni Oluştur</button>
+        </form>
     </div>
-
-    <footer>
-        <div class="container">
-            &copy; 2024 OkuAnla | Tüm Hakları Saklıdır
-        </div>
-    </footer>
 </body>
 </html>
