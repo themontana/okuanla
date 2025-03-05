@@ -89,41 +89,32 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     <head>
                         <style>
                             @media print {
-                                .main-image { position: absolute; top: 20px; right: 20px; max-width: 150px; }
-                                .questions-container { grid-template-columns: 1fr 1fr; }
-                                #printButton, .watermark, .header-line { display: none; }
-                                .answer-space { border: 1px solid #000; }
+                                .main-image { 
+                                    position: absolute;
+                                    top: 20px;
+                                    right: 20px;
+                                    max-width: 150px;
+                                    max-height: 150px;
+                                }
+                                .questions-container { 
+                                    grid-template-columns: 1fr 1fr;
+                                    column-gap: 20px;
+                                }
+                                #printButton, .watermark, .header-line { 
+                                    display: none;
+                                }
+                                .answer-space { 
+                                    border: 1px solid #000;
+                                    height: 80px;
+                                }
+                                .content { 
+                                    margin-top: 100px;
+                                }
                             }
-                            body { font-family: Arial, sans-serif; padding: 20px; }
-                            .content { margin-top: 20px; }
-                            .questions-container {
-                                display: grid;
-                                grid-template-columns: 1fr 1fr;
-                                gap: 20px;
-                                margin-top: 30px;
-                            }
-                            .question-box {
-                                background: #f1f1f1;
-                                padding: 15px;
-                                border-radius: 8px;
-                            }
-                            .answer-space {
-                                height: 60px;
-                                border: 1px dashed #000;
-                                margin-top: 10px;
-                                border-radius: 4px;
-                            }
-                            .main-image { max-width: 300px; margin: 20px 0; }
-                            #printButton {
-                                position: fixed;
-                                top: 15px;
-                                right: 20px;
-                                background: #4CAF50;
-                                color: white;
-                                border: none;
-                                padding: 10px 20px;
-                                cursor: pointer;
-                                z-index: 1000;
+                            body { 
+                                font-family: Arial, sans-serif;
+                                padding: 20px;
+                                position: relative;
                             }
                             .watermark {
                                 position: fixed;
@@ -140,6 +131,41 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 right: 0;
                                 border-top: 1px solid #000;
                                 margin: 0;
+                            }
+                            #printButton {
+                                position: fixed;
+                                top: 15px;
+                                right: 20px;
+                                background: #4CAF50;
+                                color: white;
+                                border: none;
+                                padding: 10px 20px;
+                                cursor: pointer;
+                                z-index: 1000;
+                            }
+                            .main-image {
+                                max-width: 300px;
+                                margin: 20px 0;
+                                float: right;
+                                clear: both;
+                            }
+                            .questions-container {
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+                                gap: 20px;
+                                margin-top: 30px;
+                            }
+                            .question-box {
+                                background: #f1f1f1;
+                                padding: 15px;
+                                border-radius: 8px;
+                                page-break-inside: avoid;
+                            }
+                            .answer-space {
+                                height: 60px;
+                                border: 1px dashed #000;
+                                margin-top: 10px;
+                                border-radius: 4px;
                             }
                         </style>
                     </head>
