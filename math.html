@@ -16,7 +16,7 @@
             margin: 25px 0;
             display: flex;
             justify-content: center;
-            background-color: #f0f8ff;
+            background-color: #688375;
             border-radius: 10px;
             padding: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -25,7 +25,7 @@
         .nav-link {
             padding: 12px 25px;
             text-decoration: none;
-            color: #007bff;
+            color: white;
             border-radius: 8px;
             margin: 0 5px;
             font-weight: 500;
@@ -33,20 +33,73 @@
         }
         
         .nav-link.active {
-            background-color: #007bff;
+            background-color: #4e6a5a;
             color: white;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .nav-link:hover:not(.active) {
-            background-color: #e6f2ff;
+            background-color: #56725f;
+        }
+
+        h1 {
+            text-align: center;
+            color: #688375;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        form label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: 600;
+        }
+
+        form select, form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        form button {
+            background-color: #688375;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        form button:hover {
+            background-color: #4e6a5a;
+        }
+
+        #output {
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>OkuAnla - Matematik</h1>
-    <p>İlkokul seviyesinde matematik problemi oluştur.</p>
+    <div class="logo-container">
+        <a href="https://www.okuanla.net">
+            <img src="public/logo.png" alt="OkuAnla Logo" class="logo">
+        </a>
+    </div>
+    
+    <p style="text-align: center;">İlkokul seviyesinde matematik problemi oluştur.</p>
     
     <div class="nav-container">
         <a href="index.html" class="nav-link">Okuma Metni</a>
