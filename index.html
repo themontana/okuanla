@@ -13,15 +13,24 @@
     
     <style>
         .nav-container {
-            margin: 25px 0;
+            margin: 0;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
+            align-items: center;
             background-color: #688375;
-            border-radius: 10px;
-            padding: 5px;
+            padding: 10px 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
+        .logo-container {
+            margin-right: 20px;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+        }
+
         .nav-link {
             padding: 12px 25px;
             text-decoration: none;
@@ -43,17 +52,26 @@
             background-color: #56725f;
         }
 
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
+        form {
+            margin: 30px auto;
+            max-width: 500px;
+            text-align: left;
         }
 
-        .logo {
-            width: 120px;
-            height: auto;
+        form label {
+            margin: 10px 0 5px;
+            display: block;
         }
 
-        button {
+        form input, form select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        form button {
             background-color: #688375;
             color: white;
             padding: 10px 15px;
@@ -63,21 +81,18 @@
             transition: 0.3s;
         }
 
-        button:hover {
+        form button:hover {
             background-color: #4e6a5a;
         }
     </style>
 </head>
 <body>
-    <div class="logo-container">
-        <a href="https://www.okuanla.net">
-    <img src="public/logo.png" alt="OkuAnla Logo" class="logo">
-</a>
-    </div>
-
-    <p>İlkokul seviyesinde okuma metni ve sorular oluştur.</p>
-    
     <div class="nav-container">
+        <div class="logo-container">
+            <a href="https://www.okuanla.net">
+                <img src="public/logo.png" alt="OkuAnla Logo" class="logo">
+            </a>
+        </div>
         <a href="index.html" class="nav-link active">Okuma Metni</a>
         <a href="math.html" class="nav-link">Matematik Problemi</a>
         <a href="english.html" class="nav-link">İngilizce Metin Oluştur</a>
