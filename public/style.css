@@ -15,7 +15,10 @@ body {
 h1 {
     text-align: center;
     color: #688375;
-    display: none;
+    display: block; /* Başlık görünür olacak şekilde display: block yapıldı */
+    font-size: 36px;
+    font-weight: bold;
+    margin-top: 30px;
 }
 
 p {
