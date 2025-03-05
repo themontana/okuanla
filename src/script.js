@@ -33,12 +33,19 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     // Unsplash API'den resim almak için fonksiyon
     async function fetchUnsplashImage(theme, keywords) {
         const unsplashAccessKey = 'V6tsrrsRGm_OwmhbPc7mOTsQzasxygTx6PqRn3z6tfk'; // Buraya kendi Unsplash Access Key'inizi ekleyin
-        const query = encodeURIComponent(`${theme} ${keywords}`);
+        
+        // URL kodlamasını düzelt ve Türkçe karakterleri işle
+        const safeTheme = encodeURIComponent(theme.normalize('NFC'));
+        const safeKeywords = encodeURIComponent(keywords.normalize('NFC'));
+        const query = `${safeTheme} ${safeKeywords}`;
         
         try {
             const response = await fetch(`https://api.unsplash.com/photos/random?query=${query}&client_id=${unsplashAccessKey}`);
             
             if (!response.ok) {
+                // Detaylı hata bilgisi
+                const errorBody = await response.text();
+                console.error(`Unsplash API Hatası! Durum: ${response.status}, Yanıt: ${errorBody}`);
                 throw new Error(`Unsplash API hatası! Durum: ${response.status}`);
             }
             
@@ -308,6 +315,8 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 
                                 .question-text {
                                     font-weight: bold;
+                                    margin-bottom.question-text {
+                                    font-weight: bold;
                                     margin-bottom: 6px;
                                     font-size: 14px;
                                 }
@@ -321,7 +330,9 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 }
                                 
                                 .header-divider {
-                                    border-bottom: 2px solid #333;margin-bottom: 15pxmargin-top: 0;
+                                    border-bottom: 2px solid #333;
+                                    margin-bottom: 15px;
+                                    margin-top: 0;
                                 }
                                 
                                 .footer-divider {
