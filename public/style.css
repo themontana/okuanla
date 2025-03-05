@@ -26,7 +26,7 @@ p {
 form {
     display: flex;
     flex-direction: column;
-    max-width: 600px;  /* Genişlik her iki sayfada da aynı */
+    max-width: 500px;  /* Form genişliği azaltıldı */
     margin: 20px auto;
     padding: 20px;
     background-color: #ffffff;
@@ -37,6 +37,7 @@ form {
 label {
     margin-top: 10px;
     margin-bottom: 5px;
+    font-weight: normal; /* Bold olmaması için font-weight normal yapıldı */
 }
 
 input, select, button {
