@@ -31,9 +31,9 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     }
 
     // Unsplash API'den resim almak için fonksiyon
-    async function fetchUnsplashImage(theme) {
+    async function fetchUnsplashImage(theme, keywords) {
         const unsplashAccessKey = 'V6tsrrsRGm_OwmhbPc7mOTsQzasxygTx6PqRn3z6tfk'; // Buraya kendi Unsplash Access Key'inizi ekleyin
-        const query = encodeURIComponent(theme);
+        const query = encodeURIComponent(`${theme} ${keywords}`);
         
         try {
             const response = await fetch(`https://api.unsplash.com/photos/random?query=${query}&client_id=${unsplashAccessKey}`);
@@ -45,14 +45,14 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             const data = await response.json();
             return {
                 url: data.urls.small,
-                alt: data.alt_description || theme
+                alt: data.alt_description || `${theme} ve ${keywords} resmi`
             };
         } catch (error) {
             console.error("Unsplash resmi alınamadı:", error);
             // Varsayılan bir placeholder resmi döndür
             return {
                 url: '/api/placeholder/300/200',
-                alt: theme + ' resmi'
+                alt: `${theme} ve ${keywords} resmi`
             };
         }
     }
@@ -74,14 +74,14 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        // Metni ve resmi eş zamanlı oluştur
+        // Metni ve resimi eş zamanlı oluştur
         const [textResponse, imageData] = await Promise.all([
             fetch('/api/generate-text', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prompt })
             }),
-            fetchUnsplashImage(theme)
+            fetchUnsplashImage(theme, keywords)
         ]);
 
         if (!textResponse.ok) {
@@ -321,8 +321,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 }
                                 
                                 .header-divider {
-                                    border-bottom: 2px solid #333;
-                                    margin-bottom: 15pxmargin-top: 0;
+                                    border-bottom: 2px solid #333;margin-bottom: 15pxmargin-top: 0;
                                 }
                                 
                                 .footer-divider {
