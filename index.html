@@ -4,83 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OkuAnla - Okuduğunu Anlama Metni Oluştur</title>
-    <link rel="stylesheet" href="public/style.css">
-    
-    <!-- Google AdSense Doğrulama Kodu -->
-    <meta name="google-adsense-account" content="ca-pub-8999174255873846">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999174255873846"
-        crossorigin="anonymous"></script>
-
     <style>
-        .nav-container {
-            margin: 25px 0;
-            display: flex;
-            justify-content: center;
-            background-color: #f0f8ff;
-            border-radius: 10px;
-            padding: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        /* Modern tasarım stilleri */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
         }
-        
-        .nav-link {
-            padding: 12px 25px;
-            text-decoration: none;
-            color: #007bff;
-            border-radius: 8px;
-            margin: 0 5px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        
-        .nav-link.active {
-            background-color: #007bff;
+
+        /* Başlık ve logo stil */
+        header {
+            background: #688375;
             color: white;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        
-        .nav-link:hover:not(.active) {
-            background-color: #e6f2ff;
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 40px; /* Logo boyutu */
+        }
+
+        nav a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Modern form tasarımı */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            border-color: #688375;
+            outline: none;
+        }
+
+        button {
+            background: #688375;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5a7063;
+            transform: translateY(-2px);
+        }
+
+        /* Footer stil */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #688375;
+            color: white;
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
-    <h1>OkuAnla</h1>
-    <p>İlkokul seviyesinde okuma metni ve sorular oluştur.</p>
-    
-    <div class="nav-container">
-        <a href="index.html" class="nav-link active">Okuma Metni</a>
-        <a href="math.html" class="nav-link">Matematik Problemi</a>
-        <a href="english.html" class="nav-link">İngilizce Metin Oluştur</a>
+    <header>
+        <div class="container logo">
+            <!-- Logo buraya eklenecek -->
+            <img src="logo.png" alt="OkuAnla Logo"> 
+            <h1>OkuAnla</h1>
+        </div>
+        <nav>
+            <a href="#">Anasayfa</a>
+            <a href="#">Hakkımızda</a>
+            <a href="#">İletişim</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <h2>Okuma Metni ve Soru Oluştur</h2>
+            <form>
+                <div class="form-group">
+                    <label>Sınıf Seviyesi:</label>
+                    <select>
+                        <option>1. Sınıf</option>
+                        <option>2. Sınıf</option>
+                        <option>3. Sınıf</option>
+                        <option>4. Sınıf</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Kullanılacak Kelimeler:</label>
+                    <input type="text" placeholder="Örn: elma, armut, kitap">
+                </div>
+                
+                <div class="form-group">
+                    <label>Soru Sayısı:</label>
+                    <input type="number" min="4" max="8" value="4">
+                </div>
+                
+                <button type="submit">Metni Oluştur</button>
+            </form>
+        </div>
     </div>
 
-    <form id="textForm">
-        <label for="grade">Sınıf Seviyesi:</label>
-        <select id="grade">
-            <option value="1">1. Sınıf</option>
-            <option value="2">2. Sınıf</option>
-            <option value="3">3. Sınıf</option>
-            <option value="4">4. Sınıf</option>
-        </select>
-
-        <label for="theme">Tema:</label>
-        <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay" required>
-
-        <label for="keywords">Kullanılacak Kelimeler:</label>
-        <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş" required>
-
-        <label for="questionCount">Soru Sayısı:</label>
-        <select id="questionCount">
-            <option value="4">4</option>
-            <option value="6">6</option>
-            <option value="8">8</option>
-        </select>
-
-        <button type="submit">Metni Oluştur</button>
-    </form>
-
-    <div id="output"></div>
-
-    <script src="src/script.js"></script>
+    <footer>
+        <div class="container">
+            &copy; 2024 OkuAnla | Tüm Hakları Saklıdır
+        </div>
+    </footer>
 </body>
 </html>
