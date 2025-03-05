@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OkuAnla - Okuduğunu Anlama Metni Oluştur</title>
     <style>
-        /* Modern tasarım stilleri */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f5f5f5;
@@ -21,7 +20,7 @@
             padding: 20px;
         }
 
-        /* Başlık ve logo stil */
+        /* Başlık ve logo */
         header {
             background: #688375;
             color: white;
@@ -38,9 +37,10 @@
         }
 
         .logo img {
-            height: 40px; /* Logo boyutu */
+            height: 40px;
         }
 
+        /* Ana menüyü KORUYORUZ */
         nav a {
             color: white;
             margin-left: 20px;
@@ -48,12 +48,12 @@
             font-weight: 500;
         }
 
-        /* Modern form tasarımı */
+        /* Form alanı */
         .form-container {
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin: 20px 0;
         }
 
@@ -68,18 +68,12 @@
             font-weight: 600;
         }
 
-        select, input[type="number"] {
+        select, input {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        select:focus, input:focus {
-            border-color: #688375;
-            outline: none;
         }
 
         button {
@@ -98,7 +92,7 @@
             transform: translateY(-2px);
         }
 
-        /* Footer stil */
+        /* Alt bilgi */
         footer {
             text-align: center;
             padding: 20px;
@@ -111,14 +105,14 @@
 <body>
     <header>
         <div class="container logo">
-            <!-- Logo buraya eklenecek -->
-            <img src="logo.png" alt="OkuAnla Logo"> 
+            <img src="logo.png" alt="OkuAnla Logo">
             <h1>OkuAnla</h1>
         </div>
         <nav>
-            <a href="#">Anasayfa</a>
-            <a href="#">Hakkımızda</a>
-            <a href="#">İletişim</a>
+            <!-- Orijinal menü bağlantılarını KORUDUK -->
+            <a href="#">Okuma Metni</a>
+            <a href="#">Matematik Problemi</a>
+            <a href="#">İngilizce Metin Oluştur</a>
         </nav>
     </header>
 
@@ -137,13 +131,22 @@
                 </div>
                 
                 <div class="form-group">
+                    <label>Tema:</label>
+                    <input type="text" placeholder="Örn: Doğa, Hayvanlar, Okul">
+                </div>
+                
+                <div class="form-group">
                     <label>Kullanılacak Kelimeler:</label>
                     <input type="text" placeholder="Örn: elma, armut, kitap">
                 </div>
                 
                 <div class="form-group">
                     <label>Soru Sayısı:</label>
-                    <input type="number" min="4" max="8" value="4">
+                    <select>
+                        <option>4</option>
+                        <option>6</option>
+                        <option>8</option>
+                    </select>
                 </div>
                 
                 <button type="submit">Metni Oluştur</button>
