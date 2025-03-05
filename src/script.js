@@ -14,7 +14,6 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         return;
     }
 
-    // Kullanıcı girdilerine göre geliştirilmiş prompt
     // Grade seçeneğine göre kelime sayısı aralığını ayarlayan fonksiyon
     function getWordCountRange(grade) {
         switch(grade) {
@@ -31,10 +30,37 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         }
     }
 
+    // Unsplash API'den resim almak için fonksiyon
+    async function fetchUnsplashImage(theme) {
+        const unsplashAccessKey = 'V6tsrrsRGm_OwmhbPc7mOTsQzasxygTx6PqRn3z6tfk'; // Buraya kendi Unsplash Access Key'inizi ekleyin
+        const query = encodeURIComponent(theme);
+        
+        try {
+            const response = await fetch(`https://api.unsplash.com/photos/random?query=${query}&client_id=${unsplashAccessKey}`);
+            
+            if (!response.ok) {
+                throw new Error(`Unsplash API hatası! Durum: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return {
+                url: data.urls.small,
+                alt: data.alt_description || theme
+            };
+        } catch (error) {
+            console.error("Unsplash resmi alınamadı:", error);
+            // Varsayılan bir placeholder resmi döndür
+            return {
+                url: '/api/placeholder/300/200',
+                alt: theme + ' resmi'
+            };
+        }
+    }
+
     const prompt = `
         Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren, öğretici ve eğlenceli bir okuma metni oluştur.
         - Metnin uzunluğu yaklaşık ${getWordCountRange(grade)} kelime olmalı.
-        - Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve kolayca anlaşılır olmalı.
+        - Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve kolayca anlaşılır olmalıdır.
         - Metnin amacı çocukların dil gelişimini ve genel okuma becerilerini desteklemek olmalıdır.
         - Metin, dikkat çekici ve motive edici bir dil kullanarak çocukların ilgisini çekecek şekilde yazılmalıdır.
         - Metnin sonunda ${questionCount} adet okuma sorusu oluşturulmalı. Sorular:
@@ -48,20 +74,21 @@ document.getElementById("textForm").addEventListener("submit", async function (e
     document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
 
     try {
-        // Metni oluştur ve kullanıcıya göster
-        const response = await fetch('/api/generate-text', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ prompt })
-        });
+        // Metni ve resmi eş zamanlı oluştur
+        const [textResponse, imageData] = await Promise.all([
+            fetch('/api/generate-text', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt })
+            }),
+            fetchUnsplashImage(theme)
+        ]);
 
-        if (!response.ok) {
-            throw new Error(`HTTP hatası! Durum: ${response.status}`);
+        if (!textResponse.ok) {
+            throw new Error(`HTTP hatası! Durum: ${textResponse.status}`);
         }
 
-        const data = await response.json();
+        const data = await textResponse.json();
         
         if (data.generatedText) {
             const generatedText = data.generatedText;
@@ -149,10 +176,13 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 formattedQuestions += '</div>';
             }
             
-            // Sayfa düzenini oluştur - sadece üst çizgi
+            // Sayfa düzenini oluştur - sadece üst çizgi ve sağ üst tarafta resim
             const pageContent = `
                 <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
                     <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
+                    
+                    <!-- Sağ üst tarafta resim -->
+                    <img src="${imageData.url}" alt="${imageData.alt}" style="position: absolute; top: 10px; right: 10px; max-width: 250px; max-height: 200px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
                     
                     <!-- Üst çizgi - olabildiğince yukarıda -->
                     <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
@@ -292,8 +322,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                                 
                                 .header-divider {
                                     border-bottom: 2px solid #333;
-                                    margin-bottom: 15px;
-                                    margin-top: 0;
+                                    margin-bottom: 15pxmargin-top: 0;
                                 }
                                 
                                 .footer-divider {
