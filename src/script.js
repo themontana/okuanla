@@ -11,24 +11,14 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         return;
     }
 
-    function getWordCountRange(grade) {
-        switch(grade) {
-            case '1': return '150-200';
-            case '2': return '200-250';
-            case '3': return '300-350';
-            case '4': return '400-450';
-            default: return '150-200';
-        }
-    }
-
     async function fetchUnsplashImage(theme, keywords) {
         const pixabayAccessKey = '39452104-a2abbe2c27fa9cc0cb399c860';
         const safeTheme = encodeURIComponent(theme.normalize('NFC'));
         const safeKeywords = encodeURIComponent(keywords.normalize('NFC'));
-        const query = `${safeTheme} ${safeKeywords}`;
+        const query = `${safeTheme} ${safeKeywords} cartoon vector illustration`;
         
         try {
-            const response = await fetch(`https://pixabay.com/api/?key=${pixabayAccessKey}&q=${query}&image_type=photo&per_page=3&safesearch=true`);
+            const response = await fetch(`https://pixabay.com/api/?key=${pixabayAccessKey}&q=${query}&image_type=illustration&per_page=3&safesearch=true`);
             
             if (!response.ok) {
                 const errorBody = await response.text();
@@ -59,6 +49,21 @@ document.getElementById("textForm").addEventListener("submit", async function (e
         }
     }
 
+    // Grade seçeneğine göre kelime sayısı aralığını ayarlayan fonksiyon
+    function getWordCountRange(grade) {
+        switch(grade) {
+            case '1':
+                return '150-200'; // 1. sınıf için kelime sayısı 150-200 arası
+            case '2':
+                return '200-250'; // 2. sınıf için kelime sayısı 200-250 arası
+            case '3':
+                return '300-350'; // 3. sınıf için kelime sayısı 250-300 arası
+            case '4':
+                return '400-450'; // 4. sınıf için kelime sayısı 300-350 arası
+            default:
+                return '150-200'; // Varsayılan olarak 1. sınıf aralığı
+        }
+    }
     const prompt = `
         Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren, öğretici ve eğlenceli bir okuma metni oluştur.
         - Metnin uzunluğu yaklaşık ${getWordCountRange(grade)} kelime olmalı.
@@ -72,22 +77,16 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             - Her soru, çocukların metni doğru bir şekilde anlamalarını sağlamak için net olmalı.
         Metnin ve soruların tonu, çocuklar için anlaşılır ve motive edici olmalıdır.`;
 
+
     document.getElementById("output").innerHTML = "Metin oluşturuluyor...";
 
     try {
         const [textResponse, imageData] = await Promise.all([
-            fetch('/api/generate-text', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt })
-            }),
+            fetch('/api/generate-text', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) }),
             fetchUnsplashImage(theme, keywords)
         ]);
 
-        if (!textResponse.ok) {
-            throw new Error(`HTTP hatası! Durum: ${textResponse.status}`);
-        }
-
+        if (!textResponse.ok) throw new Error(`HTTP hatası! Durum: ${textResponse.status}`);
         const data = await textResponse.json();
         
         if (data.generatedText) {
@@ -127,9 +126,7 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                         formattedQuestions += `<h3>${cleanTitle}</h3>`;
                     } else if (isCollecting && line.trim()) {
                         if (/^\d+[\.\)]\s/.test(line.trim())) {
-                            if (currentQuestion) {
-                                questions.push(currentQuestion);
-                            }
+                            if (currentQuestion) questions.push(currentQuestion);
                             currentQuestion = line.trim();
                         } else if (currentQuestion) {
                             currentQuestion += " " + line.trim();
@@ -137,45 +134,113 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                     }
                 }
 
-                if (currentQuestion) {
-                    questions.push(currentQuestion);
-                }
+                if (currentQuestion) questions.push(currentQuestion);
 
                 formattedQuestions += '<div class="questions-container">';
                 questions.forEach((question) => {
                     const questionNumberMatch = question.match(/^\d+[\.\)]\s/);
                     const questionNumber = questionNumberMatch ? questionNumberMatch[0] : '';
                     const questionText = questionNumberMatch ? question.replace(/^\d+[\.\)]\s/, '') : question;
-                    formattedQuestions += `<div class="question-box">${questionNumber}${questionText}</div>`;
+                    
+                    formattedQuestions += `
+                        <div class="question-box">
+                            <div class="question-number">${questionNumber}</div>
+                            <div class="question-text">${questionText}</div>
+                            <div class="answer-space"></div>
+                        </div>
+                    `;
                 });
                 formattedQuestions += '</div>';
             }
 
             const pageContent = `
                 <div class="print-container">
-                    <button id="printButton">Yazdır</button>
-                    <div class="content">
+                    <div class="watermark">okuanla.net</div>
+                    <hr class="header-line">
+                    <div class="content-header">
+                        <h1 class="main-title">${theme}</h1>
                         <img src="${imageData.url}" alt="${imageData.alt}" class="main-image">
+                    </div>
+                    <div class="content-body">
                         ${formattedText}
                         ${formattedQuestions}
                     </div>
+                    <button id="printButton">Yazdır</button>
                 </div>
             `;
 
             document.getElementById("output").innerHTML = pageContent;
 
             document.getElementById("printButton").addEventListener("click", function () {
-                const originalContent = document.querySelector(".content").innerHTML;
+                const printContent = document.querySelector(".print-container").innerHTML;
                 const printWindow = window.open('', '', 'height=600,width=800');
+                
                 printWindow.document.write(`
                     <html>
-                        <head><title>OkuAnla.net Yazdır</title></head>
+                        <head>
+                            <title>OkuAnla.net Yazdır</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; }
+                                .watermark { 
+                                    position: fixed;
+                                    top: 10px;
+                                    left: 20px;
+                                    font-size: 10px;
+                                    color: #ccc;
+                                    z-index: 1;
+                                }
+                                .header-line {
+                                    position: fixed;
+                                    top: 30px;
+                                    left: 0;
+                                    right: 0;
+                                    border: 0;
+                                    border-top: 1px solid #000;
+                                    margin: 0;
+                                }
+                                .main-title {
+                                    margin-top: 40px;
+                                    text-align: left;
+                                    padding-left: 20px;
+                                }
+                                .main-image {
+                                    position: fixed;
+                                    top: 20px;
+                                    right: 20px;
+                                    max-width: 150px;
+                                    height: auto;
+                                    border-radius: 8px;
+                                }
+                                .content-body {
+                                    margin-top: 20px;
+                                    padding: 0 20px;
+                                }
+                                .questions-container {
+                                    display: grid;
+                                    grid-template-columns: 1fr;
+                                    gap: 15px;
+                                    margin-top: 20px;
+                                }
+                                .question-box {
+                                    background: #f1f1f1;
+                                    padding: 15px;
+                                    border-radius: 8px;
+                                    position: relative;
+                                }
+                                .answer-space {
+                                    height: 40px;
+                                    border: 1px dashed #000;
+                                    margin-top: 10px;
+                                    border-radius: 4px;
+                                }
+                            </style>
+                        </head>
                         <body>
-                            <h1>OkuAnla.net</h1>
-                            <div>${originalContent}</div>
+                            ${printContent}
                         </body>
                     </html>
                 `);
+                
                 printWindow.document.close();
                 printWindow.onload = function() {
                     setTimeout(() => printWindow.print(), 500);
