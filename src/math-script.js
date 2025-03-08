@@ -1,69 +1,142 @@
-// Form dinleyicisi
-document.getElementById("mathForm").addEventListener("submit", async function (event) {
-    event.preventDefault(); // Sayfanın yenilenmesini önler
-
-    // Kullanıcıdan alınan girdiler
-    const mathGrade = document.getElementById("mathGrade").value.trim();
+// Form validation and error handling
+function validateForm() {
+    console.log('Validating form...');
+    
+    const grade = document.getElementById("grade").value.trim();
     const difficulty = document.getElementById("difficulty").value.trim();
-    const topic = document.getElementById("topic").value.trim();
-    const problemCount = document.getElementById("problemCount").value.trim();
+    const questionCount = document.getElementById("questionCount").value.trim();
 
-    // Eğer kullanıcı herhangi bir alanı boş bırakırsa hata mesajı göster
-    if (!mathGrade || !difficulty || !topic || !problemCount) {
-        document.getElementById("output").innerHTML = "<p>Lütfen tüm alanları doldurun.</p>";
+    console.log('Form values:', { grade, difficulty, questionCount });
+
+    if (!grade || !difficulty || !questionCount) {
+        console.log('Validation failed: Missing required fields');
+        showError("Lütfen tüm zorunlu alanları doldurun.");
+        return false;
+    }
+
+    console.log('Form validation passed');
+    return true;
+}
+
+// Error display function
+function showError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger alert-dismissible fade show';
+    errorDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    document.getElementById("textForm").insertBefore(errorDiv, document.getElementById("textForm").firstChild);
+    
+    // Auto dismiss after 5 seconds
+    setTimeout(() => {
+        errorDiv.remove();
+    }, 5000);
+}
+
+// Loading indicator functions
+function showLoading() {
+    document.querySelector('.loading-spinner').style.display = 'block';
+    document.getElementById('output').style.display = 'none';
+    document.querySelector('.loading-spinner p').textContent = 'Problemler oluşturuluyor, lütfen bekleyin...';
+    // Scroll to loading spinner
+    document.querySelector('.loading-spinner').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function hideLoading() {
+    document.querySelector('.loading-spinner').style.display = 'none';
+}
+
+// Cache management
+const cache = new Map();
+const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
+
+function getCachedResponse(key) {
+    const cached = cache.get(key);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        return cached.data;
+    }
+    return null;
+}
+
+function setCachedResponse(key, data) {
+    cache.set(key, {
+        data,
+        timestamp: Date.now()
+    });
+}
+
+// Rate limiting
+let lastRequestTime = 0;
+const RATE_LIMIT_DELAY = 2000; // 2 seconds between requests
+
+function checkRateLimit() {
+    const now = Date.now();
+    if (now - lastRequestTime < RATE_LIMIT_DELAY) {
+        showError(`Lütfen ${Math.ceil((RATE_LIMIT_DELAY - (now - lastRequestTime)) / 1000)} saniye bekleyin.`);
+        return false;
+    }
+    lastRequestTime = now;
+    return true;
+}
+
+// Form submission handler
+document.getElementById("textForm").addEventListener("submit", async function (event) {
+    console.log('Form submitted');
+    event.preventDefault();
+
+    if (!validateForm() || !checkRateLimit()) {
+        console.log('Form validation failed or rate limit exceeded');
         return;
     }
 
-    // Sınıf seviyesine göre içerik karmaşıklığını ayarla
-    function getDifficultyDescription(grade, level) {
-        const descriptions = {
-            "1": {
-                "kolay": "tek basamaklı sayılarla basit işlemler",
-                "orta": "iki basamaklı sayılarla temel işlemler",
-                "zor": "iki basamaklı sayıların karışık işlemleri"
-            },
-            "2": {
-                "kolay": "iki basamaklı sayılarla temel işlemler",
-                "orta": "iki ve üç basamaklı sayılarla karışık işlemler",
-                "zor": "üç basamaklı sayılarla çeşitli problem türleri, yaratıcı düşünme ve mantık yürütme gerektiren işlemler"
-            },
-            "3": {
-                "kolay": "iki ve üç basamaklı sayılarla temel işlemler",
-                "orta": "üç basamaklı sayılarla çoklu adım gerektiren işlemler",
-                "zor": "üç ve dört basamaklı sayılarla karmaşık problem çözümü, yaratıcı düşünme ve mantık yürütme gerektiren işlemler"
-            },
-            "4": {
-                "kolay": "üç basamaklı sayılarla temel işlemler",
-                "orta": "üç ve dört basamaklı sayılarla çoklu adım gerektiren işlemler",
-                "zor": "dört basamaklı sayılarla karmaşık problem çözümü, yaratıcı düşünme ve mantık yürütme gerektiren işlemler"
-            }
-        };
-        
-        return descriptions[grade][level] || "temel matematik problemleri";
+    const grade = document.getElementById("grade").value.trim();
+    const theme = document.getElementById("theme")?.value?.trim() || '';
+    const difficulty = document.getElementById("difficulty").value.trim();
+    const questionCount = document.getElementById("questionCount").value.trim();
+
+    console.log('Form values:', { grade, theme, difficulty, questionCount });
+
+    // Create cache key
+    const cacheKey = `${grade}-${theme}-${difficulty}-${questionCount}`;
+    
+    // Check cache first
+    const cachedResponse = getCachedResponse(cacheKey);
+    if (cachedResponse) {
+        console.log('Using cached response');
+        displayContent(cachedResponse);
+        return;
     }
 
-    // Kullanıcı girdilerine göre prompt oluştur
-    const prompt = `
-        Lütfen ${mathGrade}. sınıf öğrencileri için "${topic}" konusunda ${difficulty} seviyede ${problemCount} tane matematik problemi oluştur.
-        
-        Problemler şu şekilde olmalı:
-        - ${mathGrade}. sınıf seviyesine uygun ve ${getDifficultyDescription(mathGrade, difficulty)} içermeli.
-        - Her problem net ve anlaşılır olmalı.
-        - Problemler günlük hayattan örnekler içerebilir.
-        - İçerik Türkçe olmalı ve dil yanlışları içermemeli.
-        - Çözümleri EKLEME, sadece problemleri yaz.
-        
-        Format şu şekilde olmalı:
-        - Başlık: "${mathGrade}. Sınıf ${topic} Problemleri" olmalı (zorluk seviyesini başlıkta belirtme)
-        - "##" veya başka format işaretleyicilerini kullanma, sadece düz metin olarak yaz
-        - Her problem numaralandırılmış olmalı (1, 2, 3...)
-    `;
-
-    // Kullanıcıya problem oluşturuluyor bilgisini göster
-    document.getElementById("output").innerHTML = "<p>Matematik problemleri oluşturuluyor...</p>";
+    showLoading();
 
     try {
-        // Metni oluştur ve kullanıcıya göster
+        let prompt = `Lütfen matematik problemleri oluştur.
+
+ÖNEMLİ FORMAT:
+- Direkt 1. problem ile başla, başlık veya giriş yazma
+- Her problemi sadece numara ve içerik olarak yaz (Örnek: "1. Ali'nin 5 kalemi var...")
+- Toplam ${questionCount} problem olacak
+- ${grade}. sınıf seviyesinde olacak
+- Zorluk seviyesi: ${difficulty === 'easy' ? 'KOLAY' : difficulty === 'medium' ? 'ORTA' : 'ZOR'}
+- Her problem tek cümle olacak
+- Çözümleri yazma
+- Açıklama ekleme
+- Başlık ekleme
+- Giriş cümlesi ekleme
+- Sadece problemleri yaz`;
+        
+        if (theme) {
+            prompt += `\n- Konu: ${theme}`;
+        }
+
+        prompt += `\n\nÖRNEK FORMAT:
+1. [Problem metni]
+2. [Problem metni]
+(böyle devam edecek)`;
+
+        console.log('Sending prompt:', prompt);
+        
         const response = await fetch('/api/generate-text', {
             method: 'POST',
             headers: {
@@ -72,253 +145,579 @@ document.getElementById("mathForm").addEventListener("submit", async function (e
             body: JSON.stringify({ prompt })
         });
 
+        console.log('Response status:', response.status);
+
         if (!response.ok) {
-            throw new Error(`HTTP hatası! Durum: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('Response data:', data);
         
-        if (data.generatedText) {
-            // Markdown işaretlerini (##, **, vb.) temizle
-            let generatedText = data.generatedText
-                .replace(/##\s+/g, '')   // ## işaretlerini kaldır
-                .replace(/\*\*/g, '');   // ** işaretlerini kaldır
+        if (data.error) {
+            throw new Error(data.error);
+        }
 
-            // Metni parçalayalım: başlık ve problemler
-            const lines = generatedText.split('\n');
-            let title = "";
-            let problems = [];
-            let currentProblem = "";
-            let isCollecting = false;
-            
-            // Başlık ve problemleri ayır
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                
-                if (line === '') continue; // Boş satırları atla
-                
-                // İlk anlamlı satırı başlık olarak kabul edelim
-                if (!title && line) {
-                    title = line;
-                    continue;
-                }
-                
-                // Problem numarası ile başlayan satırları bul
-                if (/^\d+[\.:]/.test(line)) {
-                    if (currentProblem) {
-                        problems.push(currentProblem);
-                    }
-                    currentProblem = line;
-                    isCollecting = true;
-                } else if (isCollecting && line) {
-                    // Devam eden problem metni
-                    currentProblem += " " + line;
-                }
-            }
-            
-            // Son problemi ekle
-            if (currentProblem) {
-                problems.push(currentProblem);
-            }
-            
-            // Başlığı formatla - 20px font büyüklüğünde
-            let formattedTitle = `<h1 style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px;">${title}</h1>`;
-            
-            // Problemleri iki sütun grid olarak formatla
-            let formattedProblems = '<div class="problems-grid">';
-            
-            problems.forEach((problem, index) => {
-                // Regex ile problem numarasını ayır
-                const match = problem.match(/^(\d+[\.:])\s*(.*)/);
-                let problemNumber = "";
-                let problemText = problem;
-                
-                if (match) {
-                    problemNumber = match[1];
-                    problemText = match[2];
-                }
-                
-                formattedProblems += `
-                    <div class="problem-item">
-                        <p class="problem-text">${problemNumber} ${problemText}</p>
-                        <div class="answer-box"></div>
-                    </div>
-                `;
-            });
-            
-            formattedProblems += '</div>';
+        // Cache the response
+        setCachedResponse(cacheKey, data.generatedText);
+        
+        // Display the content
+        displayContent(data.generatedText);
 
-            // Sayfa düzenini oluştur
-            const pageContent = `
-                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
-                    <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
-                    
-                    <!-- Üst çizgi - olabildiğince yukarıda -->
-                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
-                    
-                    <!-- Ana içerik -->
-                    <div>
-                        ${formattedTitle}
-                        ${formattedProblems}
-                    </div>
-                    
-                    <!-- Alt bilgi çizgisi -->
-                    <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
+    } catch (error) {
+        console.error('Error:', error);
+        showError(`Bir hata oluştu: ${error.message}`);
+        hideLoading();
+    }
+});
+
+// Content display function
+function displayContent(generatedText) {
+    hideLoading();
+    
+    const output = document.getElementById("output");
+    output.style.display = "block";
+    
+    // Get theme if exists
+    const theme = document.getElementById("theme")?.value?.trim() || '';
+    
+    // Clean up the text: remove intro/outro text and solutions
+    let cleanedText = generatedText;
+    
+    // Remove any introductory text patterns
+    const introPatterns = [
+        /^\d+\.\s*sınıf.*?(?=1\.)/i,
+        /^(?:kolay|orta|zor).*?(?=1\.)/i,
+        /^.*?(?:problem|matematik).*?(?=1\.)/i,
+        /^.*?(?:tane|adet).*?(?=1\.)/i,
+        /^.*?(?:seviye|zorluk).*?(?=1\.)/i,
+        /^[^1]*1\./   // Removes everything before the first "1."
+    ];
+    
+    // Apply each pattern
+    introPatterns.forEach(pattern => {
+        cleanedText = cleanedText.replace(pattern, '1.');
+    });
+    
+    // Remove solutions (anything after "Çözüm" or similar keywords)
+    cleanedText = cleanedText.split(/\bÇözüm\b|\bÇözümü\b|:[\s]*$/i)[0];
+    
+    // Clean up extra spaces and newlines
+    cleanedText = cleanedText.replace(/\s+/g, ' ').trim();
+    
+    // Split into problems and clean them
+    const problems = cleanedText.split(/(\d+\.)/)
+        .filter(text => text.trim())
+        .reduce((acc, curr, i, arr) => {
+            if (curr.endsWith('.')) {
+                // This is a number, make it bold
+                const nextText = (arr[i + 1] || '').trim();
+                acc.push(`<strong>${curr}</strong> ${nextText}\n\n<div class="solution-space"></div>`);
+            }
+            return acc;
+        }, []);
+
+    // Format problems into cards with proper print layout
+    const formattedProblems = problems.map(problem => `
+        <div class="col-6 mb-3">
+            <div class="card problem-card">
+                <div class="card-body py-2 px-3">
+                    <div class="problem-text">${problem.trim()}</div>
                 </div>
+            </div>
+        </div>
+    `).join('');
 
-                <style>
-                    .problems-grid {
-                        display: grid;
-                        grid-template-columns: repeat(2, 1fr);
-                        gap: 12px; /* 10px'ten 12px'e büyüttüm */
-                    }
-                    .problem-item {
-                        background-color: #f8f9fa;
-                        border-radius: 7px; /* 6px'ten 7px'e büyüttüm */
-                        padding: 9px; /* 8px'ten 9px'e büyüttüm */
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    }
-                    .problem-text {
-                        font-weight: bold;
-                        margin-bottom: 7px; /* 6px'ten 7px'e büyüttüm */
-                        font-size: 13px; /* 12px'ten 13px'e büyüttüm */
-                    }
-                    .answer-box {
-                        border: 1px solid #ddd;
-                        border-radius: 5px; /* 4px'ten 5px'e büyüttüm */
-                        background-color: white;
-                        min-height: 50px; /* 40px'ten 50px'e büyüttüm */
-                        padding: 7px; /* 6px'ten 7px'e büyüttüm */
-                    }
-                    
-                    @media print {
-                        .problems-grid {
-                            display: grid !important;
-                            grid-template-columns: repeat(2, 1fr) !important;
-                            gap: 12px !important; /* 10px'ten 12px'e büyüttüm */
-                            width: 100% !important;
-                        }
-                        .problem-item {
-                            width: auto !important;
-                            page-break-inside: avoid !important;
-                        }
-                    }
-                </style>
-            `;
+    // Capitalize first letter of theme and set page title
+    const capitalizedTheme = theme ? theme.charAt(0).toUpperCase() + theme.slice(1).toLowerCase() : '';
+    const pageTitle = theme ? `${capitalizedTheme} Problemleri` : 'Problemler';
+
+    // Combine all content
+    output.innerHTML = `
+        <div class="main-wrapper">
+            <div class="main-container">
+                <h4 class="text-center mb-4">${pageTitle}</h4>
+                <div class="action-buttons text-center mb-4">
+                    <button id="printButton" class="btn btn-primary mx-2">
+                        <i class="fas fa-print me-2"></i>Yazdır
+                    </button>
+                    <button id="pdfButton" class="btn btn-success mx-2">
+                        <i class="fas fa-file-pdf me-2"></i>PDF Olarak Kaydet
+                    </button>
+                    <button id="shareButton" class="btn btn-info text-white mx-2">
+                        <i class="fas fa-share-alt me-2"></i>Paylaş
+                    </button>
+                </div>
+                <div class="row g-3">
+                    ${formattedProblems}
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add styles to the head
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+        .main-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+        .main-container {
+            width: 100%;
+            max-width: 1000px;
+        }
+        .problem-card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 1rem;
+            margin-bottom: 0;
+            min-height: 120px;
+        }
+        .card-body {
+            padding: 0.8rem 1rem;
+        }
+        .problem-text {
+            color: #333;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        .solution-space {
+            height: 100px;
+            margin-top: 12px;
+        }
+        @media print {
+            @page {
+                size: A4;
+                margin: 1.5cm;
+            }
+            body { 
+                padding: 0;
+                font-size: 11pt;
+            }
+            .main-container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .action-buttons, h4 {
+                display: none !important;
+            }
+            .row {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem !important;
+                margin: 0 !important;
+            }
+            .col-6 {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .problem-card {
+                border: 1px solid #ddd !important;
+                margin-bottom: 0.5rem !important;
+                page-break-inside: avoid !important;
+                height: auto !important;
+                min-height: 130px !important;
+            }
+            .card-body {
+                padding: 0.8rem 1rem !important;
+            }
+            .problem-text {
+                font-size: 11pt !important;
+                line-height: 1.5 !important;
+            }
+            .solution-space {
+                height: 120px !important;
+                border-top: 1px dashed #ddd !important;
+                margin-top: 15px !important;
+            }
+            .watermark {
+                position: fixed !important;
+                top: 10px !important;
+                left: 15px !important;
+                font-size: 8pt !important;
+                color: #999 !important;
+            }
+        }
+    `;
+    document.head.appendChild(styleElement);
+
+    // Add event listeners for buttons after they are created
+    const printButton = document.getElementById("printButton");
+    const pdfButton = document.getElementById("pdfButton");
+    const shareButton = document.getElementById("shareButton");
+
+    if (printButton) {
+        printButton.addEventListener("click", function() {
+            const printContent = document.querySelector('.main-container').cloneNode(true);
+            const actionButtons = printContent.querySelector('.action-buttons');
+            if (actionButtons) actionButtons.remove();
             
-            // İçeriği sayfaya ekle
-            document.getElementById("output").innerHTML = pageContent;
-
-            // Yazdırma butonunu işlevsel hale getir
-            document.getElementById("printButton").addEventListener("click", function () {
-                // Mevcut içeriği al (Yazdır butonu dahil)
-                const originalContent = document.getElementById("output").innerHTML;
+            const printWindow = window.open('', '', 'height=600,width=800');
+            
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>OkuAnla - Matematik Problemleri</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                    <style>
+                        @page {
+                            margin: 1cm;
+                        }
+                        body {
+                            padding: 15px;
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            background: white;
+                        }
+                        .watermark {
+                            position: fixed;
+                            top: 10px;
+                            left: 15px;
+                            font-size: 11px;
+                            color: #999;
+                            font-weight: 500;
+                            opacity: 0.7;
+                            z-index: 1000;
+                        }
+                        .header-line {
+                            position: relative;
+                            border-top: 1px solid #000;
+                            margin: 35px 15px 20px;
+                        }
+                        .main-wrapper {
+                            width: 100%;
+                            display: flex;
+                            justify-content: center;
+                        }
+                        .main-container {
+                            width: 100%;
+                            max-width: 1000px;
+                            margin: 0 auto;
+                            padding: 15px;
+                        }
+                        .card {
+                            height: 100%;
+                            border: 1px solid #ddd;
+                            border-radius: 6px;
+                            background: white;
+                            break-inside: avoid;
+                            margin-bottom: 15px;
+                        }
+                        .card-body {
+                            padding: 0.75rem;
+                        }
+                        .card-title {
+                            font-size: 1.1rem;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 1rem;
+                        }
+                        .problem-text {
+                            font-size: 0.95rem;
+                            color: #444;
+                            white-space: pre-wrap;
+                        }
+                        @media print {
+                            body { padding: 0; }
+                            .page-break { page-break-before: always; }
+                            .col-md-6 { break-inside: avoid; }
+                            .watermark { position: fixed; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="watermark">okuanla.net</div>
+                    <div class="header-line"></div>
+                    <div class="main-wrapper">
+                        <div class="main-container">
+                            ${printContent.innerHTML}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        });
+    }
+    
+    if (pdfButton) {
+        pdfButton.addEventListener("click", async function() {
+            try {
+                const printContent = document.querySelector('.main-container').cloneNode(true);
+                const actionButtons = printContent.querySelector('.action-buttons');
+                if (actionButtons) actionButtons.remove();
                 
-                // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
-                const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
-                
-                // Yazdırma sayfası oluştur
-                const printWindow = window.open('', '', 'height=600,width=800');
-                
-                // Yazdırma sayfasının içeriğini ayarla - script.js ile uyumlu
-                printWindow.document.write(`
+                const pdfContent = `
+                    <!DOCTYPE html>
                     <html>
                     <head>
-                        <title>OkuAnla - Matematik Problemi Yazdır</title>
+                        <title>OkuAnla - Matematik Problemleri</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                         <style>
+                            @page {
+                                margin: 1cm;
+                            }
+                            body {
+                                padding: 15px;
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                background: white;
+                            }
+                            .watermark {
+                                position: fixed;
+                                top: 10px;
+                                left: 15px;
+                                font-size: 11px;
+                                color: #999;
+                                font-weight: 500;
+                                opacity: 0.7;
+                                z-index: 1000;
+                            }
+                            .header-line {
+                                position: relative;
+                                border-top: 1px solid #000;
+                                margin: 35px 15px 20px;
+                            }
+                            .main-wrapper {
+                                width: 100%;
+                                display: flex;
+                                justify-content: center;
+                            }
+                            .main-container {
+                                width: 100%;
+                                max-width: 1000px;
+                                margin: 0 auto;
+                                padding: 15px;
+                            }
+                            .card {
+                                height: 100%;
+                                border: 1px solid #ddd;
+                                border-radius: 6px;
+                                background: white;
+                                break-inside: avoid;
+                                margin-bottom: 15px;
+                            }
+                            .card-body {
+                                padding: 0.75rem;
+                            }
+                            .card-title {
+                                font-size: 1.1rem;
+                                font-weight: bold;
+                                color: #333;
+                                margin-bottom: 1rem;
+                            }
+                            .problem-text {
+                                font-size: 0.95rem;
+                                color: #444;
+                                white-space: pre-wrap;
+                            }
                             @media print {
-                                body {
-                                    font-family: Arial, sans-serif;
-                                    font-size: 13px; /* 12px'ten 13px'e büyüttüm */
-                                    line-height: 1.5; /* 1.4'ten 1.5'e büyüttüm */
-                                    margin: 0.5cm;
-                                }
-                                
-                                h1 {
-                                    font-size: 20px;
-                                    font-weight: bold;
-                                    text-align: center;
-                                    margin-bottom: 15px;
-                                }
-                                
-                                .watermark {
-                                    position: fixed;
-                                    top: 5px;
-                                    left: 5px;
-                                    font-size: 14px;
-                                    color: #d3d3d3;
-                                    font-weight: bold;
-                                }
-                                
-                                .header-divider {
-                                    border-bottom: 2px solid #333;
-                                    margin-bottom: 15px;
-                                    margin-top: 0;
-                                }
-                                
-                                .footer-divider {
-                                    border-top: 2px solid #333;
-                                    padding-top: 10px;
-                                    margin-top: 15px;
-                                }
-                                
-                                /* Yeni grid yapısı - yazdırma için optimize edilmiş */
-                                .problems-grid {
-                                    display: grid !important;
-                                    grid-template-columns: repeat(2, 1fr) !important;
-                                    gap: 12px !important; /* 10px'ten 12px'e büyüttüm */
-                                    width: 100% !important;
-                                }
-                                
-                                .problem-item {
-                                    background-color: #f8f9fa;
-                                    border-radius: 7px; /* 6px'ten 7px'e büyüttüm */
-                                    padding: 9px; /* 8px'ten 9px'e büyüttüm */
-                                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                                    page-break-inside: avoid;
-                                    width: auto !important;
-                                }
-                                
-                                .problem-text {
-                                    font-weight: bold;
-                                    margin-bottom: 7px; /* 6px'ten 7px'e büyüttüm */
-                                    font-size: 13px; /* 12px'ten 13px'e büyüttüm */
-                                }
-                                
-                                .answer-box {
-                                    border: 1px solid #ddd;
-                                    border-radius: 5px; /* 4px'ten 5px'e büyüttüm */
-                                    background-color: white;
-                                    min-height: 50px; /* 40px'ten 50px'e büyüttüm */
-                                    padding: 7px; /* 6px'ten 7px'e büyüttüm */
-                                }
+                                body { padding: 0; }
+                                .page-break { page-break-before: always; }
+                                .col-md-6 { break-inside: avoid; }
+                                .watermark { position: fixed; }
                             }
                         </style>
                     </head>
                     <body>
-                        <div class="watermark">OkuAnla.net</div>
-                        <div class="header-divider"></div>
-                        ${contentWithoutButton}
+                        <div class="watermark">okuanla.net</div>
+                        <div class="header-line"></div>
+                        <div class="main-wrapper">
+                            <div class="main-container">
+                                ${printContent.innerHTML}
+                            </div>
+                        </div>
                     </body>
                     </html>
-                `);
+                `;
                 
-                printWindow.document.close();
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content: pdfContent })
+                });
                 
-                // Sayfanın yüklenmesini bekleyip yazdır
-                printWindow.onload = function() {
-                    setTimeout(function() {
-                        printWindow.print();
-                        // printWindow.close(); // Yazdırma işlemi tamamlandıktan sonra pencereyi kapatmak isterseniz bunu etkinleştirebilirsiniz
-                    }, 500);
-                };
-            });
+                if (!response.ok) throw new Error('PDF oluşturma hatası');
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'okuanla-matematik.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                showError('PDF oluşturulurken bir hata oluştu: ' + error.message);
+            }
+        });
+    }
+    
+    if (shareButton) {
+        shareButton.addEventListener("click", async function() {
+            try {
+                const printContent = document.querySelector('.main-container').cloneNode(true);
+                const actionButtons = printContent.querySelector('.action-buttons');
+                if (actionButtons) actionButtons.remove();
+                
+                const pdfContent = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>OkuAnla - Matematik Problemleri</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <style>
+                            @page {
+                                margin: 1cm;
+                            }
+                            body {
+                                padding: 15px;
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                background: white;
+                            }
+                            .watermark {
+                                position: fixed;
+                                top: 10px;
+                                left: 15px;
+                                font-size: 11px;
+                                color: #999;
+                                font-weight: 500;
+                                opacity: 0.7;
+                                z-index: 1000;
+                            }
+                            .header-line {
+                                position: relative;
+                                border-top: 1px solid #000;
+                                margin: 35px 15px 20px;
+                            }
+                            .main-wrapper {
+                                width: 100%;
+                                display: flex;
+                                justify-content: center;
+                            }
+                            .main-container {
+                                width: 100%;
+                                max-width: 1000px;
+                                margin: 0 auto;
+                                padding: 15px;
+                            }
+                            .card {
+                                height: 100%;
+                                border: 1px solid #ddd;
+                                border-radius: 6px;
+                                background: white;
+                                break-inside: avoid;
+                                margin-bottom: 15px;
+                            }
+                            .card-body {
+                                padding: 0.75rem;
+                            }
+                            .card-title {
+                                font-size: 1.1rem;
+                                font-weight: bold;
+                                color: #333;
+                                margin-bottom: 1rem;
+                            }
+                            .problem-text {
+                                font-size: 0.95rem;
+                                color: #444;
+                                white-space: pre-wrap;
+                            }
+                            @media print {
+                                body { padding: 0; }
+                                .page-break { page-break-before: always; }
+                                .col-md-6 { break-inside: avoid; }
+                                .watermark { position: fixed; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="watermark">okuanla.net</div>
+                        <div class="header-line"></div>
+                        <div class="main-wrapper">
+                            <div class="main-container">
+                                ${printContent.innerHTML}
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `;
+                
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content: pdfContent })
+                });
+                
+                if (!response.ok) throw new Error('PDF oluşturma hatası');
+                
+                const blob = await response.blob();
+                const file = new File([blob], 'okuanla-matematik.pdf', { type: 'application/pdf' });
 
-        } else {
-            document.getElementById("output").innerHTML = "<p>Matematik problemleri oluşturulamadı: API yanıtı geçersiz.</p>";
-        }
-    } catch (error) {
-        console.error("Hata:", error);
-        document.getElementById("output").innerHTML = `<p>Matematik problemleri oluşturulamadı: ${error.message}</p>`;
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: 'OkuAnla - Matematik Problemleri',
+                            text: 'OkuAnla ile oluşturulan matematik problemlerini paylaşıyorum!'
+                        });
+                    } catch (error) {
+                        // Eğer paylaşım başarısız olursa, dosyayı indirme seçeneğini sunar
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'okuanla-matematik.pdf';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    }
+                } else {
+                    // Paylaşım API'si desteklenmiyorsa, dosyayı indirir
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'okuanla-matematik.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                }
+            } catch (error) {
+                showError('Paylaşım sırasında bir hata oluştu: ' + error.message);
+            }
+        });
+    }
+}
+
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+
+// Update the button text in the form submission handler
+document.addEventListener('DOMContentLoaded', function() {
+    const submitButton = document.querySelector('#textForm button[type="submit"]');
+    if (submitButton) {
+        submitButton.innerHTML = '<i class="fas fa-calculator me-2"></i>Problemleri Oluştur';
     }
 });

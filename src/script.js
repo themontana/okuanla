@@ -1,54 +1,159 @@
-// Formu dinleyerek işlem yapmak
-document.getElementById("textForm").addEventListener("submit", async function (event) {
-    event.preventDefault(); // Sayfanın yenilenmesini önler
-
-    // Kullanıcıdan alınan girdiler
+// Form validation and error handling
+function validateForm() {
+    console.log('Validating form...');
+    
     const grade = document.getElementById("grade").value.trim();
-    const theme = document.getElementById("theme").value.trim();
-    const keywords = document.getElementById("keywords").value.trim();
+    const textLength = document.getElementById("textLength").value.trim();
     const questionCount = document.getElementById("questionCount").value.trim();
 
-    // Eğer kullanıcı herhangi bir alanı boş bırakırsa hata mesajı göster
-    if (!grade || !theme || !keywords || !questionCount) {
-        document.getElementById("output").innerHTML = "<p>Lütfen tüm alanları doldurun.</p>";
+    console.log('Form values:', { grade, textLength, questionCount });
+
+    if (!grade || !textLength || !questionCount) {
+        console.log('Validation failed: Missing required fields');
+        showError("Lütfen sınıf seviyesi, metin uzunluğu ve soru sayısını seçin.");
+        return false;
+    }
+
+    console.log('Form validation passed');
+    return true;
+}
+
+// Error display function
+function showError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger alert-dismissible fade show';
+    errorDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    document.getElementById("textForm").insertBefore(errorDiv, document.getElementById("textForm").firstChild);
+    
+    // Auto dismiss after 5 seconds
+    setTimeout(() => {
+        errorDiv.remove();
+    }, 5000);
+}
+
+// Loading indicator functions
+function showLoading() {
+    document.querySelector('.loading-spinner').style.display = 'block';
+    document.getElementById('output').style.display = 'none';
+    // Scroll to loading spinner
+    document.querySelector('.loading-spinner').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function hideLoading() {
+    document.querySelector('.loading-spinner').style.display = 'none';
+}
+
+// Cache management
+const cache = new Map();
+const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
+
+function getCachedResponse(key) {
+    const cached = cache.get(key);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        return cached.data;
+    }
+    return null;
+}
+
+function setCachedResponse(key, data) {
+    cache.set(key, {
+        data,
+        timestamp: Date.now()
+    });
+}
+
+// Rate limiting
+let lastRequestTime = 0;
+const RATE_LIMIT_DELAY = 2000; // 2 seconds between requests
+
+function checkRateLimit() {
+    const now = Date.now();
+    if (now - lastRequestTime < RATE_LIMIT_DELAY) {
+        showError(`Lütfen ${Math.ceil((RATE_LIMIT_DELAY - (now - lastRequestTime)) / 1000)} saniye bekleyin.`);
+        return false;
+    }
+    lastRequestTime = now;
+    return true;
+}
+
+// Form submission handler
+document.getElementById("textForm").addEventListener("submit", async function (event) {
+    console.log('Form submitted');
+    event.preventDefault();
+
+    if (!validateForm() || !checkRateLimit()) {
+        console.log('Form validation failed or rate limit exceeded');
         return;
     }
 
-    // Kullanıcı girdilerine göre geliştirilmiş prompt
-    // Grade seçeneğine göre kelime sayısı aralığını ayarlayan fonksiyon
-    function getWordCountRange(grade) {
-        switch(grade) {
-            case '1':
-                return '150-200'; // 1. sınıf için kelime sayısı 150-200 arası
-            case '2':
-                return '200-250'; // 2. sınıf için kelime sayısı 200-250 arası
-            case '3':
-                return '300-350'; // 3. sınıf için kelime sayısı 250-300 arası
-            case '4':
-                return '400-450'; // 4. sınıf için kelime sayısı 300-350 arası
-            default:
-                return '150-200'; // Varsayılan olarak 1. sınıf aralığı
-        }
+    const grade = document.getElementById("grade").value.trim();
+    const theme = document.getElementById("theme")?.value?.trim() || '';
+    const keywords = document.getElementById("keywords")?.value?.trim() || '';
+    const textLength = document.getElementById("textLength").value.trim();
+    const questionCount = document.getElementById("questionCount").value.trim();
+
+    // Convert text length to actual word count ranges
+    let wordCountRange;
+    switch(textLength) {
+        case 'short':
+            wordCountRange = '150-200';
+            break;
+        case 'medium':
+            wordCountRange = '250-300';
+            break;
+        case 'long':
+            wordCountRange = '350-400';
+            break;
+        default:
+            wordCountRange = '200-250';
     }
 
-    const prompt = `
-        Lütfen ${grade}. sınıf öğrencileri için "${theme}" temalı, içerisinde "${keywords}" kelimelerini içeren, öğretici ve eğlenceli bir okuma metni oluştur.
-        - Metnin uzunluğu yaklaşık ${getWordCountRange(grade)} kelime olmalı.
-        - Metin, ${grade}. sınıf seviyesinde, yaşa uygun ve kolayca anlaşılır olmalı.
-        - Metnin amacı çocukların dil gelişimini ve genel okuma becerilerini desteklemek olmalıdır.
-        - Metin, dikkat çekici ve motive edici bir dil kullanarak çocukların ilgisini çekecek şekilde yazılmalıdır.
-        - Metnin sonunda ${questionCount} adet okuma sorusu oluşturulmalı. Sorular:
-            - Bu kısmın başlığı Sorular olmalı
-            - Öğrencilerin metni anlama düzeyini ölçmeli.
-            - Sorular, metnin ana fikrine dayalı olmalı.
-            - Her soru, çocukların metni doğru bir şekilde anlamalarını sağlamak için net olmalı.
-        Metnin ve soruların tonu, çocuklar için anlaşılır ve motive edici olmalıdır.`;
+    console.log('Form values:', { grade, theme, keywords, textLength, questionCount, wordCountRange });
 
-    // Kullanıcıya metin oluşturuluyor bilgisini göster
-    document.getElementById("output").innerHTML = "<p>Metin oluşturuluyor...</p>";
+    // Create cache key
+    const cacheKey = `${grade}-${theme}-${keywords}-${textLength}-${questionCount}`;
+    
+    // Check cache first
+    const cachedResponse = getCachedResponse(cacheKey);
+    if (cachedResponse) {
+        console.log('Using cached response');
+        displayContent(cachedResponse);
+        return;
+    }
+
+    showLoading();
 
     try {
-        // Metni oluştur ve kullanıcıya göster
+        let prompt = `Lütfen ${grade}. sınıf seviyesinde bir okuma metni oluştur.
+
+ÖNEMLİ: Metin uzunluğu kesinlikle ${textLength} kelime arasında olmalıdır. Bu kural kesinlikle değişmez ve en önemli kuraldır.
+
+Soru sayısı: ${questionCount}
+
+Kurallar:
+1. KELİME SAYISI: Metin kesinlikle ${textLength} kelime arasında olmalıdır. Bu sayıya uymayan metinler kabul edilmeyecektir.
+2. Başlık kalın olmalı ve hiçbir özel işaret içermemeli (##, **, vs. kullanma)
+3. Metin tamamen Türkçe olmalı, parantez içinde İngilizce kelimeler olmamalı
+4. Sorular "Sorular:" başlığı altında olmalı
+5. Her soru numaralı olmalı (1., 2., vs.)
+6. Metin çocukların anlayabileceği sade bir dille yazılmalı
+7. Metinde ** veya başka özel işaretler kullanma`;
+        
+        if (theme) {
+            prompt += `\n\nKonu: "${theme}"`;
+        }
+        
+        if (keywords) {
+            prompt += `\n\nMetinde şu kelimeleri kullan: ${keywords}`;
+        }
+
+        prompt += `\n\nSON HATIRLATMA: Metin uzunluğu kesinlikle ${textLength} kelime arasında olmalıdır. Lütfen kelime sayısını dikkatli hesaplayın.`;
+        
+        console.log('Sending prompt:', prompt);
+        
         const response = await fetch('/api/generate-text', {
             method: 'POST',
             headers: {
@@ -57,22 +162,45 @@ document.getElementById("textForm").addEventListener("submit", async function (e
             body: JSON.stringify({ prompt })
         });
 
+        console.log('Response status:', response.status);
+
         if (!response.ok) {
-            throw new Error(`HTTP hatası! Durum: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('Response data:', data);
         
-        if (data.generatedText) {
-            const generatedText = data.generatedText;
-            
-            // Metni ve soruları ayır
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        // Cache the response
+        setCachedResponse(cacheKey, data.generatedText);
+        
+        // Display the content
+        displayContent(data.generatedText);
+
+    } catch (error) {
+        console.error('Error:', error);
+        showError(`Bir hata oluştu: ${error.message}`);
+        hideLoading();
+    }
+});
+
+// Content display function
+function displayContent(generatedText) {
+    hideLoading();
+    
+    const output = document.getElementById("output");
+    output.style.display = "block";
+    
+    // Split text and questions
             let textPart = "";
             let questionsPart = "";
             
-            // "Sorular" başlığını bul ve metni ikiye böl
-            const questionsIndex = generatedText.indexOf("Sorular");
-            
+    const questionsIndex = generatedText.indexOf("Sorular:");
             if (questionsIndex !== -1) {
                 textPart = generatedText.substring(0, questionsIndex);
                 questionsPart = generatedText.substring(questionsIndex);
@@ -80,253 +208,722 @@ document.getElementById("textForm").addEventListener("submit", async function (e
                 textPart = generatedText;
             }
             
-            // Metin kısmını formatla
-            let formattedText = textPart.replace(/^(.*?)(\n|$)/gm, (match, p1) => {
-                // Başlık olan kısmı bulup stil ekleyelim
-                if (p1.trim().endsWith(':')) {
-                    return `<h2 style="font-size: 20px; font-weight: bold; text-align: center;">${p1.trim()}</h2>`;
-                } else if (p1.trim().startsWith("**") && p1.trim().endsWith("**")) {
-                    const title = p1.replace(/\*\*/g, '').trim();
-                    return `<h1 style="font-size: 20px; font-weight: bold; text-align: center;">${title}</h1>`;
+    // Clean up the text first
+    const cleanedText = textPart
+        .replace(/^##\s*/gm, '')
+        .replace(/\*\*/g, '')
+        .replace(/\([^)]*\)/g, '');
+
+    // Split into lines and format
+    const lines = cleanedText.split('\n');
+    const formattedLines = [];
+    let hasTitle = false;
+
+    for (const line of lines) {
+        const cleanText = line.trim();
+        if (!cleanText) continue;
+
+        if (!hasTitle) {
+            formattedLines.push(`<h1 class="text-center mb-4">${cleanText}</h1>`);
+            hasTitle = true;
                 } else {
-                    return `<p style="text-indent: 20px; margin-bottom: 15px; line-height: 1.6; font-family: Arial, sans-serif;">${p1.trim()}</p>`;
+            formattedLines.push(`<p class="text-block">${cleanText}</p>`);
+        }
                 }
-            });
             
-            // Sorular kısmını formatla - iki sütunlu yapı oluştur
+    // Format questions part
             let formattedQuestions = "";
-            
             if (questionsPart) {
-                // Soruları ayır
                 const questionLines = questionsPart.split('\n');
                 let questions = [];
-                
-                // Başlık dışındaki soruları al
-                let isCollecting = false;
                 let currentQuestion = "";
                 
                 for (const line of questionLines) {
-                    if (line.trim().toLowerCase().includes("sorular")) {
-                        isCollecting = true;
-                        // ** işaretlerini kaldır
-                        const cleanTitle = line.trim().replace(/\*\*/g, '');
-                        formattedQuestions += `<h2 style="font-size: 24px; font-weight: bold; text-align: center; width: 100%;">${cleanTitle}</h2>`;
-                    } else if (isCollecting && line.trim()) {
-                        // Sayıyla başlıyorsa yeni soru
-                        if (/^\d+[\.\)]\s/.test(line.trim())) {
+            const cleanLine = line.trim().replace(/\*\*/g, '');
+            if (!cleanLine || cleanLine.toLowerCase() === "sorular:") continue;
+            
+            if (/^\d+[\.\)]\s/.test(cleanLine)) {
                             if (currentQuestion) {
                                 questions.push(currentQuestion);
                             }
-                            currentQuestion = line.trim();
+                currentQuestion = cleanLine;
                         } else if (currentQuestion) {
-                            currentQuestion += " " + line.trim();
-                        }
+                currentQuestion += " " + cleanLine;
                     }
                 }
                 
-                // Son soruyu ekle
                 if (currentQuestion) {
                     questions.push(currentQuestion);
                 }
                 
-                // Soruları iki sütunda göster - daha küçük kutucuklar
-                formattedQuestions += '<div class="question-grid">';
-                
+        formattedQuestions = '<div class="questions-section">';
+        formattedQuestions += '<h2>Sorular</h2>';
+        formattedQuestions += '<div class="row">';
                 questions.forEach((question, index) => {
-                    // RegEx ile soru numarasını al, eğer bulunamazsa boş string kullan
                     const questionNumberMatch = question.match(/^\d+[\.\)]\s/);
-                    const questionNumber = questionNumberMatch ? questionNumberMatch[0] : '';
+            const questionNumber = questionNumberMatch ? questionNumberMatch[0] : `${index + 1}. `;
                     const questionText = questionNumberMatch ? question.replace(/^\d+[\.\)]\s/, '') : question;
                     
                     formattedQuestions += `
-                        <div class="question-item">
-                            <p class="question-text">${questionNumber}${questionText}</p>
-                            <div class="answer-box"></div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text mb-3"><strong>${questionNumber}</strong>${questionText}</p>
+                            <div class="answer-box mt-auto"></div>
                         </div>
-                    `;
-                });
-                
-                formattedQuestions += '</div>';
-            }
-            
-            // Sayfa düzenini oluştur - sadece üst çizgi
-            const pageContent = `
-                <div style="position: relative; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px;">
-                    <button id="printButton" style="position: absolute; top: 0; right: 0; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 14px;">Yazdır</button>
-                    
-                    <!-- Üst çizgi - olabildiğince yukarıda -->
-                    <div style="border-bottom: 2px solid #333; margin-bottom: 15px; margin-top: 0;"></div>
-                    
-                    <!-- Ana içerik -->
-                    <div>
-                        ${formattedText}
                     </div>
-                    
-                    <!-- Alt bilgi çizgisi -->
-                    <div style="border-top: 2px solid #333; padding-top: 10px; margin-top: 20px;"></div>
-                    
-                    <!-- Sorular bölümü -->
-                    <div style="margin-top: 15px;">
+                </div>`;
+        });
+        formattedQuestions += '</div></div>';
+    }
+    
+    // Create action buttons
+    const actionButtons = `
+        <div class="action-buttons text-center mb-4">
+            <button id="printButton" class="btn btn-primary mx-2">
+                <i class="fas fa-print me-2"></i>Yazdır
+            </button>
+            <button id="pdfButton" class="btn btn-success mx-2">
+                <i class="fas fa-file-pdf me-2"></i>PDF Olarak Kaydet
+            </button>
+            <button id="shareButton" class="btn btn-info text-white mx-2">
+                <i class="fas fa-share-alt me-2"></i>Paylaş
+            </button>
+        </div>
+    `;
+    
+    // Combine all content
+    output.innerHTML = `
+        <div class="main-wrapper">
+            <div class="main-container">
+                <div class="action-buttons text-center mb-4">
+                    <button id="printButton" class="btn btn-primary mx-2">
+                        <i class="fas fa-print me-2"></i>Yazdır
+                    </button>
+                    <button id="pdfButton" class="btn btn-success mx-2">
+                        <i class="fas fa-file-pdf me-2"></i>PDF Olarak Kaydet
+                    </button>
+                    <button id="shareButton" class="btn btn-info text-white mx-2">
+                        <i class="fas fa-share-alt me-2"></i>Paylaş
+                    </button>
+                </div>
+                <div class="text-section">
+                    ${formattedLines.join('\n')}
+                </div>
                         ${formattedQuestions}
                     </div>
+        </div>
+    `;
 
-                    <style>
-                        .question-grid {
+    // Add styles to the head
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+        .main-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+        .main-container {
+            width: 100%;
+            max-width: 800px;
+        }
+        .text-section {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .text-section h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin: 0.5rem 0 1rem 0;
+            width: 100%;
+        }
+        .text-block {
+            display: block;
+            width: 100%;
+            text-align: justify;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+            text-indent: 2em;
+            color: #444;
+        }
+        .questions-section {
+            width: 100%;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .questions-section h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            color: #333;
+            width: 100%;
+            font-size: 1.3rem;
+        }
+        .questions-section .row {
                             display: flex;
                             flex-wrap: wrap;
-                            justify-content: space-between;
-                            gap: 10px;
-                        }
-                        .question-item {
-                            width: 48%;
-                            margin-bottom: 12px;
-                            background-color: #f8f9fa;
-                            border-radius: 8px;
-                            padding: 10px;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                        }
-                        .question-text {
-                            font-weight: bold;
-                            margin-bottom: 8px;
-                            font-size: 14px;
+            margin: -5px;
+            width: 100%;
+        }
+        .questions-section .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding: 5px;
+        }
+        .card {
+            height: 100%;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+        }
+        .card-body {
+            padding: 0.75rem;
+        }
+        .card-text {
+            margin-bottom: 0.5rem;
+            color: #444;
+            font-size: 0.95rem;
                         }
                         .answer-box {
                             border: 1px solid #ddd;
-                            border-radius: 5px;
-                            background-color: white;
-                            min-height: 60px;
+            border-radius: 4px;
+            min-height: 50px;
                             padding: 8px;
-                        }
-                    </style>
-                </div>
-            `;
-            
-            // İçeriği sayfaya ekle
-            document.getElementById("output").innerHTML = pageContent;
+            background: #f8f9fa;
+        }
+        @media print {
+            body { padding: 0; }
+            .page-break { page-break-before: always; }
+            .col-md-6 { break-inside: avoid; }
+            .watermark { position: fixed; }
+        }
+    `;
+    document.head.appendChild(styleElement);
 
-            // Yazdırma butonunu işlevsel hale getir
-            document.getElementById("printButton").addEventListener("click", function () {
-                // Mevcut içeriği al (Yazdır butonu dahil)
-                const originalContent = document.getElementById("output").innerHTML;
-                
-                // İçeriği, yazdır butonu olmadan işleyecek şekilde temizle
-                const contentWithoutButton = originalContent.replace(/<button.*?printButton.*?Yazdır<\/button>/gs, '');
-                
-                // Yazdırma sayfası oluştur
+    // Add auto-scroll to the output section
+    output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Update print styles
+    document.getElementById("printButton").addEventListener("click", function() {
+        const printContent = document.querySelector('.main-container').cloneNode(true);
+        const actionButtons = printContent.querySelector('.action-buttons');
+        if (actionButtons) actionButtons.remove();
+        
                 const printWindow = window.open('', '', 'height=600,width=800');
                 
-                // Yazdırma sayfasının içeriğini ayarla
                 printWindow.document.write(`
                     <html>
                     <head>
                         <title>OkuAnla - Metin Yazdır</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                         <style>
-                            @media print {
+                            @page {
+                                margin: 1cm;
+                            }
                                 body {
-                                    font-family: Arial, sans-serif;
-                                    font-size: 14px;
-                                    line-height: 1.5;
-                                    margin: 0.5cm;
-                                }
-                                
-                                h1 {
-                                    font-size: 24px;
+                                padding: 15px;
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                background: white;
+                            }
+                            .watermark {
+                                position: fixed;
+                                top: 10px;
+                                left: 15px;
+                                font-size: 11px;
+                                color: #999;
+                                font-weight: 500;
+                                opacity: 0.7;
+                                z-index: 1000;
+                            }
+                            .header-line {
+                                position: relative;
+                                border-top: 1px solid #000;
+                                margin: 35px 15px 20px;
+                            }
+                            .main-wrapper {
+                                width: 100%;
+                                display: flex;
+                                justify-content: center;
+                            }
+                            .main-container {
+                                width: 100%;
+                                max-width: 800px;
+                                margin: 0 auto;
+                                padding: 15px;
+                            }
+                            .text-section {
+                                width: 100%;
+                                margin-bottom: 1rem;
+                            }
+                            h1 {
+                                font-size: 1.5rem;
                                     font-weight: bold;
+                                color: #333;
                                     text-align: center;
-                                    margin-bottom: 15px;
-                                }
-                                
-                                h2 {
-                                    font-size: 20px;
+                                margin: 0.5rem 0 1rem 0;
+                                width: 100%;
+                            }
+                            .text-block {
+                                display: block;
+                                width: 100%;
+                                text-align: justify;
+                                margin-bottom: 0.5rem;
+                                line-height: 1.4;
+                                text-indent: 2em;
+                                color: #444;
+                            }
+                            .questions-section {
+                                width: 100%;
+                                margin-top: 1rem;
+                                padding-top: 1rem;
+                                border-top: 1px solid #eee;
+                            }
+                            .questions-section h2 {
+                                text-align: center;
+                                margin-bottom: 1rem;
                                     font-weight: bold;
-                                    text-align: center;
-                                    margin-bottom: 12px;
+                                color: #333;
+                                width: 100%;
+                                font-size: 1.3rem;
                                 }
-                                
-                                p {
-                                    text-indent: 20px;
-                                    margin-bottom: 10px;
-                                }
-                                
-                                .watermark {
-                                    position: fixed;
-                                    top: 5px;
-                                    left: 5px;
-                                    font-size: 14px;
-                                    color: #d3d3d3;
-                                    font-weight: bold;
-                                }
-                                
-                                .question-grid {
+                            .row {
                                     display: flex;
                                     flex-wrap: wrap;
-                                    justify-content: space-between;
-                                    gap: 10px;
+                                margin: -5px;
                                     width: 100%;
                                 }
-                                
-                                .question-item {
-                                    width: 48%;
-                                    background-color: #f8f9fa;
-                                    border-radius: 8px;
-                                    padding: 8px;
-                                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                                    margin-bottom: 10px;
-                                    break-inside: avoid;
-                                    box-sizing: border-box;
-                                }
-                                
-                                .question-text {
-                                    font-weight: bold;
-                                    margin-bottom: 6px;
-                                    font-size: 14px;
-                                }
-                                
+                            .col-md-6 {
+                                flex: 0 0 50%;
+                                max-width: 50%;
+                                padding: 5px;
+                            }
+                            .card {
+                                height: 100%;
+                                border: 1px solid #ddd;
+                                border-radius: 6px;
+                                background: white;
+                            }
+                            .card-body {
+                                padding: 0.75rem;
+                            }
+                            .card-text {
+                                margin-bottom: 0.5rem;
+                                color: #444;
+                                font-size: 0.95rem;
+                            }
                                 .answer-box {
                                     border: 1px solid #ddd;
-                                    border-radius: 5px;
-                                    background-color: white;
+                                border-radius: 4px;
                                     min-height: 50px;
-                                    padding: 6px;
-                                }
-                                
-                                .header-divider {
-                                    border-bottom: 2px solid #333;
-                                    margin-bottom: 15px;
-                                    margin-top: 0;
-                                }
-                                
-                                .footer-divider {
-                                    border-top: 2px solid #333;
-                                    padding-top: 10px;
-                                    margin-top: 15px;
-                                }
+                                padding: 8px;
+                                background: #f8f9fa;
+                            }
+                            @media print {
+                                body { padding: 0; }
+                                .page-break { page-break-before: always; }
+                                .col-md-6 { break-inside: avoid; }
+                                .watermark { position: fixed; }
                             }
                         </style>
                     </head>
                     <body>
-                        <div class="watermark">OkuAnla.net</div>
-                        <div>${contentWithoutButton}</div>
+                <div class="watermark">okuanla.net</div>
+                <div class="header-line"></div>
+                <div class="main-wrapper">
+                    <div class="main-container">
+                        ${printContent.innerHTML}
+                    </div>
+                </div>
                     </body>
                     </html>
                 `);
                 
                 printWindow.document.close();
+        printWindow.focus();
                 
-                // Sayfanın yüklenmesini bekleyip yazdır
-                printWindow.onload = function() {
-                    setTimeout(function() {
+        setTimeout(() => {
                         printWindow.print();
-                        // printWindow.close();
                     }, 500);
-                };
+    });
+    
+    // PDF button
+    document.getElementById("pdfButton").addEventListener("click", async function() {
+        try {
+            const printContent = document.querySelector('.main-container').cloneNode(true);
+            const actionButtons = printContent.querySelector('.action-buttons');
+            if (actionButtons) actionButtons.remove();
+            
+            const pdfContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>OkuAnla - Metin</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                    <style>
+                        @page {
+                            margin: 1cm;
+                        }
+                        body {
+                            padding: 15px;
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            background: white;
+                        }
+                        .watermark {
+                            position: fixed;
+                            top: 10px;
+                            left: 15px;
+                            font-size: 11px;
+                            color: #999;
+                            font-weight: 500;
+                            opacity: 0.7;
+                            z-index: 1000;
+                        }
+                        .header-line {
+                            position: relative;
+                            border-top: 1px solid #000;
+                            margin: 35px 15px 20px;
+                        }
+                        .main-wrapper {
+                            width: 100%;
+                            display: flex;
+                            justify-content: center;
+                        }
+                        .main-container {
+                            width: 100%;
+                            max-width: 800px;
+                            margin: 0 auto;
+                            padding: 15px;
+                        }
+                        .text-section {
+                            width: 100%;
+                            margin-bottom: 1rem;
+                        }
+                        h1 {
+                            font-size: 1.5rem;
+                            font-weight: bold;
+                            color: #333;
+                            text-align: center;
+                            margin: 0.5rem 0 1rem 0;
+                            width: 100%;
+                        }
+                        .text-block {
+                            display: block;
+                            width: 100%;
+                            text-align: justify;
+                            margin-bottom: 0.5rem;
+                            line-height: 1.4;
+                            text-indent: 2em;
+                            color: #444;
+                        }
+                        .questions-section {
+                            width: 100%;
+                            margin-top: 1rem;
+                            padding-top: 1rem;
+                            border-top: 1px solid #eee;
+                        }
+                        .questions-section h2 {
+                            text-align: center;
+                            margin-bottom: 1rem;
+                            font-weight: bold;
+                            color: #333;
+                            width: 100%;
+                            font-size: 1.3rem;
+                        }
+                        .row {
+                            display: flex;
+                            flex-wrap: wrap;
+                            margin: -5px;
+                            width: 100%;
+                        }
+                        .col-md-6 {
+                            flex: 0 0 50%;
+                            max-width: 50%;
+                            padding: 5px;
+                            break-inside: avoid;
+                        }
+                        .card {
+                            height: 100%;
+                            border: 1px solid #ddd;
+                            border-radius: 6px;
+                            background: white;
+                            break-inside: avoid;
+                        }
+                        .card-body {
+                            padding: 0.75rem;
+                        }
+                        .card-text {
+                            margin-bottom: 0.5rem;
+                            color: #444;
+                            font-size: 0.95rem;
+                        }
+                        .answer-box {
+                            border: 1px solid #ddd;
+                            border-radius: 4px;
+                            min-height: 50px;
+                            padding: 8px;
+                            background: #f8f9fa;
+                        }
+                        @media print {
+                            body { padding: 0; }
+                            .page-break { page-break-before: always; }
+                            .col-md-6 { break-inside: avoid; }
+                            .watermark { position: fixed; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="watermark">okuanla.net</div>
+                    <div class="header-line"></div>
+                    <div class="main-wrapper">
+                        <div class="main-container">
+                            ${printContent.innerHTML}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const response = await fetch('/api/generate-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: pdfContent })
             });
+            
+            if (!response.ok) throw new Error('PDF oluşturma hatası');
+            
+            const blob = await response.blob();
+            const file = new File([blob], 'okuanla-metin.pdf', { type: 'application/pdf' });
 
+            if (navigator.share && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'OkuAnla - Okuma Metni',
+                        text: 'OkuAnla ile oluşturulan okuma metnini paylaşıyorum!'
+                    });
+                } catch (error) {
+                    // Eğer paylaşım başarısız olursa, dosyayı indirme seçeneğini sunar
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'okuanla-metin.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                }
         } else {
-            document.getElementById("output").innerHTML = "<p>Metin oluşturulamadı: API yanıtı geçersiz.</p>";
+                // Paylaşım API'si desteklenmiyorsa, dosyayı indirir
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'okuanla-metin.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
         }
     } catch (error) {
-        console.error("Hata:", error);
-        document.getElementById("output").innerHTML = `<p>Metin oluşturulamadı: ${error.message}</p>`;
-    }
+            showError('PDF oluşturulurken bir hata oluştu: ' + error.message);
+        }
+    });
+    
+    // Share button
+    document.getElementById("shareButton").addEventListener("click", async function() {
+        try {
+            const printContent = document.querySelector('.main-container').cloneNode(true);
+            const actionButtons = printContent.querySelector('.action-buttons');
+            if (actionButtons) actionButtons.remove();
+            
+            const pdfContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>OkuAnla - Metin</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                    <style>
+                        @page {
+                            margin: 1cm;
+                        }
+                        body {
+                            padding: 15px;
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            background: white;
+                        }
+                        .watermark {
+                            position: fixed;
+                            top: 10px;
+                            left: 15px;
+                            font-size: 11px;
+                            color: #999;
+                            font-weight: 500;
+                            opacity: 0.7;
+                            z-index: 1000;
+                        }
+                        .header-line {
+                            position: relative;
+                            border-top: 1px solid #000;
+                            margin: 35px 15px 20px;
+                        }
+                        .main-wrapper {
+                            width: 100%;
+                            display: flex;
+                            justify-content: center;
+                        }
+                        .main-container {
+                            width: 100%;
+                            max-width: 800px;
+                            margin: 0 auto;
+                            padding: 15px;
+                        }
+                        .text-section {
+                            width: 100%;
+                            margin-bottom: 1rem;
+                        }
+                        h1 {
+                            font-size: 1.5rem;
+                            font-weight: bold;
+                            color: #333;
+                            text-align: center;
+                            margin: 0.5rem 0 1rem 0;
+                            width: 100%;
+                        }
+                        .text-block {
+                            display: block;
+                            width: 100%;
+                            text-align: justify;
+                            margin-bottom: 0.5rem;
+                            line-height: 1.4;
+                            text-indent: 2em;
+                            color: #444;
+                        }
+                        .questions-section {
+                            width: 100%;
+                            margin-top: 1rem;
+                            padding-top: 1rem;
+                            border-top: 1px solid #eee;
+                        }
+                        .questions-section h2 {
+                            text-align: center;
+                            margin-bottom: 1rem;
+                            font-weight: bold;
+                            color: #333;
+                            width: 100%;
+                            font-size: 1.3rem;
+                        }
+                        .row {
+                            display: flex;
+                            flex-wrap: wrap;
+                            margin: -5px;
+                            width: 100%;
+                        }
+                        .col-md-6 {
+                            flex: 0 0 50%;
+                            max-width: 50%;
+                            padding: 5px;
+                            break-inside: avoid;
+                        }
+                        .card {
+                            height: 100%;
+                            border: 1px solid #ddd;
+                            border-radius: 6px;
+                            background: white;
+                            break-inside: avoid;
+                        }
+                        .card-body {
+                            padding: 0.75rem;
+                        }
+                        .card-text {
+                            margin-bottom: 0.5rem;
+                            color: #444;
+                            font-size: 0.95rem;
+                        }
+                        .answer-box {
+                            border: 1px solid #ddd;
+                            border-radius: 4px;
+                            min-height: 50px;
+                            padding: 8px;
+                            background: #f8f9fa;
+                        }
+                        @media print {
+                            body { padding: 0; }
+                            .page-break { page-break-before: always; }
+                            .col-md-6 { break-inside: avoid; }
+                            .watermark { position: fixed; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="watermark">okuanla.net</div>
+                    <div class="header-line"></div>
+                    <div class="main-wrapper">
+                        <div class="main-container">
+                            ${printContent.innerHTML}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const response = await fetch('/api/generate-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: pdfContent })
+            });
+
+            if (!response.ok) throw new Error('PDF oluşturma hatası');
+
+            const blob = await response.blob();
+            const file = new File([blob], 'okuanla-metin.pdf', { type: 'application/pdf' });
+
+            if (navigator.share && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'OkuAnla - Okuma Metni',
+                        text: 'OkuAnla ile oluşturulan okuma metnini paylaşıyorum!'
+                    });
+                } catch (error) {
+                    // Eğer paylaşım başarısız olursa, dosyayı indirme seçeneğini sunar
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'okuanla-metin.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                }
+            } else {
+                // Paylaşım API'si desteklenmiyorsa, dosyayı indirir
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'okuanla-metin.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+        } catch (error) {
+            showError('Paylaşım sırasında bir hata oluştu: ' + error.message);
+        }
+    });
+}
+
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 });
+
