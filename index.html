@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OkuAnla - Okuduğunu Anlama Metni Oluştur</title>
     <link rel="stylesheet" href="public/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Google AdSense Doğrulama Kodu -->
     <meta name="google-adsense-account" content="ca-pub-8999174255873846">
@@ -12,11 +14,52 @@
         crossorigin="anonymous"></script>
     
     <style>
+        :root {
+            --primary-color: #688375;
+            --secondary-color: #4e6a5a;
+            --text-color: #333;
+            --background-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .logo-container {
+            margin: 0;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .logo {
+            width: 80px;
+            height: auto;
+            transition: transform 0.3s ease;
+            margin-right: 20px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
         .nav-container {
-            margin: 25px 0;
+            margin: 0 0 25px 0;
             display: flex;
             justify-content: center;
-            background-color: #688375;
+            background-color: var(--primary-color);
             border-radius: 10px;
             padding: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -33,83 +76,279 @@
         }
         
         .nav-link.active {
-            background-color: #4e6a5a;
+            background-color: var(--secondary-color);
             color: white;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .nav-link:hover:not(.active) {
-            background-color: #56725f;
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
         }
 
-        .logo-container {
-            text-align: center;
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
 
-        .logo {
-            width: 120px;
-            height: auto;
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
         }
 
-        button {
-            background-color: #688375;
-            color: white;
-            padding: 10px 15px;
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(104, 131, 117, 0.25);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        button:hover {
-            background-color: #4e6a5a;
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .preview-container {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .content-container {
+            position: relative;
+            padding-right: 300px; /* Increased space for image */
+        }
+
+        .generated-image-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px; /* Increased image width */
+            margin: 0;
+            text-align: right;
+        }
+
+        .generated-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .preview-container h1 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            padding-right: 0;
+        }
+
+        .text-content {
+            max-width: calc(100% - 300px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 5px 10px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .page-title {
+                text-align: center;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-link {
+                width: 100%;
+                text-align: center;
+                margin: 5px 0;
+            }
+            
+            .form-container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .content-container {
+                padding-right: 0;
+            }
+
+            .generated-image-container {
+                position: relative;
+                width: 100%;
+                margin: 20px 0;
+                text-align: center;
+            }
+
+            .generated-image {
+                max-width: 200px;
+            }
+
+            .text-content {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="logo-container">
-        <a href="https://www.okuanla.net">
-    <img src="public/logo.png" alt="OkuAnla Logo" class="logo">
-</a>
+    <div class="container">
+        <div class="header-container">
+            <div class="logo-container">
+                <a href="https://www.okuanla.net">
+                    <img src="public/logo.png" alt="OkuAnla Logo" class="logo">
+                </a>
+            </div>
+            <h2 class="page-title">İlkokul seviyesinde okuma metni ve sorular oluştur</h2>
+        </div>
+        
+        <div class="nav-container">
+            <a href="index.html" class="nav-link active">Okuma Metni</a>
+            <a href="math.html" class="nav-link">Matematik Problemi</a>
+            <a href="english.html" class="nav-link">İngilizce Metin Oluştur</a>
+        </div>
+
+        <div class="form-container">
+            <form id="textForm">
+                <div class="form-group">
+                    <label for="grade" class="form-label">Sınıf Seviyesi:</label>
+                    <select id="grade" class="form-control" aria-label="Sınıf seviyesi seçimi">
+                        <option value="1">1. Sınıf</option>
+                        <option value="2">2. Sınıf</option>
+                        <option value="3">3. Sınıf</option>
+                        <option value="4">4. Sınıf</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="theme" class="form-label">Tema (Opsiyonel):</label>
+                    <input type="text" id="theme" class="form-control" placeholder="Örn: Hayvanlar, Uzay"
+                           aria-label="Metin teması girişi">
+                    <small class="text-muted">Metnin ana konusunu belirtin veya boş bırakın</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="keywords" class="form-label">Kullanılacak Kelimeler (Opsiyonel):</label>
+                    <input type="text" id="keywords" class="form-control" placeholder="Örn: orman, aslan, kuş"
+                           aria-label="Kullanılacak kelimeler girişi">
+                    <small class="text-muted">Metinde kullanılmasını istediğiniz kelimeleri virgülle ayırarak yazın veya boş bırakın</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="textLength" class="form-label">Metin Uzunluğu:</label>
+                    <select class="form-select" id="textLength" name="textLength" required>
+                        <option value="150-200">Kısa</option>
+                        <option value="300-350" selected>Orta</option>
+                        <option value="500-550">Uzun</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="questionCount" class="form-label">Soru Sayısı:</label>
+                    <select id="questionCount" class="form-control" aria-label="Soru sayısı seçimi">
+                        <option value="4">4 Soru</option>
+                        <option value="6">6 Soru</option>
+                        <option value="8">8 Soru</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-magic me-2"></i>Metni Oluştur
+                </button>
+            </form>
+        </div>
+
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+            <p class="mt-2">Metin oluşturuluyor, lütfen bekleyin...</p>
+        </div>
+
+        <div id="output" class="preview-container"></div>
     </div>
 
-    <p>İlkokul seviyesinde okuma metni ve sorular oluştur.</p>
-    
-    <div class="nav-container">
-        <a href="index.html" class="nav-link active">Okuma Metni</a>
-        <a href="math.html" class="nav-link">Matematik Problemi</a>
-        <a href="english.html" class="nav-link">İngilizce Metin Oluştur</a>
-    </div>
-
-    <form id="textForm">
-        <label for="grade">Sınıf Seviyesi:</label>
-        <select id="grade">
-            <option value="1">1. Sınıf</option>
-            <option value="2">2. Sınıf</option>
-            <option value="3">3. Sınıf</option>
-            <option value="4">4. Sınıf</option>
-        </select>
-
-        <label for="theme">Tema:</label>
-        <input type="text" id="theme" placeholder="Örn: Hayvanlar, Uzay" required>
-
-        <label for="keywords">Kullanılacak Kelimeler:</label>
-        <input type="text" id="keywords" placeholder="Örn: orman, aslan, kuş" required>
-
-        <label for="questionCount">Soru Sayısı:</label>
-        <select id="questionCount">
-            <option value="4">4</option>
-            <option value="6">6</option>
-            <option value="8">8</option>
-        </select>
-
-        <button type="submit">Metni Oluştur</button>
-    </form>
-
-    <div id="output"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="src/script.js"></script>
 </body>
 </html>
