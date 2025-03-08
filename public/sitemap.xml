@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://www.okuanla.net/</loc>
-        <lastmod>2025-03-03T00:05:30+00:00</lastmod>
-        <priority>1.00</priority>
-    </url>
-    <url>
-        <loc>https://www.okuanla.net/index.html</loc>
-        <lastmod>2025-03-03T07:35:33+00:00</lastmod>
-        <priority>0.80</priority>
-    </url>
-    <url>
-        <loc>https://www.okuanla.net/math.html</loc>
-        <lastmod>2025-03-03T07:35:33+00:00</lastmod>
-        <priority>0.80</priority>
-    </url>
-</urlset>
+   <url>
+      <loc>https://okuanla.net/</loc>
+      <lastmod>2024-03-21</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>1.0</priority>
+   </url>
+   <url>
+      <loc>https://okuanla.net/index.html</loc>
+      <lastmod>2024-03-21</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.9</priority>
+   </url>
+   <url>
+      <loc>https://okuanla.net/english.html</loc>
+      <lastmod>2024-03-21</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.9</priority>
+   </url>
+   <url>
+      <loc>https://okuanla.net/math.html</loc>
+      <lastmod>2024-03-21</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.9</priority>
+   </url>
+</urlset> 
