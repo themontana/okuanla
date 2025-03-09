@@ -26,6 +26,8 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         .header-container {
@@ -35,6 +37,7 @@
             margin-bottom: 25px;
             padding: 0 20px;
             width: 100%;
+            flex-wrap: wrap;
         }
 
         .logo-container {
@@ -53,6 +56,7 @@
             margin: 0;
             font-size: 1.5rem;
             color: var(--text-color);
+            text-align: center;
         }
 
         .nav-container {
@@ -63,6 +67,8 @@
             border-radius: 10px;
             padding: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            width: 100%;
         }
         
         .nav-link {
@@ -70,7 +76,7 @@
             text-decoration: none;
             color: white;
             border-radius: 8px;
-            margin: 0 5px;
+            margin: 5px;
             font-weight: 500;
             transition: all 0.3s ease;
         }
@@ -94,6 +100,7 @@
             background: white;
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
         }
 
         .form-group {
@@ -103,6 +110,8 @@
         .form-label {
             font-weight: 500;
             margin-bottom: 8px;
+            text-align: left;
+            display: block;
         }
 
         .form-control {
@@ -110,6 +119,7 @@
             border-radius: 8px;
             padding: 10px;
             transition: all 0.3s ease;
+            width: 100%;
         }
 
         .form-control:focus {
@@ -124,6 +134,7 @@
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.3s ease;
+            width: 100%;
         }
 
         .btn-primary:hover {
@@ -135,6 +146,7 @@
             display: none;
             text-align: center;
             margin: 20px 0;
+            width: 100%;
         }
 
         .preview-container {
@@ -144,11 +156,14 @@
             background: white;
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
         }
 
         .content-container {
             position: relative;
-            padding-right: 300px; /* Increased space for image */
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .generated-image-container {
@@ -218,16 +233,17 @@
         @media (max-width: 768px) {
             .header-container {
                 flex-direction: column;
-                text-align: center;
+                padding: 0 10px;
             }
             
             .logo {
                 margin-right: 0;
-                margin-bottom: 15px;
+                margin-bottom: 10px;
             }
             
             .page-title {
-                text-align: center;
+                font-size: 1.3rem;
+                margin-bottom: 10px;
             }
             
             .nav-container {
@@ -237,36 +253,48 @@
             
             .nav-link {
                 width: 100%;
+                margin: 3px 0;
+                padding: 10px 15px;
                 text-align: center;
-                margin: 5px 0;
             }
             
-            .form-container {
-                margin: 10px;
+            .form-container, .preview-container {
                 padding: 15px;
+                border-radius: 10px;
             }
             
-            .action-buttons {
-                flex-direction: column;
+            .form-group {
+                margin-bottom: 15px;
             }
-
-            .content-container {
-                padding-right: 0;
+            
+            .btn-primary {
+                padding: 10px 20px;
             }
-
-            .generated-image-container {
-                position: relative;
-                width: 100%;
-                margin: 20px 0;
-                text-align: center;
+        }
+        
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.1rem;
             }
-
-            .generated-image {
-                max-width: 200px;
+            
+            .form-container, .preview-container {
+                padding: 10px;
             }
-
-            .text-content {
-                max-width: 100%;
+            
+            .form-group {
+                margin-bottom: 10px;
+            }
+            
+            .form-label {
+                margin-bottom: 5px;
+            }
+            
+            .form-control {
+                padding: 8px;
+            }
+            
+            .btn-primary {
+                padding: 8px 15px;
             }
         }
     </style>

@@ -7,14 +7,6 @@
       "config": { "runtime": "nodejs18.x" }
     },
     {
-      "src": "api/generate-pdf.js",
-      "use": "@vercel/node",
-      "config": { 
-        "runtime": "nodejs18.x",
-        "maxDuration": 60
-      }
-    },
-    {
       "src": "*.html",
       "use": "@vercel/static"
     },
@@ -32,16 +24,6 @@
       "src": "/api/generate-text",
       "dest": "/api/generate-text.js",
       "methods": ["POST", "OPTIONS"]
-    },
-    {
-      "src": "/api/generate-pdf",
-      "dest": "/api/generate-pdf.js",
-      "methods": ["POST", "OPTIONS"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      }
     },
     {
       "handle": "filesystem"

@@ -4,7 +4,6 @@ import path from 'path';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import puppeteer from 'puppeteer';
 import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -131,86 +130,6 @@ app.post('/api/generate-math', async (req, res) => {
         res.json({ generatedText: text });
     } catch (error) {
         console.error('Error in math generation:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.post('/api/generate-pdf', async (req, res) => {
-    try {
-        console.log('PDF generation requested');
-        const { content } = req.body;
-        
-        // Launch Puppeteer
-        const browser = await puppeteer.launch({ 
-            headless: 'new',
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--font-render-hinting=none'
-            ],
-            executablePath: process.env.CHROME_PATH || undefined
-        });
-        const page = await browser.newPage();
-        
-        // Set content with proper encoding and wait for all resources
-        await page.setContent(content, {
-            waitUntil: ['networkidle0', 'load', 'domcontentloaded']
-        });
-
-        // Ensure fonts are loaded
-        await page.addStyleTag({
-            content: `
-                @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap');
-                * {
-                    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
-                }
-            `
-        });
-
-        // Set viewport to A4 size with higher DPI
-        await page.setViewport({
-            width: 794,  // A4 width at 96 DPI
-            height: 1123, // A4 height at 96 DPI
-            deviceScaleFactor: 2
-        });
-
-        // Ensure proper encoding and font loading
-        await page.evaluate(() => {
-            const meta = document.createElement('meta');
-            meta.charset = 'UTF-8';
-            document.head.prepend(meta);
-            
-            // Force font loading
-            document.fonts.ready.then(() => {
-                document.body.style.visibility = 'visible';
-            });
-        });
-
-        // Wait for fonts and images to load
-        await page.waitForTimeout(1500);
-        
-        // Generate PDF with specific options
-        const pdf = await page.pdf({
-            format: 'A4',
-            margin: { top: '1.5cm', right: '1.5cm', bottom: '1.5cm', left: '1.5cm' },
-            printBackground: true,
-            preferCSSPageSize: true,
-            displayHeaderFooter: false,
-            scale: 1,
-            landscape: false
-        });
-        
-        await browser.close();
-        
-        // Send PDF with proper headers
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=okuanla-content.pdf');
-        res.send(pdf);
-    } catch (error) {
-        console.error('Error in PDF generation:', error);
         res.status(500).json({ error: error.message });
     }
 });
