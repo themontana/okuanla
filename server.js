@@ -141,7 +141,16 @@ app.post('/api/generate-pdf', async (req, res) => {
         const { content } = req.body;
         
         // Launch Puppeteer
-        const browser = await puppeteer.launch({ headless: 'new' });
+        const browser = await puppeteer.launch({ 
+            headless: 'new',
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu'
+            ],
+            executablePath: process.env.CHROME_PATH || undefined
+        });
         const page = await browser.newPage();
         
         // Set content with proper styling
