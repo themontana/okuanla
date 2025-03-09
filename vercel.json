@@ -57,5 +57,8 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "NODE_OPTIONS": "--no-warnings"
+  }
 }
