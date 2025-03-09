@@ -648,19 +648,15 @@ function displayContent(generatedText) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <title>OkuAnla - PDF Çıktısı</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         @page {
-            margin: 1cm;
+            margin: 1.5cm;
             size: A4;
         }
-        @font-face {
-            font-family: 'Segoe UI';
-            src: local('Segoe UI');
-            font-display: swap;
-        }
         body {
-            padding: 15px;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: white;
             font-size: 11pt;
@@ -670,16 +666,9 @@ function displayContent(generatedText) {
             position: fixed;
             top: 10px;
             left: 15px;
-            font-size: 11px;
+            font-size: 8pt;
             color: #999;
-            font-weight: 500;
             opacity: 0.7;
-            z-index: 1000;
-        }
-        .header-line {
-            position: relative;
-            border-top: 1px solid #000;
-            margin: 35px 15px 20px;
         }
         .main-wrapper {
             width: 100%;
@@ -688,26 +677,19 @@ function displayContent(generatedText) {
         }
         .main-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 15px;
-        }
-        h1 {
-            font-size: 16pt;
-            font-weight: bold;
-            color: #333;
-            text-align: center;
-            margin: 0.5rem 0 1.5rem 0;
+            padding: 0;
         }
         .text-section {
             width: 100%;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
         .text-block {
             display: block;
             width: 100%;
             text-align: justify;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             line-height: 1.5;
             text-indent: 2em;
             color: #444;
@@ -718,25 +700,18 @@ function displayContent(generatedText) {
             padding-top: 1.5rem;
             border-top: 1px solid #eee;
         }
-        .questions-section h2 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-weight: bold;
-            color: #333;
-            font-size: 14pt;
-        }
         .row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
             margin: 0;
         }
-        .col-md-6 {
+        .col-6 {
             width: 100%;
             padding: 0;
             break-inside: avoid;
         }
-        .card {
+        .problem-card {
             border: 1px solid #ddd;
             border-radius: 6px;
             background: white;
@@ -746,242 +721,57 @@ function displayContent(generatedText) {
         .card-body {
             padding: 0.8rem 1rem;
         }
-        .card-text {
+        .problem-text {
             font-size: 11pt;
             color: #444;
             margin-bottom: 0;
         }
-        .answer-box {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            min-height: 50px;
-            padding: 8px;
-            background: #f8f9fa;
-            margin-top: 1rem;
+        .solution-space {
+            height: 120px;
+            border-top: 1px dashed #ddd;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
     <div class="watermark">okuanla.net</div>
-    <div class="header-line"></div>
     <div class="main-wrapper">
-        ${clone.outerHTML}
+        <div class="main-container">
+            ${clone.innerHTML}
+        </div>
     </div>
 </body>
 </html>`;
-
-                // Make POST request to generate PDF
-                const response = await fetch('/api/generate-pdf', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
-                    body: JSON.stringify({ content: pdfContent })
-                });
-
-                if (!response.ok) {
-                    throw new Error('PDF generation failed');
-                }
-
-                // Create blob and download
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'okuanla-content.pdf';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-
-            } catch (error) {
-                console.error('Error generating PDF:', error);
-                alert('PDF oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
-            }
-        });
-    }
-    
-    // Share button
-    document.getElementById("shareButton").addEventListener("click", async function() {
-        try {
-            const printContent = document.querySelector('.main-container').cloneNode(true);
-            const actionButtons = printContent.querySelector('.action-buttons');
-            if (actionButtons) actionButtons.remove();
             
-            const pdfContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>OkuAnla - Metin</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                    <style>
-                        @page {
-                            margin: 1cm;
-                        }
-                        body {
-                            padding: 15px;
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            background: white;
-                        }
-                        .watermark {
-                            position: fixed;
-                            top: 10px;
-                            left: 15px;
-                            font-size: 11px;
-                            color: #999;
-                            font-weight: 500;
-                            opacity: 0.7;
-                            z-index: 1000;
-                        }
-                        .header-line {
-                            position: relative;
-                            border-top: 1px solid #000;
-                            margin: 35px 15px 20px;
-                        }
-                        .main-wrapper {
-                            width: 100%;
-                            display: flex;
-                            justify-content: center;
-                        }
-                        .main-container {
-                            width: 100%;
-                            max-width: 800px;
-                            margin: 0 auto;
-                            padding: 15px;
-                        }
-                        .text-section {
-                            width: 100%;
-                            margin-bottom: 1rem;
-                        }
-                        h1 {
-                            font-size: 1.5rem;
-                            font-weight: bold;
-                            color: #333;
-                            text-align: center;
-                            margin: 0.5rem 0 1rem 0;
-                            width: 100%;
-                        }
-                        .text-block {
-                            display: block;
-                            width: 100%;
-                            text-align: justify;
-                            margin-bottom: 0.5rem;
-                            line-height: 1.4;
-                            text-indent: 2em;
-                            color: #444;
-                        }
-                        .questions-section {
-                            width: 100%;
-                            margin-top: 1rem;
-                            padding-top: 1rem;
-                            border-top: 1px solid #eee;
-                        }
-                        .questions-section h2 {
-                            text-align: center;
-                            margin-bottom: 1rem;
-                            font-weight: bold;
-                            color: #333;
-                            width: 100%;
-                            font-size: 1.3rem;
-                        }
-                        .row {
-                            display: flex;
-                            flex-wrap: wrap;
-                            margin: -5px;
-                            width: 100%;
-                        }
-                        .col-md-6 {
-                            flex: 0 0 50%;
-                            max-width: 50%;
-                            padding: 5px;
-                            break-inside: avoid;
-                        }
-                        .card {
-                            height: 100%;
-                            border: 1px solid #ddd;
-                            border-radius: 6px;
-                            background: white;
-                            break-inside: avoid;
-                        }
-                        .card-body {
-                            padding: 0.75rem;
-                        }
-                        .card-text {
-                            margin-bottom: 0.5rem;
-                            color: #444;
-                            font-size: 0.95rem;
-                        }
-                        .answer-box {
-                            border: 1px solid #ddd;
-                            border-radius: 4px;
-                            min-height: 50px;
-                            padding: 8px;
-                            background: #f8f9fa;
-                        }
-                        @media print {
-                            body { padding: 0; }
-                            .page-break { page-break-before: always; }
-                            .col-md-6 { break-inside: avoid; }
-                            .watermark { position: fixed; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="watermark">okuanla.net</div>
-                    <div class="header-line"></div>
-                    <div class="main-wrapper">
-                        <div class="main-container">
-                            ${printContent.innerHTML}
-                        </div>
-                    </div>
-                </body>
-                </html>
-            `;
-
+            // Make POST request to generate PDF
             const response = await fetch('/api/generate-pdf', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/pdf'
                 },
                 body: JSON.stringify({ content: pdfContent })
             });
 
-            if (!response.ok) throw new Error('PDF oluşturma hatası');
-
-            const blob = await response.blob();
-            const file = new File([blob], 'okuanla-metin.pdf', { type: 'application/pdf' });
-
-            if (navigator.share && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        files: [file],
-                        title: 'OkuAnla - Okuma Metni',
-                        text: 'OkuAnla ile oluşturulan okuma metnini paylaşıyorum!'
-                    });
-                } catch (error) {
-                    // Eğer paylaşım başarısız olursa, dosyayı indirme seçeneğini sunar
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'okuanla-metin.pdf';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                }
-            } else {
-                // Paylaşım API'si desteklenmiyorsa, dosyayı indirir
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'okuanla-metin.pdf';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'PDF oluşturma hatası');
             }
+
+            // Create blob and download
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'okuanla-content.pdf';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
         } catch (error) {
-            showError('Paylaşım sırasında bir hata oluştu: ' + error.message);
+            console.error('Error generating PDF:', error);
+            alert('PDF oluşturulurken bir hata oluştu: ' + error.message);
         }
     });
 }
