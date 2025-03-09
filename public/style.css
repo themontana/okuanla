@@ -10,6 +10,8 @@ body {
     padding: 20px;
     background-color: #f8f9fa;
     line-height: 1.2; /* Genel satır yüksekliği */
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -45,6 +47,7 @@ p {
     border-radius: 10px;
     padding: 5px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    flex-wrap: wrap; /* Allow nav items to wrap on small screens */
 }
 
 .nav-link {
@@ -52,7 +55,7 @@ p {
     text-decoration: none;
     color: white;
     border-radius: 8px;
-    margin: 0 5px;
+    margin: 5px;
     font-weight: 500;
     transition: all 0.3s ease;
 }
@@ -69,6 +72,7 @@ p {
 }
 
 form {
+    width: 100%;
     max-width: 500px; /* Form genişliği azaltıldı */
     margin: 20px auto;
     padding: 20px;
@@ -81,6 +85,7 @@ form label {
     display: block;
     margin: 10px 0 5px;
     font-weight: normal; /* Bold olmaması için font-weight normal yapıldı */
+    text-align: left;
 }
 
 form select, form input {
@@ -109,4 +114,82 @@ form button:hover {
 #output {
     margin-top: 20px;
     text-align: center;
+    width: 100%;
+}
+
+.form-container, .preview-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.content-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 28px;
+        margin-top: 20px;
+    }
+    
+    .logo {
+        width: 80px;
+    }
+    
+    .nav-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 5px;
+    }
+    
+    .nav-link {
+        width: 100%;
+        margin: 3px 0;
+        padding: 10px 15px;
+    }
+    
+    form {
+        padding: 15px;
+    }
+    
+    .form-container, .preview-container, .content-container {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
+    }
+    
+    form label {
+        margin: 5px 0 3px;
+    }
+    
+    form select, form input {
+        padding: 8px;
+        margin: 5px 0;
+    }
+    
+    .btn-primary {
+        padding: 10px 15px;
+    }
 }
