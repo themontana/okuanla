@@ -226,7 +226,7 @@ function displayContent(generatedText) {
                     <div class="problem-text">${problem.trim()}</div>
                 </div>
             </div>
-        </div>
+                    </div>
     `).join('');
 
     // Capitalize first letter of theme and set page title
@@ -288,6 +288,36 @@ function displayContent(generatedText) {
         .solution-space {
             height: 100px;
             margin-top: 12px;
+        }
+        @media (max-width: 768px) {
+            .main-wrapper {
+                padding: 5px;
+            }
+            .main-container {
+                padding: 5px;
+            }
+            .col-6 {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: 0 0 100% !important;
+            }
+            .problem-card {
+                min-height: 100px;
+                margin-bottom: 10px;
+            }
+            .card-body {
+                padding: 0.6rem 0.8rem;
+            }
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            .action-buttons .btn {
+                margin: 0 !important;
+                width: 100%;
+            }
         }
         @media print {
             @page {
@@ -428,8 +458,8 @@ function displayContent(generatedText) {
                             .page-break { page-break-before: always; }
                             .col-md-6 { break-inside: avoid; }
                             .watermark { position: fixed; }
-                        }
-                    </style>
+                    }
+                </style>
                 </head>
                 <body>
                     <div class="watermark">okuanla.net</div>
@@ -589,8 +619,8 @@ function displayContent(generatedText) {
                                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                                 background: white;
                             }
-                            .watermark {
-                                position: fixed;
+                                .watermark {
+                                    position: fixed;
                                 top: 10px;
                                 left: 15px;
                                 font-size: 11px;
@@ -628,7 +658,7 @@ function displayContent(generatedText) {
                             }
                             .card-title {
                                 font-size: 1.1rem;
-                                font-weight: bold;
+                                    font-weight: bold;
                                 color: #333;
                                 margin-bottom: 1rem;
                             }
@@ -688,7 +718,7 @@ function displayContent(generatedText) {
                         window.URL.revokeObjectURL(url);
                         document.body.removeChild(a);
                     }
-                } else {
+        } else {
                     // Paylaşım API'si desteklenmiyorsa, dosyayı indirir
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -698,8 +728,8 @@ function displayContent(generatedText) {
                     a.click();
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
-                }
-            } catch (error) {
+        }
+    } catch (error) {
                 showError('Paylaşım sırasında bir hata oluştu: ' + error.message);
             }
         });
