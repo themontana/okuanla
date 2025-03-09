@@ -17,10 +17,21 @@ export default async function handler(req, res) {
         let browser;
         try {
             // Configure Chrome Browser
+            chrome.setGraphicsMode = false;
+            const executablePath = await chrome.executablePath();
+
             const options = {
-                args: chrome.args,
-                executablePath: await chrome.executablePath(),
-                headless: "new",
+                args: [
+                    ...chrome.args,
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--disable-software-rasterizer',
+                    '--font-render-hinting=none',
+                ],
+                executablePath,
+                headless: true,
                 ignoreHTTPSErrors: true,
                 defaultViewport: {
                     width: 1920,
@@ -32,14 +43,22 @@ export default async function handler(req, res) {
             // Launch browser with Vercel-specific configuration
             browser = await puppeteer.launch(options);
 
-            // Create new page
-            const page = await browser.newPage();
+            // Create new page with timeout
+            const page = await Promise.race([
+                browser.newPage(),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Page creation timeout')), 10000)
+                )
+            ]);
 
             // Set content with proper timeout and wait options
             await page.setContent(content, {
-                waitUntil: ['networkidle0', 'domcontentloaded'],
-                timeout: 30000,
+                waitUntil: ['domcontentloaded'],
+                timeout: 10000,
             });
+
+            // Wait for any fonts to load
+            await page.evaluateHandle('document.fonts.ready');
 
             // Generate PDF with specific settings
             const pdf = await page.pdf({
@@ -52,7 +71,7 @@ export default async function handler(req, res) {
                     left: '20mm'
                 },
                 preferCSSPageSize: true,
-                timeout: 30000,
+                timeout: 10000,
             });
 
             // Close browser
