@@ -327,18 +327,12 @@ function displayContent(generatedText) {
         .main-container {
             width: 100%;
             max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
         }
         .text-section {
             width: 100%;
             margin-bottom: 1rem;
-        }
-        .text-section h1 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #333;
-            text-align: center;
-            margin: 0.5rem 0 1rem 0;
-            width: 100%;
         }
         .text-block {
             display: block;
@@ -363,22 +357,24 @@ function displayContent(generatedText) {
             width: 100%;
             font-size: 1.3rem;
         }
-        .questions-section .row {
-                            display: flex;
-                            flex-wrap: wrap;
+        .row {
+            display: flex;
+            flex-wrap: wrap;
             margin: -5px;
             width: 100%;
         }
-        .questions-section .col-md-6 {
+        .col-md-6 {
             flex: 0 0 50%;
             max-width: 50%;
             padding: 5px;
+            break-inside: avoid;
         }
         .card {
             height: 100%;
             border: 1px solid #ddd;
             border-radius: 6px;
             background: white;
+            break-inside: avoid;
         }
         .card-body {
             padding: 0.75rem;
@@ -387,19 +383,102 @@ function displayContent(generatedText) {
             margin-bottom: 0.5rem;
             color: #444;
             font-size: 0.95rem;
-                        }
-                        .answer-box {
-                            border: 1px solid #ddd;
+        }
+        .answer-box {
+            border: 1px solid #ddd;
             border-radius: 4px;
             min-height: 50px;
-                            padding: 8px;
+            padding: 8px;
             background: #f8f9fa;
         }
+        @media (max-width: 768px) {
+            .main-wrapper {
+                padding: 5px;
+            }
+            .main-container {
+                padding: 5px;
+            }
+            .text-section {
+                padding: 0 10px;
+            }
+            .text-block {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            .questions-section {
+                padding: 0 10px;
+            }
+            .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                padding: 5px;
+            }
+            .card {
+                margin-bottom: 10px;
+            }
+            .card-body {
+                padding: 0.6rem 0.8rem;
+            }
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            .action-buttons .btn {
+                margin: 0 !important;
+                width: 100%;
+            }
+        }
         @media print {
-            body { padding: 0; }
-            .page-break { page-break-before: always; }
-            .col-md-6 { break-inside: avoid; }
-            .watermark { position: fixed; }
+            @page {
+                size: A4;
+                margin: 1.5cm;
+            }
+            body { 
+                padding: 0;
+                font-size: 11pt;
+            }
+            .main-container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .action-buttons, h4 {
+                display: none !important;
+            }
+            .row {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem !important;
+                margin: 0 !important;
+            }
+            .col-md-6 {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .card {
+                border: 1px solid #ddd !important;
+                margin-bottom: 0.5rem !important;
+                page-break-inside: avoid !important;
+                height: auto !important;
+            }
+            .card-body {
+                padding: 0.8rem 1rem !important;
+            }
+            .card-text {
+                font-size: 11pt !important;
+                line-height: 1.5 !important;
+            }
+            .watermark {
+                position: fixed !important;
+                top: 10px !important;
+                left: 15px !important;
+                font-size: 8pt !important;
+                color: #999 !important;
+            }
         }
     `;
     document.head.appendChild(styleElement);
@@ -551,175 +630,155 @@ function displayContent(generatedText) {
     });
     
     // PDF button
-    document.getElementById("pdfButton").addEventListener("click", async function() {
-        try {
-            const printContent = document.querySelector('.main-container').cloneNode(true);
-            const actionButtons = printContent.querySelector('.action-buttons');
-            if (actionButtons) actionButtons.remove();
-            
-            const pdfContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>OkuAnla - Metin</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                    <style>
-                        @page {
-                            margin: 1cm;
-                        }
-                        body {
-                            padding: 15px;
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            background: white;
-                        }
-                        .watermark {
-                            position: fixed;
-                            top: 10px;
-                            left: 15px;
-                            font-size: 11px;
-                            color: #999;
-                            font-weight: 500;
-                            opacity: 0.7;
-                            z-index: 1000;
-                        }
-                        .header-line {
-                            position: relative;
-                            border-top: 1px solid #000;
-                            margin: 35px 15px 20px;
-                        }
-                        .main-wrapper {
-                            width: 100%;
-                            display: flex;
-                            justify-content: center;
-                        }
-                        .main-container {
-                            width: 100%;
-                            max-width: 800px;
-                            margin: 0 auto;
-                            padding: 15px;
-                        }
-                        .text-section {
-                            width: 100%;
-                            margin-bottom: 1rem;
-                        }
-                        h1 {
-                            font-size: 1.5rem;
-                            font-weight: bold;
-                            color: #333;
-                            text-align: center;
-                            margin: 0.5rem 0 1rem 0;
-                            width: 100%;
-                        }
-                        .text-block {
-                            display: block;
-                            width: 100%;
-                            text-align: justify;
-                            margin-bottom: 0.5rem;
-                            line-height: 1.4;
-                            text-indent: 2em;
-                            color: #444;
-                        }
-                        .questions-section {
-                            width: 100%;
-                            margin-top: 1rem;
-                            padding-top: 1rem;
-                            border-top: 1px solid #eee;
-                        }
-                        .questions-section h2 {
-                            text-align: center;
-                            margin-bottom: 1rem;
-                            font-weight: bold;
-                            color: #333;
-                            width: 100%;
-                            font-size: 1.3rem;
-                        }
-                        .row {
-                            display: flex;
-                            flex-wrap: wrap;
-                            margin: -5px;
-                            width: 100%;
-                        }
-                        .col-md-6 {
-                            flex: 0 0 50%;
-                            max-width: 50%;
-                            padding: 5px;
-                            break-inside: avoid;
-                        }
-                        .card {
-                            height: 100%;
-                            border: 1px solid #ddd;
-                            border-radius: 6px;
-                            background: white;
-                            break-inside: avoid;
-                        }
-                        .card-body {
-                            padding: 0.75rem;
-                        }
-                        .card-text {
-                            margin-bottom: 0.5rem;
-                            color: #444;
-                            font-size: 0.95rem;
-                        }
-                        .answer-box {
-                            border: 1px solid #ddd;
-                            border-radius: 4px;
-                            min-height: 50px;
-                            padding: 8px;
-                            background: #f8f9fa;
-                        }
-                        @media print {
-                            body { padding: 0; }
-                            .page-break { page-break-before: always; }
-                            .col-md-6 { break-inside: avoid; }
-                            .watermark { position: fixed; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="watermark">okuanla.net</div>
-                    <div class="header-line"></div>
-                    <div class="main-wrapper">
-                        <div class="main-container">
-                            ${printContent.innerHTML}
+    const pdfButton = document.getElementById("pdfButton");
+    if (pdfButton) {
+        pdfButton.addEventListener("click", async function() {
+            try {
+                const printContent = document.querySelector('.main-container').cloneNode(true);
+                const actionButtons = printContent.querySelector('.action-buttons');
+                if (actionButtons) actionButtons.remove();
+                
+                const pdfContent = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>OkuAnla - Metin</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <style>
+                            @page {
+                                margin: 1cm;
+                            }
+                            body {
+                                padding: 15px;
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                background: white;
+                            }
+                            .watermark {
+                                position: fixed;
+                                top: 10px;
+                                left: 15px;
+                                font-size: 11px;
+                                color: #999;
+                                font-weight: 500;
+                                opacity: 0.7;
+                                z-index: 1000;
+                            }
+                            .header-line {
+                                position: relative;
+                                border-top: 1px solid #000;
+                                margin: 35px 15px 20px;
+                            }
+                            .main-wrapper {
+                                width: 100%;
+                                display: flex;
+                                justify-content: center;
+                            }
+                            .main-container {
+                                width: 100%;
+                                max-width: 800px;
+                                margin: 0 auto;
+                                padding: 15px;
+                            }
+                            .text-section {
+                                width: 100%;
+                                margin-bottom: 1rem;
+                            }
+                            h1 {
+                                font-size: 1.5rem;
+                                font-weight: bold;
+                                color: #333;
+                                text-align: center;
+                                margin: 0.5rem 0 1rem 0;
+                                width: 100%;
+                            }
+                            .text-block {
+                                display: block;
+                                width: 100%;
+                                text-align: justify;
+                                margin-bottom: 0.5rem;
+                                line-height: 1.4;
+                                text-indent: 2em;
+                                color: #444;
+                            }
+                            .questions-section {
+                                width: 100%;
+                                margin-top: 1rem;
+                                padding-top: 1rem;
+                                border-top: 1px solid #eee;
+                            }
+                            .questions-section h2 {
+                                text-align: center;
+                                margin-bottom: 1rem;
+                                font-weight: bold;
+                                color: #333;
+                                width: 100%;
+                                font-size: 1.3rem;
+                            }
+                            .row {
+                                display: flex;
+                                flex-wrap: wrap;
+                                margin: -5px;
+                                width: 100%;
+                            }
+                            .col-md-6 {
+                                flex: 0 0 50%;
+                                max-width: 50%;
+                                padding: 5px;
+                                break-inside: avoid;
+                            }
+                            .card {
+                                height: 100%;
+                                border: 1px solid #ddd;
+                                border-radius: 6px;
+                                background: white;
+                                break-inside: avoid;
+                            }
+                            .card-body {
+                                padding: 0.75rem;
+                            }
+                            .card-text {
+                                margin-bottom: 0.5rem;
+                                color: #444;
+                                font-size: 0.95rem;
+                            }
+                            .answer-box {
+                                border: 1px solid #ddd;
+                                border-radius: 4px;
+                                min-height: 50px;
+                                padding: 8px;
+                                background: #f8f9fa;
+                            }
+                            @media print {
+                                body { padding: 0; }
+                                .page-break { page-break-before: always; }
+                                .col-md-6 { break-inside: avoid; }
+                                .watermark { position: fixed; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="watermark">okuanla.net</div>
+                        <div class="header-line"></div>
+                        <div class="main-wrapper">
+                            <div class="main-container">
+                                ${printContent.innerHTML}
+                            </div>
                         </div>
-                    </div>
-                </body>
-                </html>
-            `;
-            
-            const response = await fetch('/api/generate-pdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ content: pdfContent })
-            });
-            
-            if (!response.ok) throw new Error('PDF oluşturma hatası');
-            
-            const blob = await response.blob();
-            const file = new File([blob], 'okuanla-metin.pdf', { type: 'application/pdf' });
-
-            if (navigator.share && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        files: [file],
-                        title: 'OkuAnla - Okuma Metni',
-                        text: 'OkuAnla ile oluşturulan okuma metnini paylaşıyorum!'
-                    });
-                } catch (error) {
-                    // Eğer paylaşım başarısız olursa, dosyayı indirme seçeneğini sunar
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'okuanla-metin.pdf';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                }
-        } else {
-                // Paylaşım API'si desteklenmiyorsa, dosyayı indirir
+                    </body>
+                    </html>
+                `;
+                
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content: pdfContent })
+                });
+                
+                if (!response.ok) throw new Error('PDF oluşturma hatası');
+                
+                const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -728,11 +787,11 @@ function displayContent(generatedText) {
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
-        }
-    } catch (error) {
-            showError('PDF oluşturulurken bir hata oluştu: ' + error.message);
-        }
-    });
+            } catch (error) {
+                showError('PDF oluşturulurken bir hata oluştu: ' + error.message);
+            }
+        });
+    }
     
     // Share button
     document.getElementById("shareButton").addEventListener("click", async function() {

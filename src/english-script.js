@@ -81,44 +81,44 @@ function checkRateLimit() {
 }
 
 // Vocabulary lists
-const grade2Vocabulary = {
-    '1': ['ambulance', 'balloon', 'cake', 'café', 'camp', 'doctor', 'football', 'gorilla', 'kangaroo', 'laptop', 'lemon', 'microphone', 'note', 'picnic', 'radio', 'restaurant', 'stadium', 'television', 'train', 'university', 'wagon', 'yoghurt', 'zebra'],
-    '2': ['afternoon', 'bye', 'fine', 'great', 'hello', 'hi', 'morning', 'night', 'okay', 'thanks'],
-    '3': ['close', 'color', 'cut', 'draw', 'excuse', 'left', 'open', 'paint', 'right', 'say', 'sit', 'stand', 'turn'],
-    '4': ['board', 'book', 'crayon', 'desk', 'eraser', 'notebook', 'paper', 'pen', 'pencil', 'school bag', 'scissors', 'table'],
-    '5': ['black', 'blue', 'brown', 'color', 'green', 'like', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'],
-    '6': ['basketball', 'chess', 'dance', 'football', 'hide and seek', 'jump', 'play', 'run', 'rope', 'sing', 'skip', 'slide', 'walk'],
-    '7': ['arm', 'close', 'ear', 'eye', 'finger', 'foot', 'hand', 'head', 'knee', 'mouth', 'nose', 'open', 'point', 'raise', 'show', 'touch'],
-    '8': ['bin', 'bird', 'box', 'car', 'cat', 'dog', 'fish', 'rabbit', 'sea', 'stone', 'tree', 'turtle'],
-    '9': ['apple', 'banana', 'color', 'cut', 'eat', 'fruit', 'give', 'grapefruit', 'grape', 'lemon', 'melon', 'orange', 'peach', 'touch', 'watermelon'],
-    '10': ['chicken', 'cow', 'donkey', 'duck', 'elephant', 'fly', 'goat', 'horse', 'jump', 'lion', 'monkey', 'run', 'sheep', 'snake', 'spider', 'swim']
-};
+        const grade2Vocabulary = {
+            '1': ['ambulance', 'balloon', 'cake', 'café', 'camp', 'doctor', 'football', 'gorilla', 'kangaroo', 'laptop', 'lemon', 'microphone', 'note', 'picnic', 'radio', 'restaurant', 'stadium', 'television', 'train', 'university', 'wagon', 'yoghurt', 'zebra'],
+            '2': ['afternoon', 'bye', 'fine', 'great', 'hello', 'hi', 'morning', 'night', 'okay', 'thanks'],
+            '3': ['close', 'color', 'cut', 'draw', 'excuse', 'left', 'open', 'paint', 'right', 'say', 'sit', 'stand', 'turn'],
+            '4': ['board', 'book', 'crayon', 'desk', 'eraser', 'notebook', 'paper', 'pen', 'pencil', 'school bag', 'scissors', 'table'],
+            '5': ['black', 'blue', 'brown', 'color', 'green', 'like', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'],
+            '6': ['basketball', 'chess', 'dance', 'football', 'hide and seek', 'jump', 'play', 'run', 'rope', 'sing', 'skip', 'slide', 'walk'],
+            '7': ['arm', 'close', 'ear', 'eye', 'finger', 'foot', 'hand', 'head', 'knee', 'mouth', 'nose', 'open', 'point', 'raise', 'show', 'touch'],
+            '8': ['bin', 'bird', 'box', 'car', 'cat', 'dog', 'fish', 'rabbit', 'sea', 'stone', 'tree', 'turtle'],
+            '9': ['apple', 'banana', 'color', 'cut', 'eat', 'fruit', 'give', 'grapefruit', 'grape', 'lemon', 'melon', 'orange', 'peach', 'touch', 'watermelon'],
+            '10': ['chicken', 'cow', 'donkey', 'duck', 'elephant', 'fly', 'goat', 'horse', 'jump', 'lion', 'monkey', 'run', 'sheep', 'snake', 'spider', 'swim']
+        };
 
-const grade3Vocabulary = {
-    '1': ['bye!', 'day', 'good afternoon!', 'good bye!', 'good evening!', 'good morning!', 'good night!', 'hello!', 'hi', 'nice', 'weekend', 'see you (soon)', 'spell', 'take care'],
-    '2': ['aunt', 'brother', 'cousin', 'dad', 'daughter', 'family', 'father', 'grandfather', 'grandma', 'grandmother', 'grandpa', 'kinship', 'mom', 'mother', 'sister', 'son', 'uncle'],
-    '3': ['beautiful', 'big', 'fast', 'fat', 'old', 'short', 'slim', 'slow', 'small', 'strong', 'tall', 'ugly', 'weak', 'young'],
-    '4': ['angry', 'bad', 'cook', 'dance', 'drink', 'eat', 'energetic', 'good', 'go', 'happy', 'hungry', 'listen', 'okay', 'play', 'read', 'ride', 'run', 'sad', 'sleep', 'surprised', 'study', 'swim', 'thirsty', 'tired', 'unhappy', 'walk', 'write', 'watch'],
-    '5': ['ball', 'black', 'block', 'blue', 'brown', 'button', 'chess', 'computer game', 'doll', 'green', 'kite', 'lorry', 'marble', 'orange', 'plane', 'playing card', 'pink', 'purple', 'red', 'robot', 'teddy bear', 'toy box', 'toy car', 'train', 'white', 'yellow'],
-    '6': ['armchair', 'bathroom', 'bed', 'bedroom', 'bookcase', 'carpet', 'cattle', 'chair', 'cup', 'fridge', 'garage', 'garden', 'home', 'house', 'kitchen', 'livingroom', 'playroom', 'rectangle', 'round', 'shampoo', 'soap', 'sofa', 'square', 'table', 'toilet', 'triangle', 'wardrobe'],
-    '7': ['bank', 'cafe', 'cinema', 'city', 'hospital', 'library', 'market', 'mosque', 'museum', 'park', 'restaurant', 'school', 'shopping centre', 'town', 'village', 'zoo'],
-    '8': ['bike', 'boat', 'bus', 'car', 'helicopter', 'motorcycle', 'plane', 'ship'],
-    '9': ['cloudy', 'cold', 'desert', 'freezing', 'hot', 'nice', 'pole', 'rainforest', 'rainy', 'snowy', 'sunny', 'today', 'warm', 'weather', 'wet', 'windy'],
-    '10': ['bear', 'bee', 'butterfly', 'chicken', 'cow', 'dolphin', 'donkey', 'duck', 'elephant', 'fish', 'forest', 'frog', 'goat', 'horse', 'ladybird', 'like', 'lion', 'monkey', 'mountain', 'parrot', 'pigeon', 'sea', 'shark', 'snake', 'spider', 'whale']
-};
+        const grade3Vocabulary = {
+            '1': ['bye!', 'day', 'good afternoon!', 'good bye!', 'good evening!', 'good morning!', 'good night!', 'hello!', 'hi', 'nice', 'weekend', 'see you (soon)', 'spell', 'take care'],
+            '2': ['aunt', 'brother', 'cousin', 'dad', 'daughter', 'family', 'father', 'grandfather', 'grandma', 'grandmother', 'grandpa', 'kinship', 'mom', 'mother', 'sister', 'son', 'uncle'],
+            '3': ['beautiful', 'big', 'fast', 'fat', 'old', 'short', 'slim', 'slow', 'small', 'strong', 'tall', 'ugly', 'weak', 'young'],
+            '4': ['angry', 'bad', 'cook', 'dance', 'drink', 'eat', 'energetic', 'good', 'go', 'happy', 'hungry', 'listen', 'okay', 'play', 'read', 'ride', 'run', 'sad', 'sleep', 'surprised', 'study', 'swim', 'thirsty', 'tired', 'unhappy', 'walk', 'write', 'watch'],
+            '5': ['ball', 'black', 'block', 'blue', 'brown', 'button', 'chess', 'computer game', 'doll', 'green', 'kite', 'lorry', 'marble', 'orange', 'plane', 'playing card', 'pink', 'purple', 'red', 'robot', 'teddy bear', 'toy box', 'toy car', 'train', 'white', 'yellow'],
+            '6': ['armchair', 'bathroom', 'bed', 'bedroom', 'bookcase', 'carpet', 'cattle', 'chair', 'cup', 'fridge', 'garage', 'garden', 'home', 'house', 'kitchen', 'livingroom', 'playroom', 'rectangle', 'round', 'shampoo', 'soap', 'sofa', 'square', 'table', 'toilet', 'triangle', 'wardrobe'],
+            '7': ['bank', 'cafe', 'cinema', 'city', 'hospital', 'library', 'market', 'mosque', 'museum', 'park', 'restaurant', 'school', 'shopping centre', 'town', 'village', 'zoo'],
+            '8': ['bike', 'boat', 'bus', 'car', 'helicopter', 'motorcycle', 'plane', 'ship'],
+            '9': ['cloudy', 'cold', 'desert', 'freezing', 'hot', 'nice', 'pole', 'rainforest', 'rainy', 'snowy', 'sunny', 'today', 'warm', 'weather', 'wet', 'windy'],
+            '10': ['bear', 'bee', 'butterfly', 'chicken', 'cow', 'dolphin', 'donkey', 'duck', 'elephant', 'fish', 'forest', 'frog', 'goat', 'horse', 'ladybird', 'like', 'lion', 'monkey', 'mountain', 'parrot', 'pigeon', 'sea', 'shark', 'snake', 'spider', 'whale']
+        };
 
-const grade4Vocabulary = {
-    '1': ['activity', 'again', 'board', 'can', 'card', 'classroom', 'clean', 'close', 'color', 'come', 'congratulations', 'desk', 'door', 'eraser', 'give', 'go back', 'great', 'hand', 'Hello!', 'Here you are.', 'Hi!', 'Hurray!', 'join', 'keep', 'leave', 'let\'s', 'lights', 'listen', 'may', 'name', 'numbers (1-50)', 'of course', 'open', 'pencil case', 'pencil sharpener', 'play', 'please', 'quiet', 'raise', 'ruler', 'school bag', 'square', 'stay at', 'sure', 'teacher', 'tidy', 'turn off', 'turn on', 'what', 'window', 'winner', 'You\'re welcome.'],
-    '2': ['America', 'American', 'Britain', 'British', 'country', 'east', 'German', 'Germany', 'he', 'I', 'Iran', 'Iranian', 'Iraq', 'Iraqi', 'Japan', 'Japanese', 'nationality', 'north', 'Pakistan', 'Pakistani', 'Russia', 'Russian', 'she', 'south', 'South Africa', 'South African', 'Turkish', 'Türkiye', 'west', 'where', 'you'],
-    '3': ['are', 'can', 'cannot', 'carry', 'climb a tree', 'cycling', 'do puzzle', 'Don\'t worry.', 'drive', 'fly', 'helpful', 'her', 'his', 'is', 'jump high', 'music', 'my', 'my mother\'s car', 'Oh, my God!', 'photography', 'play the guitar', 'play the piano', 'ride a bike', 'ride a horse', 'school club', 'speak', 'superhero', 'swim', 'take picture', 'these', 'this', 'whose', 'your'],
-    '4': ['again', 'checkmate', 'chess master', 'dislike', 'do', 'don\'t', 'drawing and coloring', 'fly a kite', 'like', 'pardon', 'play chess', 'play table tennis', 'play with dolls', 'play with marbles', 'read comics', 'ride a bike', 'say', 'singing and dancing', 'slowly', 'swim', 'watch cartoon'],
-    '5': ['at night', 'at noon', 'come home', 'do homework', 'early', 'Friday', 'get dressed', 'go shopping', 'go to bed', 'go to school', 'go to the cinema', 'go to the playground', 'have a shower', 'have breakfast', 'have dinner', 'have lunch', 'Hurry up!', 'in the afternoon', 'in the evening', 'in the morning', 'karate class', 'meet with friends', 'Monday', 'o\'clock', 'play computer game', 'read a book', 'Saturday', 'school uniform', 'Sunday', 'Thursday', 'time', 'Tuesday', 'wake up', 'wash your face', 'watch TV', 'Wednesday'],
-    '6': ['Be careful!', 'Be patient!', 'Be slow!', 'bean maze', 'behind', 'blow', 'bottle', 'box', 'brush', 'button', 'cardboard', 'chair', 'change', 'coloring pen', 'cotton swab', 'cup', 'cut', 'cut the cardboard', 'daily', 'dip', 'disc', 'dish soap', 'do the experiment', 'draw', 'experiment', 'fold', 'fold the paper', 'food coloring', 'freeze', 'get', 'glass', 'glue', 'glue stick', 'go through', 'Have fun!', 'ice cube', 'impossible', 'in', 'in front of', 'interesting', 'jar', 'kite', 'light maze', 'line', 'materials', 'melt', 'mix', 'mix red and yellow', 'near', 'on', 'pin', 'pinwheel', 'place', 'plant', 'plant the seeds', 'plate', 'push', 'ruler', 'salt', 'school glue', 'science', 'science project', 'scientist', 'scissors', 'shake', 'soil', 'step', 'straw', 'string', 'surprised', 'touch', 'toy box', 'under', 'vegetable oil', 'water the plant'],
-    '7': ['actor', 'actress', 'ambulance', 'assembly point', 'businessman', 'businesswoman', 'chef', 'community', 'dance school', 'dancer', 'doctor', 'emergency exit sign', 'farm', 'farmer', 'fire alarm', 'fire station', 'fire truck', 'firefighter', 'flying a plane', 'follow', 'growing vegetables', 'help', 'home', 'hospital', 'hotel', 'instruction', 'job', 'music academy', 'nurse', 'office', 'office worker', 'pilot', 'police car', 'police station', 'policeman', 'policewoman', 'post office', 'restaurant', 'school', 'singer', 'teacher', 'teaching children', 'treating animals', 'treating people', 'vet', 'veterinary clinic', 'waiter', 'waitress', 'workplace', 'writer'],
-    '8': ['accessories', 'belt', 'boots', 'borrow', 'clothes', 'coat', 'cold', 'cool', 'dress', 'fall', 'gloves', 'has got', 'have got', 'hot', 'jacket', 'jeans', 'need', 'put on', 'rainy', 'scarf', 'season', 'shirt', 'shorts', 'skirt', 'snowman', 'snowy', 'socks', 'sorry', 'spring', 'summer', 'sunglasses', 'sunny', 'T-shirt', 'trousers', 'umbrella', 'wardrobe', 'warm', 'windy', 'winter'],
-    '9': ['age', 'bald', 'beard and mustache', 'beautiful', 'blonde hair', 'blue eyes', 'brown hair', 'curly hair', 'dark hair', 'fat', 'favorite', 'freckles', 'glasses', 'handsome', 'headscarf', 'interesting', 'middle-aged', 'movie', 'old', 'physical characteristic', 'possession', 'short', 'slim', 'straight hair', 'tall', 'thin', 'wavy hair', 'young'],
-    '10': ['a', 'an', 'apple', 'bread', 'butter', 'cheese', 'coffee', 'cupcake', 'delicious', 'Do you want...?', 'drinks', 'egg', 'Enjoy your meal!', 'feel', 'fish and chips', 'food', 'full', 'hamburger', 'honey', 'How about...?', 'hungry', 'ice cream', 'lemon', 'lemonade', 'marmalade', 'Maybe later.', 'milk', 'milkshake', 'need', 'olives', 'omelet', 'pasta', 'salad', 'sandwich', 'some', 'soup', 'sugar', 'tea', 'thirty', 'tomato', 'tomato soup', 'try', 'vegetables', 'water', 'What about...?', 'Would you like...?', 'yogurt']
-};
+        const grade4Vocabulary = {
+            '1': ['activity', 'again', 'board', 'can', 'card', 'classroom', 'clean', 'close', 'color', 'come', 'congratulations', 'desk', 'door', 'eraser', 'give', 'go back', 'great', 'hand', 'Hello!', 'Here you are.', 'Hi!', 'Hurray!', 'join', 'keep', 'leave', 'let\'s', 'lights', 'listen', 'may', 'name', 'numbers (1-50)', 'of course', 'open', 'pencil case', 'pencil sharpener', 'play', 'please', 'quiet', 'raise', 'ruler', 'school bag', 'square', 'stay at', 'sure', 'teacher', 'tidy', 'turn off', 'turn on', 'what', 'window', 'winner', 'You\'re welcome.'],
+            '2': ['America', 'American', 'Britain', 'British', 'country', 'east', 'German', 'Germany', 'he', 'I', 'Iran', 'Iranian', 'Iraq', 'Iraqi', 'Japan', 'Japanese', 'nationality', 'north', 'Pakistan', 'Pakistani', 'Russia', 'Russian', 'she', 'south', 'South Africa', 'South African', 'Turkish', 'Türkiye', 'west', 'where', 'you'],
+            '3': ['are', 'can', 'cannot', 'carry', 'climb a tree', 'cycling', 'do puzzle', 'Don\'t worry.', 'drive', 'fly', 'helpful', 'her', 'his', 'is', 'jump high', 'music', 'my', 'my mother\'s car', 'Oh, my God!', 'photography', 'play the guitar', 'play the piano', 'ride a bike', 'ride a horse', 'school club', 'speak', 'superhero', 'swim', 'take picture', 'these', 'this', 'whose', 'your'],
+            '4': ['again', 'checkmate', 'chess master', 'dislike', 'do', 'don\'t', 'drawing and coloring', 'fly a kite', 'like', 'pardon', 'play chess', 'play table tennis', 'play with dolls', 'play with marbles', 'read comics', 'ride a bike', 'say', 'singing and dancing', 'slowly', 'swim', 'watch cartoon'],
+            '5': ['at night', 'at noon', 'come home', 'do homework', 'early', 'Friday', 'get dressed', 'go shopping', 'go to bed', 'go to school', 'go to the cinema', 'go to the playground', 'have a shower', 'have breakfast', 'have dinner', 'have lunch', 'Hurry up!', 'in the afternoon', 'in the evening', 'in the morning', 'karate class', 'meet with friends', 'Monday', 'o\'clock', 'play computer game', 'read a book', 'Saturday', 'school uniform', 'Sunday', 'Thursday', 'time', 'Tuesday', 'wake up', 'wash your face', 'watch TV', 'Wednesday'],
+            '6': ['Be careful!', 'Be patient!', 'Be slow!', 'bean maze', 'behind', 'blow', 'bottle', 'box', 'brush', 'button', 'cardboard', 'chair', 'change', 'coloring pen', 'cotton swab', 'cup', 'cut', 'cut the cardboard', 'daily', 'dip', 'disc', 'dish soap', 'do the experiment', 'draw', 'experiment', 'fold', 'fold the paper', 'food coloring', 'freeze', 'get', 'glass', 'glue', 'glue stick', 'go through', 'Have fun!', 'ice cube', 'impossible', 'in', 'in front of', 'interesting', 'jar', 'kite', 'light maze', 'line', 'materials', 'melt', 'mix', 'mix red and yellow', 'near', 'on', 'pin', 'pinwheel', 'place', 'plant', 'plant the seeds', 'plate', 'push', 'ruler', 'salt', 'school glue', 'science', 'science project', 'scientist', 'scissors', 'shake', 'soil', 'step', 'straw', 'string', 'surprised', 'touch', 'toy box', 'under', 'vegetable oil', 'water the plant'],
+            '7': ['actor', 'actress', 'ambulance', 'assembly point', 'businessman', 'businesswoman', 'chef', 'community', 'dance school', 'dancer', 'doctor', 'emergency exit sign', 'farm', 'farmer', 'fire alarm', 'fire station', 'fire truck', 'firefighter', 'flying a plane', 'follow', 'growing vegetables', 'help', 'home', 'hospital', 'hotel', 'instruction', 'job', 'music academy', 'nurse', 'office', 'office worker', 'pilot', 'police car', 'police station', 'policeman', 'policewoman', 'post office', 'restaurant', 'school', 'singer', 'teacher', 'teaching children', 'treating animals', 'treating people', 'vet', 'veterinary clinic', 'waiter', 'waitress', 'workplace', 'writer'],
+            '8': ['accessories', 'belt', 'boots', 'borrow', 'clothes', 'coat', 'cold', 'cool', 'dress', 'fall', 'gloves', 'has got', 'have got', 'hot', 'jacket', 'jeans', 'need', 'put on', 'rainy', 'scarf', 'season', 'shirt', 'shorts', 'skirt', 'snowman', 'snowy', 'socks', 'sorry', 'spring', 'summer', 'sunglasses', 'sunny', 'T-shirt', 'trousers', 'umbrella', 'wardrobe', 'warm', 'windy', 'winter'],
+            '9': ['age', 'bald', 'beard and mustache', 'beautiful', 'blonde hair', 'blue eyes', 'brown hair', 'curly hair', 'dark hair', 'fat', 'favorite', 'freckles', 'glasses', 'handsome', 'headscarf', 'interesting', 'middle-aged', 'movie', 'old', 'physical characteristic', 'possession', 'short', 'slim', 'straight hair', 'tall', 'thin', 'wavy hair', 'young'],
+            '10': ['a', 'an', 'apple', 'bread', 'butter', 'cheese', 'coffee', 'cupcake', 'delicious', 'Do you want...?', 'drinks', 'egg', 'Enjoy your meal!', 'feel', 'fish and chips', 'food', 'full', 'hamburger', 'honey', 'How about...?', 'hungry', 'ice cream', 'lemon', 'lemonade', 'marmalade', 'Maybe later.', 'milk', 'milkshake', 'need', 'olives', 'omelet', 'pasta', 'salad', 'sandwich', 'some', 'soup', 'sugar', 'tea', 'thirty', 'tomato', 'tomato soup', 'try', 'vegetables', 'water', 'What about...?', 'Would you like...?', 'yogurt']
+        };
 
 // Form submission handler
 document.getElementById("textForm").addEventListener("submit", async function (event) {
@@ -282,8 +282,8 @@ function displayContent(generatedText) {
                     ` : ''}
                 </div>
             </div>
-        </div>
-    `;
+                        </div>
+                    `;
 
     // Add styles to the head
     const styleElement = document.createElement('style');
@@ -297,21 +297,18 @@ function displayContent(generatedText) {
         .main-container {
             width: 100%;
             max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
         }
         .content-section {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            margin-bottom: 1rem;
         }
         .text-content {
             color: #333;
             line-height: 1.6;
-            font-size: 1.1rem;
+            font-size: 12pt;
             text-align: justify;
-        }
-        .text-content p {
-            margin-bottom: 1rem;
         }
         .questions-section {
             margin-top: 2rem;
@@ -320,26 +317,61 @@ function displayContent(generatedText) {
         }
         .questions-grid {
             display: grid;
-            gap: 1rem;
             grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
         .card {
-            border: 1px solid rgba(0,0,0,.125);
+            break-inside: avoid;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .card-body {
-            padding: 1.25rem;
+            padding: 1rem;
         }
         .card-text {
             margin: 0;
+            font-size: 12pt;
             color: #444;
             text-align: left;
             align-self: flex-start;
+        }
+        @media (max-width: 768px) {
+            .main-wrapper {
+                padding: 5px;
+            }
+            .main-container {
+                padding: 5px;
+            }
+            .content-section {
+                padding: 0 10px;
+            }
+            .text-content {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            .questions-section {
+                padding: 0 10px;
+            }
+            .questions-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            .card {
+                margin-bottom: 10px;
+                padding: 0.8rem;
+            }
+            .card-text {
+                font-size: 14px;
+            }
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            .action-buttons .btn {
+                margin: 0 !important;
+                width: 100%;
+            }
         }
         @media print {
             @page {
@@ -348,25 +380,14 @@ function displayContent(generatedText) {
             }
             body { 
                 padding: 0;
-                background: white !important;
+                font-size: 11pt;
             }
             .main-container {
                 max-width: 100%;
                 padding: 0;
             }
-            .action-buttons {
+            .action-buttons, h4 {
                 display: none !important;
-            }
-            .content-section {
-                box-shadow: none;
-                padding: 0;
-            }
-            .text-content {
-                font-size: 12pt;
-                line-height: 1.5;
-            }
-            .questions-section {
-                page-break-before: always;
             }
             .questions-grid {
                 display: grid;
@@ -375,8 +396,12 @@ function displayContent(generatedText) {
             }
             .card {
                 break-inside: avoid;
-                margin-bottom: 1rem;
-                border: 1px solid #ddd;
+                border: 1px solid #ddd !important;
+                margin-bottom: 0.5rem !important;
+            }
+            .card-text {
+                font-size: 11pt !important;
+                line-height: 1.5 !important;
             }
             .watermark {
                 position: fixed !important;
@@ -493,7 +518,7 @@ function displayContent(generatedText) {
                         <div class="main-container">
                             ${printContent.innerHTML}
                         </div>
-                    </div>
+                </div>
                 </body>
                 </html>
             `);
@@ -585,6 +610,18 @@ function displayContent(generatedText) {
                                 text-align: left;
                                 align-self: flex-start;
                             }
+                            @media print {
+                                body { padding: 0; }
+                                .watermark { position: fixed; }
+                                .questions-grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(2, 1fr);
+                                    gap: 1rem;
+                                }
+                                .card {
+                                    break-inside: avoid;
+                                }
+                            }
                         </style>
                     </head>
                     <body>
@@ -638,7 +675,7 @@ function displayContent(generatedText) {
                         <title>OkuAnla - English Reading</title>
                         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                         <style>
-                            @page {
+                                @page {
                                 margin: 2cm;
                             }
                             body {
@@ -732,7 +769,7 @@ function displayContent(generatedText) {
                         window.URL.revokeObjectURL(url);
                         document.body.removeChild(a);
                     }
-                } else {
+        } else {
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
@@ -741,8 +778,8 @@ function displayContent(generatedText) {
                     a.click();
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
-                }
-            } catch (error) {
+        }
+    } catch (error) {
                 showError('Error sharing: ' + error.message);
             }
         });
