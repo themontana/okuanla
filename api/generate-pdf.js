@@ -14,50 +14,111 @@ export default async function handler(req, res) {
         }
 
         // Configure Chrome for Vercel
-        chrome.setGraphicsMode = false;
-        
-        // Launch browser with Vercel-specific configuration
-        const browser = await puppeteer.launch({
-            args: chrome.args,
-            defaultViewport: chrome.defaultViewport,
-            executablePath: await chrome.executablePath,
-            headless: true,
-            ignoreHTTPSErrors: true
-        });
+        let browser;
+        try {
+            // Configure Chrome Browser
+            chrome.setGraphicsMode = false;
+            const executablePath = await chrome.executablePath;
 
-        // Create new page
-        const page = await browser.newPage();
+            // Launch browser with Vercel-specific configuration
+            browser = await puppeteer.launch({
+                args: [
+                    ...chrome.args,
+                    '--autoplay-policy=user-gesture-required',
+                    '--disable-background-networking',
+                    '--disable-background-timer-throttling',
+                    '--disable-backgrounding-occluded-windows',
+                    '--disable-breakpad',
+                    '--disable-client-side-phishing-detection',
+                    '--disable-component-update',
+                    '--disable-default-apps',
+                    '--disable-dev-shm-usage',
+                    '--disable-domain-reliability',
+                    '--disable-extensions',
+                    '--disable-features=AudioServiceOutOfProcess',
+                    '--disable-hang-monitor',
+                    '--disable-ipc-flooding-protection',
+                    '--disable-notifications',
+                    '--disable-offer-store-unmasked-wallet-cards',
+                    '--disable-popup-blocking',
+                    '--disable-print-preview',
+                    '--disable-prompt-on-repost',
+                    '--disable-renderer-backgrounding',
+                    '--disable-setuid-sandbox',
+                    '--disable-speech-api',
+                    '--disable-sync',
+                    '--hide-scrollbars',
+                    '--ignore-gpu-blacklist',
+                    '--metrics-recording-only',
+                    '--mute-audio',
+                    '--no-default-browser-check',
+                    '--no-first-run',
+                    '--no-pings',
+                    '--no-sandbox',
+                    '--no-zygote',
+                    '--password-store=basic',
+                    '--use-gl=swiftshader',
+                    '--use-mock-keychain',
+                ],
+                defaultViewport: {
+                    width: 1920,
+                    height: 1080,
+                },
+                executablePath,
+                headless: true,
+                ignoreHTTPSErrors: true,
+            });
 
-        // Set content
-        await page.setContent(content, {
-            waitUntil: ['networkidle0', 'load', 'domcontentloaded']
-        });
+            // Create new page
+            const page = await browser.newPage();
 
-        // Generate PDF
-        const pdf = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            margin: {
-                top: '20mm',
-                right: '20mm',
-                bottom: '20mm',
-                left: '20mm'
+            // Set content with proper timeout and wait options
+            await page.setContent(content, {
+                waitUntil: ['networkidle0', 'load', 'domcontentloaded'],
+                timeout: 30000,
+            });
+
+            // Wait for any remaining network requests
+            await page.waitForTimeout(1000);
+
+            // Generate PDF with specific settings
+            const pdf = await page.pdf({
+                format: 'A4',
+                printBackground: true,
+                margin: {
+                    top: '20mm',
+                    right: '20mm',
+                    bottom: '20mm',
+                    left: '20mm'
+                },
+                preferCSSPageSize: true,
+                timeout: 30000,
+            });
+
+            // Close browser
+            await browser.close();
+
+            // Set response headers
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=okuanla-content.pdf');
+            res.setHeader('Content-Length', pdf.length);
+
+            // Send PDF
+            return res.send(pdf);
+
+        } catch (error) {
+            console.error('Puppeteer error:', error);
+            if (browser) {
+                await browser.close();
             }
-        });
-
-        // Close browser
-        await browser.close();
-
-        // Set response headers
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=okuanla-content.pdf');
-        res.setHeader('Content-Length', pdf.length);
-
-        // Send PDF
-        res.send(pdf);
+            throw error;
+        }
 
     } catch (error) {
         console.error('PDF generation error:', error);
-        res.status(500).json({ error: 'PDF oluşturulurken bir hata oluştu' });
+        return res.status(500).json({ 
+            error: 'PDF oluşturulurken bir hata oluştu',
+            details: error.message 
+        });
     }
 } 
