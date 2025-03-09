@@ -1,4 +1,4 @@
-import { chromium } from '@playwright/browser';
+import { chromium } from '@playwright/test';
 
 export const config = {
   runtime: 'edge'
@@ -18,7 +18,8 @@ export default async function handler(req) {
 
         // Launch browser
         const browser = await chromium.launch();
-        const page = await browser.newPage();
+        const context = await browser.newContext();
+        const page = await context.newPage();
         
         // Set content and wait for it to load
         await page.setContent(content, { waitUntil: 'networkidle' });
@@ -36,6 +37,7 @@ export default async function handler(req) {
         });
 
         // Close browser
+        await context.close();
         await browser.close();
 
         return new Response(pdfBuffer, {
