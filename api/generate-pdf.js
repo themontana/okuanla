@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer-core';
-import chrome from '@sparticuz/chromium';
+import chromium from '@sparticuz/chromium-min';
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -16,44 +16,40 @@ export default async function handler(req, res) {
         }
 
         console.log('Configuring Chrome...');
-        // Configure Chrome for Vercel
         try {
-            // Configure Chrome Browser
-            chrome.setGraphicsMode = false;
-            console.log('Graphics mode disabled');
+            console.log('Setting up Chromium...');
+            // Get the executable path
+            const executablePath = await chromium.executablePath;
+
+            if (!executablePath) {
+                throw new Error('Could not find Chromium executable path');
+            }
+
+            console.log('Executable path:', executablePath);
 
             const options = {
-                args: [
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--disable-gpu',
-                    '--single-process',
-                ],
-                executablePath: process.env.CHROME_BIN || await chrome.executablePath(),
-                headless: "new",
+                args: chromium.args,
+                executablePath,
+                headless: chromium.headless,
                 ignoreHTTPSErrors: true,
             };
 
-            console.log('Launching browser...');
-            // Launch browser with Vercel-specific configuration
+            console.log('Launching browser with options:', JSON.stringify(options, null, 2));
             browser = await puppeteer.launch(options);
             console.log('Browser launched successfully');
 
             console.log('Creating new page...');
-            // Create new page
             const page = await browser.newPage();
             console.log('Page created successfully');
 
             console.log('Setting viewport...');
             await page.setViewport({
-                width: 1920,
-                height: 1080,
+                width: 1200,
+                height: 800,
                 deviceScaleFactor: 1,
             });
 
             console.log('Setting content...');
-            // Set content with proper timeout and wait options
             await page.setContent(content, {
                 waitUntil: 'networkidle0',
                 timeout: 10000,
@@ -61,7 +57,6 @@ export default async function handler(req, res) {
             console.log('Content set successfully');
 
             console.log('Generating PDF...');
-            // Generate PDF with specific settings
             const pdf = await page.pdf({
                 format: 'A4',
                 printBackground: true,
@@ -82,20 +77,20 @@ export default async function handler(req, res) {
             }
 
             console.log('Setting response headers...');
-            // Set response headers
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', 'attachment; filename=okuanla-content.pdf');
             res.setHeader('Content-Length', pdf.length);
 
             console.log('Sending PDF...');
-            // Send PDF
             return res.send(pdf);
 
         } catch (error) {
             console.error('Puppeteer error details:', {
                 message: error.message,
                 stack: error.stack,
-                name: error.name
+                name: error.name,
+                executablePath: await chromium.executablePath,
+                args: chromium.args
             });
             
             if (browser) {
