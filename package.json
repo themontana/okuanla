@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.23.0",
-    "@playwright/test": "^1.42.1",
-    "@vercel/og": "^0.6.2",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -21,6 +19,7 @@
     "morgan": "^1.10.0",
     "next": "^15.2.1",
     "node-fetch": "^2.7.0",
+    "pdfkit": "^0.14.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

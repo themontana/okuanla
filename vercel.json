@@ -10,9 +10,8 @@
       "src": "api/generate-pdf.js",
       "use": "@vercel/node",
       "config": { 
-        "runtime": "edge",
-        "maxDuration": 60,
-        "regions": ["iad1"]
+        "runtime": "nodejs18.x",
+        "maxDuration": 60
       }
     },
     {
