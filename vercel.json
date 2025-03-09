@@ -7,6 +7,11 @@
       "config": { "runtime": "nodejs18.x" }
     },
     {
+      "src": "api/generate-pdf.js",
+      "use": "@vercel/node",
+      "config": { "runtime": "nodejs18.x" }
+    },
+    {
       "src": "*.html",
       "use": "@vercel/static"
     },
@@ -26,6 +31,11 @@
       "methods": ["POST", "OPTIONS"]
     },
     {
+      "src": "/api/generate-pdf",
+      "dest": "/api/generate-pdf.js",
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
       "handle": "filesystem"
     },
     {
@@ -35,6 +45,10 @@
     {
       "src": "/(math)",
       "dest": "/math.html"
+    },
+    {
+      "src": "/(english)",
+      "dest": "/english.html"
     },
     {
       "src": "/(.*)",
