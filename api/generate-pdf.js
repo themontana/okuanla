@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer-core';
-import chromium from 'chrome-aws-lambda';
+import chromium from '@sparticuz/chromium';
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -17,19 +17,21 @@ export default async function handler(req, res) {
 
         console.log('Configuring Chrome...');
         try {
-            console.log('Setting up Chrome AWS Lambda...');
+            console.log('Setting up Chromium...');
+            
+            await chromium.font('https://raw.githubusercontent.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSans/NotoSans-Regular.ttf');
             
             const options = {
                 args: chromium.args,
                 defaultViewport: chromium.defaultViewport,
-                executablePath: await chromium.executablePath,
+                executablePath: await chromium.executablePath(),
                 headless: chromium.headless,
                 ignoreHTTPSErrors: true,
             };
 
             console.log('Chrome options configured:', JSON.stringify({
                 ...options,
-                executablePath: 'path-exists: ' + (await chromium.executablePath ? 'yes' : 'no')
+                executablePath: 'path-exists: ' + (await chromium.executablePath() ? 'yes' : 'no')
             }, null, 2));
 
             browser = await puppeteer.launch(options);
@@ -79,7 +81,7 @@ export default async function handler(req, res) {
                 message: error.message,
                 stack: error.stack,
                 name: error.name,
-                chromiumPath: await chromium.executablePath
+                chromiumPath: await chromium.executablePath()
             });
             
             if (browser) {
