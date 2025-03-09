@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer-core';
+import chrome from '@sparticuz/chromium';
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -12,57 +13,25 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Content is required' });
         }
 
-        // Launch browser
+        // Configure Chrome for Vercel
+        chrome.setGraphicsMode = false;
+        
+        // Launch browser with Vercel-specific configuration
         const browser = await puppeteer.launch({
-            headless: 'new',
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: chrome.args,
+            defaultViewport: chrome.defaultViewport,
+            executablePath: await chrome.executablePath,
+            headless: true,
+            ignoreHTTPSErrors: true
         });
 
         // Create new page
         const page = await browser.newPage();
 
         // Set content
-        await page.setContent(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>OkuAnla - Metin</title>
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                <style>
-                    body {
-                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                        padding: 20px;
-                        line-height: 1.6;
-                    }
-                    .action-buttons {
-                        display: none;
-                    }
-                    .card {
-                        margin-bottom: 15px;
-                        border: 1px solid #ddd;
-                    }
-                    .answer-box {
-                        border: 1px solid #ddd;
-                        border-radius: 5px;
-                        min-height: 60px;
-                        padding: 8px;
-                    }
-                    @media print {
-                        .card {
-                            break-inside: avoid;
-                        }
-                        .answer-box {
-                            border: 1px solid #000;
-                        }
-                    }
-                </style>
-            </head>
-            <body>
-                ${content}
-            </body>
-            </html>
-        `);
+        await page.setContent(content, {
+            waitUntil: ['networkidle0', 'load', 'domcontentloaded']
+        });
 
         // Generate PDF
         const pdf = await page.pdf({
@@ -81,7 +50,7 @@ export default async function handler(req, res) {
 
         // Set response headers
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=okuanla-metin.pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename=okuanla-content.pdf');
         res.setHeader('Content-Length', pdf.length);
 
         // Send PDF
