@@ -1,61 +1,59 @@
-import { chromium } from '@playwright/test';
+import PDFDocument from 'pdfkit';
 
-export const config = {
-  runtime: 'edge'
-};
+export default async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
 
-export default async function handler(req) {
     try {
-        const data = await req.json();
-        const { content } = data;
+        const { content } = req.body;
 
         if (!content) {
-            return new Response(JSON.stringify({ error: 'Content is required' }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            return res.status(400).json({ error: 'Content is required' });
         }
 
-        // Launch browser
-        const browser = await chromium.launch();
-        const context = await browser.newContext();
-        const page = await context.newPage();
-        
-        // Set content and wait for it to load
-        await page.setContent(content, { waitUntil: 'networkidle' });
-
-        // Generate PDF
-        const pdfBuffer = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            margin: {
-                top: '20mm',
-                right: '20mm',
-                bottom: '20mm',
-                left: '20mm'
-            }
+        // Create a new PDF document
+        const doc = new PDFDocument({
+            size: 'A4',
+            margin: 20,
+            bufferPages: true
         });
 
-        // Close browser
-        await context.close();
-        await browser.close();
-
-        return new Response(pdfBuffer, {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/pdf',
-                'Content-Disposition': 'attachment; filename=okuanla-content.pdf'
-            }
+        // Create a buffer to store the PDF
+        const chunks = [];
+        doc.on('data', chunk => chunks.push(chunk));
+        doc.on('end', () => {
+            const pdfBuffer = Buffer.concat(chunks);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=okuanla-content.pdf');
+            res.setHeader('Content-Length', pdfBuffer.length);
+            res.send(pdfBuffer);
         });
+
+        // Add content to the PDF
+        doc.font('Helvetica')
+           .fontSize(12);
+
+        // Process HTML content
+        const plainText = content.replace(/<[^>]*>/g, '\n')  // Replace HTML tags with newlines
+                                .replace(/&nbsp;/g, ' ')      // Replace &nbsp; with spaces
+                                .replace(/\n\s*\n/g, '\n\n')  // Remove extra newlines
+                                .trim();                      // Trim extra whitespace
+
+        doc.text(plainText, {
+            align: 'justify',
+            lineGap: 5,
+            paragraphGap: 10
+        });
+
+        // Finalize the PDF
+        doc.end();
 
     } catch (error) {
         console.error('PDF generation error:', error);
-        return new Response(JSON.stringify({ 
+        res.status(500).json({ 
             error: 'PDF oluşturulurken bir hata oluştu',
             details: error.message
-        }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
         });
     }
 } 
