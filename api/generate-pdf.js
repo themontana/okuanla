@@ -19,19 +19,25 @@ export default async function handler(req, res) {
         try {
             console.log('Setting up Chromium...');
             
-            await chromium.font('https://raw.githubusercontent.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSans/NotoSans-Regular.ttf');
+            const executablePath = await chromium.executablePath();
             
             const options = {
-                args: chromium.args,
+                args: [
+                    ...chromium.args,
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--single-process'
+                ],
                 defaultViewport: chromium.defaultViewport,
-                executablePath: await chromium.executablePath(),
+                executablePath,
                 headless: chromium.headless,
                 ignoreHTTPSErrors: true,
             };
 
             console.log('Chrome options configured:', JSON.stringify({
                 ...options,
-                executablePath: 'path-exists: ' + (await chromium.executablePath() ? 'yes' : 'no')
+                executablePath: 'path-exists: ' + (executablePath ? 'yes' : 'no')
             }, null, 2));
 
             browser = await puppeteer.launch(options);
