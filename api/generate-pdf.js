@@ -19,27 +19,13 @@ export default async function handler(req, res) {
         try {
             console.log('Setting up Chromium...');
             
-            // Install Chrome dependencies
-            await chromium.install();
-            
             const executablePath = await chromium.executablePath();
             
             const options = {
-                args: [
-                    ...chromium.args,
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--disable-gpu',
-                    '--single-process'
-                ],
-                defaultViewport: {
-                    width: 1920,
-                    height: 1080,
-                    deviceScaleFactor: 1,
-                },
+                args: chromium.args,
+                defaultViewport: chromium.defaultViewport,
                 executablePath,
-                headless: "new",
+                headless: chromium.headless,
                 ignoreHTTPSErrors: true,
             };
 
