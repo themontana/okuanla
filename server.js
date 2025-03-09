@@ -153,13 +153,10 @@ app.post('/api/generate-pdf', async (req, res) => {
         });
         const page = await browser.newPage();
         
-        // Set content with proper styling
+        // Set content with proper encoding
         await page.setContent(content, {
             waitUntil: 'networkidle0'
         });
-
-        // Wait for fonts and styles to load
-        await page.waitForTimeout(1000);
 
         // Set viewport to A4 size
         await page.setViewport({
@@ -167,6 +164,16 @@ app.post('/api/generate-pdf', async (req, res) => {
             height: 1123, // A4 height in pixels at 96 DPI
             deviceScaleFactor: 2
         });
+
+        // Ensure proper encoding
+        await page.evaluate(() => {
+            const meta = document.createElement('meta');
+            meta.charset = 'UTF-8';
+            document.head.prepend(meta);
+        });
+
+        // Wait for fonts and styles to load
+        await page.waitForTimeout(1000);
         
         // Generate PDF with specific options
         const pdf = await page.pdf({
@@ -179,8 +186,8 @@ app.post('/api/generate-pdf', async (req, res) => {
         
         await browser.close();
         
-        // Send PDF
-        res.setHeader('Content-Type', 'application/pdf');
+        // Send PDF with proper headers
+        res.setHeader('Content-Type', 'application/pdf; charset=utf-8');
         res.setHeader('Content-Disposition', 'attachment; filename=okuanla-content.pdf');
         res.send(pdf);
     } catch (error) {
