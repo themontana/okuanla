@@ -256,15 +256,9 @@ function displayContent(generatedText) {
     output.innerHTML = `
         <div class="main-wrapper">
             <div class="main-container">
-                <div class="action-buttons text-center mb-4">
-                    <button id="printButton" class="btn btn-primary mx-2">
+                <div class="action-buttons text-center mb-4 d-print-none">
+                    <button id="printButton" class="btn btn-primary">
                         <i class="fas fa-print me-2"></i>Print
-                    </button>
-                    <button id="pdfButton" class="btn btn-success mx-2">
-                        <i class="fas fa-file-pdf me-2"></i>Save as PDF
-                    </button>
-                    <button id="shareButton" class="btn btn-info text-white mx-2">
-                        <i class="fas fa-share-alt me-2"></i>Share
                     </button>
                 </div>
                 <div class="content-section">
@@ -282,8 +276,8 @@ function displayContent(generatedText) {
                     ` : ''}
                 </div>
             </div>
-                        </div>
-                    `;
+        </div>
+    `;
 
     // Add styles to the head
     const styleElement = document.createElement('style');
@@ -416,8 +410,6 @@ function displayContent(generatedText) {
 
     // Add event listeners for buttons
     const printButton = document.getElementById("printButton");
-    const pdfButton = document.getElementById("pdfButton");
-    const shareButton = document.getElementById("shareButton");
 
     if (printButton) {
         printButton.addEventListener("click", function() {
@@ -434,7 +426,7 @@ function displayContent(generatedText) {
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                     <style>
                         @page {
-                            margin: 2cm;
+                            margin: 1cm;
                         }
                         body {
                             padding: 15px;
@@ -508,6 +500,7 @@ function displayContent(generatedText) {
                             .card {
                                 break-inside: avoid;
                             }
+                            .action-buttons { display: none !important; }
                         }
                     </style>
                 </head>
@@ -518,7 +511,7 @@ function displayContent(generatedText) {
                         <div class="main-container">
                             ${printContent.innerHTML}
                         </div>
-                </div>
+                    </div>
                 </body>
                 </html>
             `);
@@ -529,273 +522,6 @@ function displayContent(generatedText) {
             setTimeout(() => {
                 printWindow.print();
             }, 500);
-        });
-    }
-    
-    if (pdfButton) {
-        pdfButton.addEventListener("click", async function() {
-            try {
-                const printContent = document.querySelector('.main-container').cloneNode(true);
-                const actionButtons = printContent.querySelector('.action-buttons');
-                if (actionButtons) actionButtons.remove();
-                
-                const pdfContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>OkuAnla - English Reading</title>
-                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-                        <style>
-                            @page {
-                                margin: 2cm;
-                                size: A4;
-                            }
-                            body {
-                                padding: 15px;
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                background: white;
-                                font-size: 11pt;
-                                line-height: 1.5;
-                            }
-                            .watermark {
-                                position: fixed;
-                                top: 10px;
-                                left: 15px;
-                                font-size: 11px;
-                                color: #999;
-                                font-weight: 500;
-                                opacity: 0.7;
-                                z-index: 1000;
-                            }
-                            .header-line {
-                                position: relative;
-                                border-top: 1px solid #000;
-                                margin: 35px 15px 20px;
-                            }
-                            .main-wrapper {
-                                width: 100%;
-                                display: flex;
-                                justify-content: center;
-                            }
-                            .main-container {
-                                width: 100%;
-                                max-width: 800px;
-                                margin: 0 auto;
-                                padding: 15px;
-                            }
-                            h3 {
-                                font-size: 16pt;
-                                font-weight: bold;
-                                color: #333;
-                                text-align: center;
-                                margin: 0.5rem 0 1.5rem 0;
-                            }
-                            .content-section {
-                                width: 100%;
-                                margin-bottom: 2rem;
-                            }
-                            .text-content {
-                                color: #333;
-                                line-height: 1.6;
-                                font-size: 11pt;
-                                text-align: justify;
-                            }
-                            .text-content p {
-                                margin-bottom: 0.8rem;
-                                text-indent: 2em;
-                            }
-                            .questions-section {
-                                margin-top: 2rem;
-                                padding-top: 1.5rem;
-                                border-top: 2px solid #eee;
-                            }
-                            h5 {
-                                text-align: center;
-                                margin-bottom: 1.5rem;
-                                font-weight: bold;
-                                color: #333;
-                                font-size: 14pt;
-                            }
-                            .questions-grid {
-                                display: grid;
-                                grid-template-columns: repeat(2, 1fr);
-                                gap: 1rem;
-                            }
-                            .card {
-                                break-inside: avoid;
-                                margin-bottom: 0.5rem;
-                                border: 1px solid #ddd;
-                                border-radius: 8px;
-                                padding: 1rem;
-                            }
-                            .card-text {
-                                margin: 0;
-                                font-size: 11pt;
-                                color: #444;
-                                text-align: left;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="watermark">okuanla.net</div>
-                        <div class="header-line"></div>
-                        <div class="main-wrapper">
-                            <div class="main-container">
-                                ${printContent.innerHTML}
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-                `;
-                
-                const response = await fetch('/api/generate-pdf', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ content: pdfContent })
-                });
-                
-                if (!response.ok) throw new Error('Error generating PDF');
-                
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'okuanla-english.pdf';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            } catch (error) {
-                showError('Error generating PDF: ' + error.message);
-            }
-        });
-    }
-    
-    if (shareButton) {
-        shareButton.addEventListener("click", async function() {
-            try {
-                const printContent = document.querySelector('.main-container').cloneNode(true);
-                const actionButtons = printContent.querySelector('.action-buttons');
-                if (actionButtons) actionButtons.remove();
-                
-                const pdfContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>OkuAnla - English Reading</title>
-                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                        <style>
-                                @page {
-                                margin: 2cm;
-                            }
-                            body {
-                                padding: 15px;
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                background: white;
-                            }
-                            .watermark {
-                                position: fixed;
-                                top: 10px;
-                                left: 15px;
-                                font-size: 11px;
-                                color: #999;
-                                font-weight: 500;
-                                opacity: 0.7;
-                                z-index: 1000;
-                            }
-                            .header-line {
-                                position: relative;
-                                border-top: 1px solid #000;
-                                margin: 35px 15px 20px;
-                            }
-                            .main-wrapper {
-                                width: 100%;
-                                display: flex;
-                                justify-content: center;
-                            }
-                            .main-container {
-                                width: 100%;
-                                max-width: 800px;
-                                margin: 0 auto;
-                                padding: 15px;
-                            }
-                            .text-content {
-                                color: #333;
-                                line-height: 1.6;
-                                font-size: 12pt;
-                                text-align: justify;
-                            }
-                            .questions-section {
-                                margin-top: 2rem;
-                                padding-top: 1.5rem;
-                                border-top: 2px solid #eee;
-                            }
-                            .question {
-                                margin-bottom: 1rem;
-                                font-size: 12pt;
-                                color: #444;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="watermark">okuanla.net</div>
-                        <div class="header-line"></div>
-                        <div class="main-wrapper">
-                            <div class="main-container">
-                                ${printContent.innerHTML}
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-                `;
-                
-                const response = await fetch('/api/generate-pdf', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ content: pdfContent })
-                });
-                
-                if (!response.ok) throw new Error('Error generating PDF');
-                
-                const blob = await response.blob();
-                const file = new File([blob], 'okuanla-english.pdf', { type: 'application/pdf' });
-
-                if (navigator.share && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            files: [file],
-                            title: 'OkuAnla - English Reading',
-                            text: 'Check out this English reading text from OkuAnla!'
-                        });
-                    } catch (error) {
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'okuanla-english.pdf';
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                    }
-        } else {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'okuanla-english.pdf';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-        }
-    } catch (error) {
-                showError('Error sharing: ' + error.message);
-            }
         });
     }
 }

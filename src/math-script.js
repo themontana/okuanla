@@ -238,15 +238,9 @@ function displayContent(generatedText) {
         <div class="main-wrapper">
             <div class="main-container">
                 <h4 class="text-center mb-4">${pageTitle}</h4>
-                <div class="action-buttons text-center mb-4">
-                    <button id="printButton" class="btn btn-primary mx-2">
+                <div class="action-buttons text-center mb-4 d-print-none">
+                    <button id="printButton" class="btn btn-primary">
                         <i class="fas fa-print me-2"></i>Yazdır
-                    </button>
-                    <button id="pdfButton" class="btn btn-success mx-2">
-                        <i class="fas fa-file-pdf me-2"></i>PDF Olarak Kaydet
-                    </button>
-                    <button id="shareButton" class="btn btn-info text-white mx-2">
-                        <i class="fas fa-share-alt me-2"></i>Paylaş
                     </button>
                 </div>
                 <div class="row g-3">
@@ -380,8 +374,6 @@ function displayContent(generatedText) {
 
     // Add event listeners for buttons after they are created
     const printButton = document.getElementById("printButton");
-    const pdfButton = document.getElementById("pdfButton");
-    const shareButton = document.getElementById("shareButton");
 
     if (printButton) {
         printButton.addEventListener("click", function() {
@@ -458,8 +450,8 @@ function displayContent(generatedText) {
                             .page-break { page-break-before: always; }
                             .col-md-6 { break-inside: avoid; }
                             .watermark { position: fixed; }
-                    }
-                </style>
+                        }
+                    </style>
                 </head>
                 <body>
                     <div class="watermark">okuanla.net</div>
@@ -479,276 +471,6 @@ function displayContent(generatedText) {
             setTimeout(() => {
                 printWindow.print();
             }, 500);
-        });
-    }
-    
-    if (pdfButton) {
-        pdfButton.addEventListener("click", async function() {
-            try {
-                const printContent = document.querySelector('.main-container').cloneNode(true);
-                const actionButtons = printContent.querySelector('.action-buttons');
-                if (actionButtons) actionButtons.remove();
-                
-                const pdfContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>OkuAnla - Matematik Problemleri</title>
-                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-                        <style>
-                            @page {
-                                margin: 1cm;
-                                size: A4;
-                            }
-                            body {
-                                padding: 15px;
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                background: white;
-                                font-size: 11pt;
-                                line-height: 1.5;
-                            }
-                            .watermark {
-                                position: fixed;
-                                top: 10px;
-                                left: 15px;
-                                font-size: 11px;
-                                color: #999;
-                                font-weight: 500;
-                                opacity: 0.7;
-                                z-index: 1000;
-                            }
-                            .header-line {
-                                position: relative;
-                                border-top: 1px solid #000;
-                                margin: 35px 15px 20px;
-                            }
-                            .main-wrapper {
-                                width: 100%;
-                                display: flex;
-                                justify-content: center;
-                            }
-                            .main-container {
-                                width: 100%;
-                                max-width: 1000px;
-                                margin: 0 auto;
-                                padding: 15px;
-                            }
-                            h4 {
-                                font-size: 16pt;
-                                font-weight: bold;
-                                color: #333;
-                                text-align: center;
-                                margin-bottom: 1.5rem;
-                            }
-                            .row {
-                                display: grid;
-                                grid-template-columns: repeat(2, 1fr);
-                                gap: 1rem;
-                                margin: 0;
-                            }
-                            .col-6 {
-                                width: 100%;
-                                padding: 0;
-                                break-inside: avoid;
-                            }
-                            .problem-card {
-                                border: 1px solid #ddd;
-                                border-radius: 6px;
-                                background: white;
-                                margin-bottom: 0.5rem;
-                                min-height: 130px;
-                                break-inside: avoid;
-                            }
-                            .card-body {
-                                padding: 0.8rem 1rem;
-                            }
-                            .problem-text {
-                                font-size: 11pt;
-                                color: #444;
-                                white-space: pre-wrap;
-                                line-height: 1.5;
-                            }
-                            .solution-space {
-                                height: 120px;
-                                border-top: 1px dashed #ddd;
-                                margin-top: 15px;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="watermark">okuanla.net</div>
-                        <div class="header-line"></div>
-                        <div class="main-wrapper">
-                            <div class="main-container">
-                                ${printContent.innerHTML}
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-                `;
-                
-                const response = await fetch('/api/generate-pdf', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ content: pdfContent })
-                });
-                
-                if (!response.ok) throw new Error('PDF oluşturma hatası');
-                
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'okuanla-matematik.pdf';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            } catch (error) {
-                showError('PDF oluşturulurken bir hata oluştu: ' + error.message);
-            }
-        });
-    }
-    
-    if (shareButton) {
-        shareButton.addEventListener("click", async function() {
-            try {
-                const printContent = document.querySelector('.main-container').cloneNode(true);
-                const actionButtons = printContent.querySelector('.action-buttons');
-                if (actionButtons) actionButtons.remove();
-                
-                const pdfContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>OkuAnla - Matematik Problemleri</title>
-                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                        <style>
-                            @page {
-                                margin: 1cm;
-                            }
-                            body {
-                                padding: 15px;
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                background: white;
-                            }
-                                .watermark {
-                                    position: fixed;
-                                top: 10px;
-                                left: 15px;
-                                font-size: 11px;
-                                color: #999;
-                                font-weight: 500;
-                                opacity: 0.7;
-                                z-index: 1000;
-                            }
-                            .header-line {
-                                position: relative;
-                                border-top: 1px solid #000;
-                                margin: 35px 15px 20px;
-                            }
-                            .main-wrapper {
-                                width: 100%;
-                                display: flex;
-                                justify-content: center;
-                            }
-                            .main-container {
-                                width: 100%;
-                                max-width: 1000px;
-                                margin: 0 auto;
-                                padding: 15px;
-                            }
-                            .card {
-                                height: 100%;
-                                border: 1px solid #ddd;
-                                border-radius: 6px;
-                                background: white;
-                                break-inside: avoid;
-                                margin-bottom: 15px;
-                            }
-                            .card-body {
-                                padding: 0.75rem;
-                            }
-                            .card-title {
-                                font-size: 1.1rem;
-                                    font-weight: bold;
-                                color: #333;
-                                margin-bottom: 1rem;
-                            }
-                            .problem-text {
-                                font-size: 0.95rem;
-                                color: #444;
-                                white-space: pre-wrap;
-                            }
-                            @media print {
-                                body { padding: 0; }
-                                .page-break { page-break-before: always; }
-                                .col-md-6 { break-inside: avoid; }
-                                .watermark { position: fixed; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="watermark">okuanla.net</div>
-                        <div class="header-line"></div>
-                        <div class="main-wrapper">
-                            <div class="main-container">
-                                ${printContent.innerHTML}
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-                `;
-                
-                const response = await fetch('/api/generate-pdf', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ content: pdfContent })
-                });
-                
-                if (!response.ok) throw new Error('PDF oluşturma hatası');
-                
-                const blob = await response.blob();
-                const file = new File([blob], 'okuanla-matematik.pdf', { type: 'application/pdf' });
-
-                if (navigator.share && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            files: [file],
-                            title: 'OkuAnla - Matematik Problemleri',
-                            text: 'OkuAnla ile oluşturulan matematik problemlerini paylaşıyorum!'
-                        });
-                    } catch (error) {
-                        // Eğer paylaşım başarısız olursa, dosyayı indirme seçeneğini sunar
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'okuanla-matematik.pdf';
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                    }
-        } else {
-                    // Paylaşım API'si desteklenmiyorsa, dosyayı indirir
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'okuanla-matematik.pdf';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-        }
-    } catch (error) {
-                showError('Paylaşım sırasında bir hata oluştu: ' + error.message);
-            }
         });
     }
 }
