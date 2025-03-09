@@ -543,16 +543,21 @@ function displayContent(generatedText) {
                     <!DOCTYPE html>
                     <html>
                     <head>
+                        <meta charset="UTF-8">
                         <title>OkuAnla - English Reading</title>
                         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
                         <style>
                             @page {
                                 margin: 2cm;
+                                size: A4;
                             }
                             body {
                                 padding: 15px;
                                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                                 background: white;
+                                font-size: 11pt;
+                                line-height: 1.5;
                             }
                             .watermark {
                                 position: fixed;
@@ -580,16 +585,38 @@ function displayContent(generatedText) {
                                 margin: 0 auto;
                                 padding: 15px;
                             }
+                            h3 {
+                                font-size: 16pt;
+                                font-weight: bold;
+                                color: #333;
+                                text-align: center;
+                                margin: 0.5rem 0 1.5rem 0;
+                            }
+                            .content-section {
+                                width: 100%;
+                                margin-bottom: 2rem;
+                            }
                             .text-content {
                                 color: #333;
                                 line-height: 1.6;
-                                font-size: 12pt;
+                                font-size: 11pt;
                                 text-align: justify;
+                            }
+                            .text-content p {
+                                margin-bottom: 0.8rem;
+                                text-indent: 2em;
                             }
                             .questions-section {
                                 margin-top: 2rem;
                                 padding-top: 1.5rem;
                                 border-top: 2px solid #eee;
+                            }
+                            h5 {
+                                text-align: center;
+                                margin-bottom: 1.5rem;
+                                font-weight: bold;
+                                color: #333;
+                                font-size: 14pt;
                             }
                             .questions-grid {
                                 display: grid;
@@ -598,29 +625,16 @@ function displayContent(generatedText) {
                             }
                             .card {
                                 break-inside: avoid;
-                                margin-bottom: 1rem;
+                                margin-bottom: 0.5rem;
                                 border: 1px solid #ddd;
                                 border-radius: 8px;
                                 padding: 1rem;
                             }
                             .card-text {
                                 margin: 0;
-                                font-size: 12pt;
+                                font-size: 11pt;
                                 color: #444;
                                 text-align: left;
-                                align-self: flex-start;
-                            }
-                            @media print {
-                                body { padding: 0; }
-                                .watermark { position: fixed; }
-                                .questions-grid {
-                                    display: grid;
-                                    grid-template-columns: repeat(2, 1fr);
-                                    gap: 1rem;
-                                }
-                                .card {
-                                    break-inside: avoid;
-                                }
                             }
                         </style>
                     </head>

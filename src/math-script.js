@@ -493,16 +493,21 @@ function displayContent(generatedText) {
                     <!DOCTYPE html>
                     <html>
                     <head>
+                        <meta charset="UTF-8">
                         <title>OkuAnla - Matematik Problemleri</title>
                         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
                         <style>
                             @page {
                                 margin: 1cm;
+                                size: A4;
                             }
                             body {
                                 padding: 15px;
                                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                                 background: white;
+                                font-size: 11pt;
+                                line-height: 1.5;
                             }
                             .watermark {
                                 position: fixed;
@@ -530,33 +535,45 @@ function displayContent(generatedText) {
                                 margin: 0 auto;
                                 padding: 15px;
                             }
-                            .card {
-                                height: 100%;
+                            h4 {
+                                font-size: 16pt;
+                                font-weight: bold;
+                                color: #333;
+                                text-align: center;
+                                margin-bottom: 1.5rem;
+                            }
+                            .row {
+                                display: grid;
+                                grid-template-columns: repeat(2, 1fr);
+                                gap: 1rem;
+                                margin: 0;
+                            }
+                            .col-6 {
+                                width: 100%;
+                                padding: 0;
+                                break-inside: avoid;
+                            }
+                            .problem-card {
                                 border: 1px solid #ddd;
                                 border-radius: 6px;
                                 background: white;
+                                margin-bottom: 0.5rem;
+                                min-height: 130px;
                                 break-inside: avoid;
-                                margin-bottom: 15px;
                             }
                             .card-body {
-                                padding: 0.75rem;
-                            }
-                            .card-title {
-                                font-size: 1.1rem;
-                                font-weight: bold;
-                                color: #333;
-                                margin-bottom: 1rem;
+                                padding: 0.8rem 1rem;
                             }
                             .problem-text {
-                                font-size: 0.95rem;
+                                font-size: 11pt;
                                 color: #444;
                                 white-space: pre-wrap;
+                                line-height: 1.5;
                             }
-                            @media print {
-                                body { padding: 0; }
-                                .page-break { page-break-before: always; }
-                                .col-md-6 { break-inside: avoid; }
-                                .watermark { position: fixed; }
+                            .solution-space {
+                                height: 120px;
+                                border-top: 1px dashed #ddd;
+                                margin-top: 15px;
                             }
                         </style>
                     </head>

@@ -642,16 +642,21 @@ function displayContent(generatedText) {
                     <!DOCTYPE html>
                     <html>
                     <head>
-                        <title>OkuAnla - Metin</title>
+                        <meta charset="UTF-8">
+                        <title>OkuAnla - Okuma Metni</title>
                         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
                         <style>
                             @page {
                                 margin: 1cm;
+                                size: A4;
                             }
                             body {
                                 padding: 15px;
                                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                                 background: white;
+                                font-size: 11pt;
+                                line-height: 1.5;
                             }
                             .watermark {
                                 position: fixed;
@@ -679,67 +684,64 @@ function displayContent(generatedText) {
                                 margin: 0 auto;
                                 padding: 15px;
                             }
-                            .text-section {
-                                width: 100%;
-                                margin-bottom: 1rem;
-                            }
                             h1 {
-                                font-size: 1.5rem;
+                                font-size: 16pt;
                                 font-weight: bold;
                                 color: #333;
                                 text-align: center;
-                                margin: 0.5rem 0 1rem 0;
+                                margin: 0.5rem 0 1.5rem 0;
+                            }
+                            .text-section {
                                 width: 100%;
+                                margin-bottom: 2rem;
                             }
                             .text-block {
                                 display: block;
                                 width: 100%;
                                 text-align: justify;
-                                margin-bottom: 0.5rem;
-                                line-height: 1.4;
+                                margin-bottom: 0.8rem;
+                                line-height: 1.5;
                                 text-indent: 2em;
                                 color: #444;
                             }
                             .questions-section {
                                 width: 100%;
-                                margin-top: 1rem;
-                                padding-top: 1rem;
+                                margin-top: 2rem;
+                                padding-top: 1.5rem;
                                 border-top: 1px solid #eee;
                             }
                             .questions-section h2 {
                                 text-align: center;
-                                margin-bottom: 1rem;
+                                margin-bottom: 1.5rem;
                                 font-weight: bold;
                                 color: #333;
-                                width: 100%;
-                                font-size: 1.3rem;
+                                font-size: 14pt;
                             }
                             .row {
-                                display: flex;
-                                flex-wrap: wrap;
-                                margin: -5px;
-                                width: 100%;
+                                display: grid;
+                                grid-template-columns: repeat(2, 1fr);
+                                gap: 1rem;
+                                margin: 0;
                             }
                             .col-md-6 {
-                                flex: 0 0 50%;
-                                max-width: 50%;
-                                padding: 5px;
+                                width: 100%;
+                                padding: 0;
                                 break-inside: avoid;
                             }
                             .card {
-                                height: 100%;
                                 border: 1px solid #ddd;
                                 border-radius: 6px;
                                 background: white;
+                                margin-bottom: 0.5rem;
                                 break-inside: avoid;
                             }
                             .card-body {
-                                padding: 0.75rem;
+                                padding: 0.8rem 1rem;
                             }
                             .card-text {
-                                margin-bottom: 0.5rem;
+                                font-size: 11pt;
                                 color: #444;
-                                font-size: 0.95rem;
+                                margin-bottom: 0;
                             }
                             .answer-box {
                                 border: 1px solid #ddd;
@@ -747,12 +749,7 @@ function displayContent(generatedText) {
                                 min-height: 50px;
                                 padding: 8px;
                                 background: #f8f9fa;
-                            }
-                            @media print {
-                                body { padding: 0; }
-                                .page-break { page-break-before: always; }
-                                .col-md-6 { break-inside: avoid; }
-                                .watermark { position: fixed; }
+                                margin-top: 1rem;
                             }
                         </style>
                     </head>
