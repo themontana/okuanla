@@ -18,23 +18,23 @@ export default async function handler(req, res) {
         console.log('Configuring Chrome...');
         try {
             console.log('Setting up Chromium...');
-            // Get the executable path
-            const executablePath = await chromium.executablePath;
-
-            if (!executablePath) {
-                throw new Error('Could not find Chromium executable path');
-            }
-
-            console.log('Executable path:', executablePath);
-
+            
             const options = {
-                args: chromium.args,
-                executablePath,
-                headless: chromium.headless,
+                args: [
+                    ...chromium.args,
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox'
+                ],
+                executablePath: await chromium.executablePath(),
+                headless: true,
                 ignoreHTTPSErrors: true,
             };
 
-            console.log('Launching browser with options:', JSON.stringify(options, null, 2));
+            console.log('Launching browser with options:', JSON.stringify({
+                ...options,
+                executablePath: 'path-exists: ' + (await chromium.executablePath() ? 'yes' : 'no')
+            }, null, 2));
+
             browser = await puppeteer.launch(options);
             console.log('Browser launched successfully');
 
@@ -44,14 +44,14 @@ export default async function handler(req, res) {
 
             console.log('Setting viewport...');
             await page.setViewport({
-                width: 1200,
-                height: 800,
+                width: 800,
+                height: 600,
                 deviceScaleFactor: 1,
             });
 
             console.log('Setting content...');
             await page.setContent(content, {
-                waitUntil: 'networkidle0',
+                waitUntil: 'domcontentloaded',
                 timeout: 10000,
             });
             console.log('Content set successfully');
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
                 message: error.message,
                 stack: error.stack,
                 name: error.name,
-                executablePath: await chromium.executablePath,
+                executablePathExists: !!(await chromium.executablePath()),
                 args: chromium.args
             });
             
