@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium-min';
+import chromium from 'chrome-aws-lambda';
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -17,22 +17,19 @@ export default async function handler(req, res) {
 
         console.log('Configuring Chrome...');
         try {
-            console.log('Setting up Chromium...');
+            console.log('Setting up Chrome AWS Lambda...');
             
             const options = {
-                args: [
-                    ...chromium.args,
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox'
-                ],
-                executablePath: await chromium.executablePath(),
-                headless: true,
+                args: chromium.args,
+                defaultViewport: chromium.defaultViewport,
+                executablePath: await chromium.executablePath,
+                headless: chromium.headless,
                 ignoreHTTPSErrors: true,
             };
 
-            console.log('Launching browser with options:', JSON.stringify({
+            console.log('Chrome options configured:', JSON.stringify({
                 ...options,
-                executablePath: 'path-exists: ' + (await chromium.executablePath() ? 'yes' : 'no')
+                executablePath: 'path-exists: ' + (await chromium.executablePath ? 'yes' : 'no')
             }, null, 2));
 
             browser = await puppeteer.launch(options);
@@ -41,13 +38,6 @@ export default async function handler(req, res) {
             console.log('Creating new page...');
             const page = await browser.newPage();
             console.log('Page created successfully');
-
-            console.log('Setting viewport...');
-            await page.setViewport({
-                width: 800,
-                height: 600,
-                deviceScaleFactor: 1,
-            });
 
             console.log('Setting content...');
             await page.setContent(content, {
@@ -89,8 +79,7 @@ export default async function handler(req, res) {
                 message: error.message,
                 stack: error.stack,
                 name: error.name,
-                executablePathExists: !!(await chromium.executablePath()),
-                args: chromium.args
+                chromiumPath: await chromium.executablePath
             });
             
             if (browser) {
