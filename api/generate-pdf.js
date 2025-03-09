@@ -1,3 +1,5 @@
+import { chromium } from '@playwright/browser';
+
 export const config = {
   runtime: 'edge'
 };
@@ -14,15 +16,17 @@ export default async function handler(req) {
             });
         }
 
-        // Create a new offscreen document
-        const doc = new Document();
-        doc.write(content);
-        doc.close();
+        // Launch browser
+        const browser = await chromium.launch();
+        const page = await browser.newPage();
+        
+        // Set content and wait for it to load
+        await page.setContent(content, { waitUntil: 'networkidle' });
 
-        // Use the native print to PDF functionality
-        const pdf = await doc.defaultView.print({
+        // Generate PDF
+        const pdfBuffer = await page.pdf({
+            format: 'A4',
             printBackground: true,
-            preferCSSPageSize: true,
             margin: {
                 top: '20mm',
                 right: '20mm',
@@ -31,7 +35,10 @@ export default async function handler(req) {
             }
         });
 
-        return new Response(pdf, {
+        // Close browser
+        await browser.close();
+
+        return new Response(pdfBuffer, {
             status: 200,
             headers: {
                 'Content-Type': 'application/pdf',
