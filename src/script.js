@@ -224,7 +224,7 @@ function displayContent(generatedText) {
         if (!cleanText) continue;
 
         if (!hasTitle) {
-            formattedLines.push(`<h1 class="text-center mb-4">${cleanText}</h1>`);
+            formattedLines.push(`<h2 class="text-center mb-2">${cleanText}</h2>`);
             hasTitle = true;
                 } else {
             formattedLines.push(`<p class="text-block">${cleanText}</p>`);
