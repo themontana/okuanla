@@ -165,20 +165,78 @@ app.post('/api/generate-pdf', async (req, res) => {
             deviceScaleFactor: 2
         });
 
-        // Ensure proper encoding
+        // Ensure proper encoding and add print styles
         await page.evaluate(() => {
             const meta = document.createElement('meta');
             meta.charset = 'UTF-8';
             document.head.prepend(meta);
+            
+            // Add print-specific styles
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    @page {
+                        size: A4;
+                        margin: 1.5cm;
+                    }
+                    body { 
+                        padding: 0;
+                        font-size: 11pt;
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                    .main-container {
+                        max-width: 100%;
+                        padding: 0;
+                    }
+                    .action-buttons, h4 {
+                        display: none !important;
+                    }
+                    .row {
+                        display: grid !important;
+                        grid-template-columns: repeat(2, 1fr) !important;
+                        gap: 1rem !important;
+                        margin: 0 !important;
+                    }
+                    .col-md-6, .col-6 {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        padding: 0 !important;
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                    }
+                    .card, .problem-card {
+                        border: 1px solid #ddd !important;
+                        margin-bottom: 0.5rem !important;
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                    }
+                    .card-body {
+                        padding: 0.8rem 1rem !important;
+                    }
+                    .card-text, .problem-text {
+                        font-size: 11pt !important;
+                        line-height: 1.5 !important;
+                    }
+                    .watermark {
+                        position: fixed !important;
+                        top: 10px !important;
+                        left: 15px !important;
+                        font-size: 8pt !important;
+                        color: #999 !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
         });
 
         // Wait for fonts and styles to load
         await page.waitForTimeout(1000);
         
-        // Generate PDF with specific options
+        // Generate PDF with specific options matching print settings
         const pdf = await page.pdf({
             format: 'A4',
-            margin: { top: '1cm', right: '1cm', bottom: '1cm', left: '1cm' },
+            margin: { top: '1.5cm', right: '1.5cm', bottom: '1.5cm', left: '1.5cm' },
             printBackground: true,
             preferCSSPageSize: true,
             displayHeaderFooter: false
