@@ -16,7 +16,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Unsplash API configuration
-const UNSPLASH_ACCESS_KEY = 'V6tsrrsRGm_OwmhbPc7mOTsQzasxygTx6PqRn3z6tfk';
+const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
 
 // Middleware
 app.use(express.json());
@@ -154,28 +154,27 @@ app.post('/api/generate-pdf', async (req, res) => {
         const page = await browser.newPage();
         
         // Set content with proper styling
-        await page.setContent(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                <style>
-                    body { padding: 20px; }
-                    @media print {
-                        .page-break { page-break-before: always; }
-                    }
-                </style>
-            </head>
-            <body>
-                ${content}
-            </body>
-            </html>
-        `);
+        await page.setContent(content, {
+            waitUntil: 'networkidle0'
+        });
+
+        // Wait for fonts and styles to load
+        await page.waitForTimeout(1000);
+
+        // Set viewport to A4 size
+        await page.setViewport({
+            width: 794, // A4 width in pixels at 96 DPI
+            height: 1123, // A4 height in pixels at 96 DPI
+            deviceScaleFactor: 2
+        });
         
-        // Generate PDF
+        // Generate PDF with specific options
         const pdf = await page.pdf({
             format: 'A4',
-            margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' }
+            margin: { top: '1cm', right: '1cm', bottom: '1cm', left: '1cm' },
+            printBackground: true,
+            preferCSSPageSize: true,
+            displayHeaderFooter: false
         });
         
         await browser.close();
