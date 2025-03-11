@@ -1,14 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OkuAnla - Create Reading Comprehension Text</title>
+    <title>OkuAnla - İngilizce Okuduğunu Anlama Metni Oluştur</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="OkuAnla ile İngilizce okuduğunu anlama metinleri oluşturun. İngilizce dil becerilerinizi geliştirmek için özelleştirilmiş metinler ve sorular ile pratik yapın.">
+    <meta name="keywords" content="ingilizce, okuduğunu anlama, ingilizce metinler, dil öğrenme, eğitim, öğrenme">
+    <meta name="author" content="OkuAnla">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.okuanla.net/english">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.okuanla.net/english">
+    <meta property="og:title" content="OkuAnla - İngilizce Okuduğunu Anlama Metni Oluştur">
+    <meta property="og:description" content="OkuAnla ile İngilizce okuduğunu anlama metinleri oluşturun. İngilizce dil becerilerinizi geliştirmek için özelleştirilmiş metinler ve sorular ile pratik yapın.">
+    <meta property="og:image" content="https://www.okuanla.net/logo.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.okuanla.net/english">
+    <meta property="twitter:title" content="OkuAnla - İngilizce Okuduğunu Anlama Metni Oluştur">
+    <meta property="twitter:description" content="OkuAnla ile İngilizce okuduğunu anlama metinleri oluşturun. İngilizce dil becerilerinizi geliştirmek için özelleştirilmiş metinler ve sorular ile pratik yapın.">
+    <meta property="twitter:image" content="https://www.okuanla.net/logo.png">
+    
     <link rel="stylesheet" href="public/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Google AdSense Verification Code -->
+    <!-- Google AdSense Doğrulama Kodu -->
     <meta name="google-adsense-account" content="ca-pub-8999174255873846">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8999174255873846"
         crossorigin="anonymous"></script>
@@ -242,6 +264,12 @@
     </style>
 </head>
 <body>
+    <noscript>
+        <div class="alert alert-warning text-center m-3" role="alert">
+            <strong>Not:</strong> Bu site, tam işlevsellik için JavaScript gerektirmektedir. Lütfen JavaScript'i etkinleştirin veya destekleyen bir tarayıcı kullanın.
+        </div>
+    </noscript>
+    
     <div class="container">
         <div class="header-container">
             <div class="logo-container">
@@ -334,11 +362,32 @@
                 <p class="mt-3">Metin oluşturuluyor, lütfen bekleyin...</p>
             </div>
 
+            <!-- Prerendered Content for SEO - Visible when JavaScript is disabled -->
+            <div class="preview-container" style="display: block;">
+                <h3>OkuAnla - İngilizce Metin Oluşturma Aracı</h3>
+                <div class="text-content">
+                    <p>OkuAnla'nın İngilizce metin oluşturma aracı ile öğrenciler için İngilizce okuma metinleri oluşturabilirsiniz. Bu araç sayesinde:</p>
+                    <ul>
+                        <li>2-8. sınıf seviyelerine uygun İngilizce metinler oluşturabilirsiniz</li>
+                        <li>Müfredata uygun olarak 1-10 arası ünitelere göre içerik hazırlayabilirsiniz</li>
+                        <li>Kolay, orta ve zor olmak üzere farklı zorluk seviyelerinde metinler oluşturabilirsiniz</li>
+                        <li>Simple Present Tense, Used to gibi belirli dilbilgisi yapılarını içeren metinler hazırlayabilirsiniz</li>
+                        <li>Oluşturulan metinleri İngilizce derslerinde veya bireysel çalışmalarda kullanabilirsiniz</li>
+                    </ul>
+                    <p>Yukarıdaki formu doldurarak hemen kendi İngilizce metinlerinizi oluşturmaya başlayabilirsiniz. Oluşturulan metinler, öğrencilerin İngilizce okuma ve anlama becerilerini geliştirmelerine yardımcı olacak şekilde tasarlanmıştır.</p>
+                    <p>OkuAnla ayrıca Türkçe okuma metinleri ve matematik problemleri de oluşturabilmenize olanak sağlar. Üst menüden diğer araçlara erişebilirsiniz.</p>
+                </div>
+                <div class="mt-4">
+                    <p><strong>Not:</strong> Bu içerik, JavaScript devre dışı bırakıldığında görüntülenmektedir. Tam işlevsellik için lütfen JavaScript'i etkinleştirin.</p>
+                </div>
+            </div>
+
             <div id="output"></div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="src/english-script.js"></script>
+    <script src="public/seo-script.js"></script>
 </body>
 </html>

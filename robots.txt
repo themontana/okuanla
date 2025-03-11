@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /math
+Allow: /english
+Allow: /index.html
+Allow: /math.html
+Allow: /english.html
+Allow: /public/
+Allow: /src/
+Allow: /logo.png
+Allow: /sitemap.xml
+
+Sitemap: https://www.okuanla.net/sitemap.xml 
