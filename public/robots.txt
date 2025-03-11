@@ -10,4 +10,21 @@ Allow: /src/
 Allow: /logo.png
 Allow: /sitemap.xml
 
+# Google AdSense ve reklam botları için özel izinler
+User-agent: Mediapartners-Google
+Allow: /
+Disallow:
+
+User-agent: Adsbot-Google
+Allow: /
+Disallow:
+
+User-agent: Googlebot-Image
+Allow: /
+Disallow:
+
+# Google'ın reklam kaynaklarına erişim izni
+Allow: https://googleads.g.doubleclick.net/
+Allow: https://pagead2.googlesyndication.com/
+
 Sitemap: https://www.okuanla.net/sitemap.xml 

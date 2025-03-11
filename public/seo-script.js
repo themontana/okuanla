@@ -7,4 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
     prerenderedContainers.forEach(function(container) {
         container.style.display = 'none';
     });
+    
+    // Initialize AdSense ads if they exist
+    try {
+        if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }
+    } catch (e) {
+        console.log('AdSense initialization error:', e);
+    }
 }); 
