@@ -26,21 +26,30 @@ app.use(cors({
     credentials: true
 }));
 
+// Middleware to ensure proper UTF-8 encoding for all responses
+app.use((req, res, next) => {
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    next();
+});
+
 // Add basic route for testing
 app.get('/', (req, res) => {
     console.log('Root route accessed');
+    res.set('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Add route for math page
 app.get('/math', (req, res) => {
     console.log('Math page accessed');
+    res.set('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'math.html'));
 });
 
 // Add route for english page
 app.get('/english', (req, res) => {
     console.log('English page accessed');
+    res.set('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'english.html'));
 });
 
