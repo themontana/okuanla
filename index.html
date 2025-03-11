@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OkuAnla - Okuduğunu Anlama Metni Oluştur | İlkokul Seviyesi Okuma Metinleri</title>
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H1L3VKFZD3"></script>
+    <script src="public/analytics.js"></script>
+    
     <!-- Favicon -->
     <link rel="icon" href="public/favicon/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="public/favicon/favicon.ico" type="image/x-icon">
@@ -16,9 +20,14 @@
     <meta name="msapplication-TileImage" content="public/favicon/mstile-144x144.png">
     <meta name="theme-color" content="#688375">
     
+    <!-- Hreflang Tags for Language Variants -->
+    <link rel="alternate" hreflang="tr" href="https://www.okuanla.net/" />
+    <link rel="alternate" hreflang="en" href="https://www.okuanla.net/english" />
+    <link rel="alternate" hreflang="x-default" href="https://www.okuanla.net/" />
+    
     <!-- SEO Meta Tags -->
-    <meta name="description" content="OkuAnla ile ilkokul seviyesinde okuduğunu anlama metinleri oluşturun. Türkçe ve İngilizce dillerinde, matematik ve diğer konularda okuduğunu anlama becerinizi geliştirin. Ücretsiz okuma metinleri ve sorular.">
-    <meta name="keywords" content="okuduğunu anlama, metin oluşturma, türkçe, ingilizce, matematik, eğitim, öğrenme, ilkokul, okuma metni, anlama soruları, ücretsiz okuma metinleri">
+    <meta name="description" content="OkuAnla ile ilkokul seviyesinde okuduğunu anlama metinleri oluşturun. Oku Anla platformu, Türkçe ve İngilizce dillerinde, matematik ve diğer konularda okuduğunu anlama becerinizi geliştirmenize yardımcı olur. Ücretsiz okuma metinleri ve sorular.">
+    <meta name="keywords" content="oku anla, okuduğunu anlama, okuduğunu anlama metni, metin oluşturma, türkçe, ingilizce, matematik, eğitim, öğrenme, ilkokul, okuma metni, anlama soruları, ücretsiz okuma metinleri">
     <meta name="author" content="OkuAnla">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://www.okuanla.net/">
@@ -27,7 +36,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.okuanla.net/">
     <meta property="og:title" content="OkuAnla - İlkokul Seviyesinde Okuduğunu Anlama Metni Oluştur">
-    <meta property="og:description" content="OkuAnla ile ilkokul seviyesinde okuduğunu anlama metinleri oluşturun. Türkçe ve İngilizce dillerinde, matematik ve diğer konularda okuduğunu anlama becerinizi geliştirin. Ücretsiz okuma metinleri ve sorular.">
+    <meta property="og:description" content="OkuAnla ile ilkokul seviyesinde okuduğunu anlama metinleri oluşturun. Oku Anla platformu, Türkçe ve İngilizce dillerinde, matematik ve diğer konularda okuduğunu anlama becerinizi geliştirmenize yardımcı olur. Ücretsiz okuma metinleri ve sorular.">
     <meta property="og:image" content="https://www.okuanla.net/logo.png">
     <meta property="og:locale" content="tr_TR">
     
@@ -35,7 +44,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://www.okuanla.net/">
     <meta property="twitter:title" content="OkuAnla - İlkokul Seviyesinde Okuduğunu Anlama Metni Oluştur">
-    <meta property="twitter:description" content="OkuAnla ile ilkokul seviyesinde okuduğunu anlama metinleri oluşturun. Türkçe ve İngilizce dillerinde, matematik ve diğer konularda okuduğunu anlama becerinizi geliştirin. Ücretsiz okuma metinleri ve sorular.">
+    <meta property="twitter:description" content="OkuAnla ile ilkokul seviyesinde okuduğunu anlama metinleri oluşturun. Oku Anla platformu, Türkçe ve İngilizce dillerinde, matematik ve diğer konularda okuduğunu anlama becerinizi geliştirmenize yardımcı olur. Ücretsiz okuma metinleri ve sorular.">
     <meta property="twitter:image" content="https://www.okuanla.net/logo.png">
     
     <!-- Additional SEO Tags -->
@@ -47,6 +56,43 @@
     <link rel="stylesheet" href="public/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- JSON-LD Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "OkuAnla",
+      "url": "https://www.okuanla.net/",
+      "description": "İlkokul seviyesinde okuduğunu anlama metinleri oluşturun. Oku Anla platformu ile Türkçe ve İngilizce dillerinde, matematik ve diğer konularda okuduğunu anlama becerinizi geliştirin.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.okuanla.net/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "inLanguage": "tr-TR",
+      "keywords": "oku anla, okuduğunu anlama, okuduğunu anlama metni",
+      "author": {
+        "@type": "Organization",
+        "name": "OkuAnla",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.okuanla.net/logo.png"
+        }
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "OkuAnla",
+      "url": "https://www.okuanla.net/",
+      "logo": "https://www.okuanla.net/logo.png",
+      "description": "Oku Anla platformu, okuduğunu anlama metinleri oluşturmanıza yardımcı olan bir eğitim aracıdır.",
+      "sameAs": []
+    }
+    </script>
     
     <style>
         .ad-container {
